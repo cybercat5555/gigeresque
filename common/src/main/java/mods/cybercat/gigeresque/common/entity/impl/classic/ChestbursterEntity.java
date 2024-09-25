@@ -226,7 +226,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> target.isAlive()));
+                        (entity, target) -> !target.isAlive()));
     }
 
     /*
