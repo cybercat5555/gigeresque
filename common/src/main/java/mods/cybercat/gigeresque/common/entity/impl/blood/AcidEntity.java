@@ -5,6 +5,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
@@ -13,13 +14,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class AcidEntity extends Entity {
 
@@ -76,10 +74,10 @@ public class AcidEntity extends Entity {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
                         if (!CommonMod.config.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
-                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
-                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS), this.random);
-                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST), this.random);
-                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD), this.random);
+                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random, 1, 4);
+                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS), this.random, 1, 4);
+                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST), this.random, 1, 4);
+                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD), this.random, 1, 4);
                         }
                     }
                     if (entity instanceof ItemEntity itemEntity) {
@@ -114,12 +112,6 @@ public class AcidEntity extends Entity {
         if (itemStack.getMaxDamage() < 2) {
             itemStack.shrink(1);
         } else {
-            itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
-        }
-    }
-
-    private void damageArmor(ItemStack itemStack, RandomSource randomSource) {
-        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
             itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
     }

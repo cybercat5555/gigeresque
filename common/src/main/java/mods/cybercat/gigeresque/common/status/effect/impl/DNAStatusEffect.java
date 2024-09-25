@@ -1,15 +1,14 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
-import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,10 +56,10 @@ public class DNAStatusEffect extends MobEffect {
                     GigEntityUtils.spawnMutant(entity);
                     entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
                     if (Constants.isNotCreativeSpecPlayer.test(entity)) {
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom());
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom(), 10, 50);
                     }
                 }
             } else {
@@ -70,19 +68,13 @@ public class DNAStatusEffect extends MobEffect {
                     placeGoo(entity);
                     entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
                     if (Constants.isNotCreativeSpecPlayer.test(entity)) {
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom());
-                        damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom());
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 10, 50);
+                        DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom(), 10, 50);
                     }
                 }
             }
-        }
-    }
-
-    private static void damageArmor(ItemStack itemStack, RandomSource randomSource) {
-        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
-            itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
     }
 
