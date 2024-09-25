@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -8,13 +9,18 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class SporeStatusEffect extends MobEffect {
 
@@ -49,7 +55,16 @@ public class SporeStatusEffect extends MobEffect {
             neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(neoBurster);
+            if (Constants.isNotCreativeSpecPlayer.test(entity)) {
+                damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom());
+            }
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+        }
+    }
+
+    private static void damageArmor(ItemStack itemStack, RandomSource randomSource) {
+        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
+            itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
     }
 
