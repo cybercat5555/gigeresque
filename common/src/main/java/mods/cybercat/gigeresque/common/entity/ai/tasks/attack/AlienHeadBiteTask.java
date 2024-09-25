@@ -8,6 +8,7 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
@@ -54,9 +55,9 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                     if (Services.PLATFORM.isDevelopmentEnvironment())
                         AzureLib.LOGGER.debug(lastUpdateTime);
                 }
-                entity.setDeltaMovement(0, 0, 0);
                 // Check if enough time has elapsed since the last update
                 if (lastUpdateTime >= 600L) {
+                    if (entity.getNavigation() != null) ((GigNav)entity.getNavigation()).hardStop();
                     entity.getFirstPassenger().hurt(GigDamageSources.of(entity.level(), GigDamageSources.EXECUTION),
                             Integer.MAX_VALUE);
                     entity.heal(50);
