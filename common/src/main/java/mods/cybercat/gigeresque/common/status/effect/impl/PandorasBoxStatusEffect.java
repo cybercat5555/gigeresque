@@ -102,18 +102,19 @@ public class PandorasBoxStatusEffect extends MobEffect {
         return super.applyEffectTick(livingEntity, amplifier);
     }
 
-
     public void spawnWave(ServerPlayer player) {
         final var random = player.getRandom();
         var distance = 30 + random.nextDouble() * 30; // random distance from 30 to 60
-        var angle = random.nextDouble() * 2 * Math.PI; // angle in radians for random direction
-        // Calculate the new position
-        var offsetX = Math.cos(angle) * distance;
-        var offsetZ = Math.sin(angle) * distance;
+
+        // Get the player's look direction and invert it to spawn behind the player
+        var lookAngle = player.getLookAngle();
+        var offsetX = -lookAngle.x * distance; // negative to get behind
+        var offsetZ = -lookAngle.z * distance; // negative to get behind
+
         if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
             var randomBurster = player.getRandom().nextInt(0, 100) > 70 ? GigEntities.RUNNERBURSTER.get(): GigEntities.CHESTBURSTER.get();
             var entityTypeToSpawn = player.getY() < 20 ? randomBurster : GigEntities.FACEHUGGER.get();
-            for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4: 2); ++k) {
+            for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4 : 2); ++k) {
                 var faceHugger = entityTypeToSpawn.create(player.level());
                 Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D,
                         player.getZ() + offsetZ);
@@ -121,24 +122,20 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 if (Services.PLATFORM.isDevelopmentEnvironment())
                     faceHugger.setGlowingTag(true);
 
-                // Ensure the block is not solid and the world is loaded at that position
                 var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
                 if (player.level().isLoaded(spawnPos) && (faceHugger.level().getBlockState(
                         spawnPos).isAir() || faceHugger.level().getBlockState(
                         spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
                         GigTags.AQUASPAWN_BIOMES)) {
                     player.level().addFreshEntity(faceHugger);
-                    // Place resin blocks in a 3x3 area around the spawn position
+
                     for (var x = -1; x <= 1; x++) {
                         for (var z = -1; z <= 1; z++) {
-                            var resinPos = spawnPos.offset(x, 0, z); // Adjust position around the entity
-
-                            // Randomly select between NEST_RESIN_BLOCK and NEST_RESIN_WEB_CROSS
+                            var resinPos = spawnPos.offset(x, 0, z);
                             var resinBlockState = player.getRandom().nextBoolean()
                                     ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
                                     : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
 
-                            // Ensure the block is not solid and the world is loaded at that position
                             if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
                                 player.level().setBlockAndUpdate(resinPos, resinBlockState);
                             }
@@ -153,21 +150,17 @@ public class PandorasBoxStatusEffect extends MobEffect {
             if (Services.PLATFORM.isDevelopmentEnvironment())
                 aquaticAlien.setGlowingTag(true);
 
-            // Ensure the block is not solid and the world is loaded at that position
             var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
             if (player.level().isLoaded(spawnPos)) {
                 player.level().addFreshEntity(aquaticAlien);
-                // Place resin blocks in a 3x3 area around the spawn position
+
                 for (var x = -1; x <= 1; x++) {
                     for (var z = -1; z <= 1; z++) {
-                        var resinPos = spawnPos.offset(x, 0, z); // Adjust position around the entity
-
-                        // Randomly select between NEST_RESIN_BLOCK and NEST_RESIN_WEB_CROSS
+                        var resinPos = spawnPos.offset(x, 0, z);
                         var resinBlockState = player.getRandom().nextBoolean()
                                 ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
                                 : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
 
-                        // Ensure the block is not solid and the world is loaded at that position
                         if (player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
                             player.level().setBlockAndUpdate(resinPos, resinBlockState);
                         }
