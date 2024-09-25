@@ -91,8 +91,6 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntit
                 vec32 = vec32.normalize().scale(1.4).add(vec3.scale(0.2));
             entity.setDeltaMovement(vec32.x, 1.3F, vec32.z);
         }
-
-        entity.swing(InteractionHand.MAIN_HAND);
         entity.doHurtTarget(this.target);
     }
 }
