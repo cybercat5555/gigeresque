@@ -31,18 +31,22 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -71,20 +75,27 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
 
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 1.75F);
+        this.vibrationUser = new AzureVibrationUser(this, 1.5f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.runnerConfigs.runnerXenoHealth).add(
-                Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(
-                Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED,
-                0.3300000041723251).add(Attributes.ATTACK_DAMAGE, CommonMod.config.runnerConfigs.runnerXenoAttackDamage).add(
-                Attributes.ATTACK_KNOCKBACK, 1.0);
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
+                CommonMod.config.classicXenoConfigs.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoHealth).add(
+                Attributes.ARMOR_TOUGHNESS, CommonMod.config.runnerConfigs.runnerXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
+                .add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
+                CommonMod.config.runnerConfigs.runnerXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
     public int getAcidDiameter() {
         return 3;
+    }
+
+    @Override
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
+        if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.95f);
+        return EntityDimensions.scalable(1.25f, 1.75f);
     }
 
     @Override
@@ -123,6 +134,25 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        GigEntityUtils.breakblocks(this);
+        if (this.isPassedOut() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
+    }
+
+    @Override
+    public boolean onClimbable() {
+        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
+        if (this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = true;
+        }
+        if (!this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = false;
+        }
+        return this.inTwoBlockSpace;
+    }
+
+    @Override
     public boolean isPathFinding() {
         return false;
     }
@@ -158,11 +188,11 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+                // Flee Fire
+                new FleeFireTask<>(3.5F),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching()),
-                // Flee Fire
-                new FleeFireTask<>(3.5F),
                 // Move to target
                 new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
                         entity -> this.isPassedOut()));
@@ -172,19 +202,28 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 // Build Nest
-                new BuildNestTask<>(90).stopIf(
+                new BuildNestTask<>(90).startCondition(
+                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()).stopIf(
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Kill Lights
-                new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
+                new KillLightsTask<>().startCondition(
+                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
+                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
+                // Find Darkness
+                new FindDarknessTask<>(),
                 // Do first
                 new FirstApplicableBehaviour<RunnerAlienEntity>(
                         // Targeting
-                        new TargetOrRetaliate<>(),
+                        new TargetOrRetaliate<>().stopIf(
+                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
                         // Look at players
                         new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
+                                entity -> this.isPassedOut() || this.isExecuting()),
                         // Look around randomly
-                        new SetRandomLookTarget<>()),
+                        new SetRandomLookTarget<>().startCondition(
+                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
+                        entity -> this.isPassedOut() || this.isExecuting()),
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
@@ -199,13 +238,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                // Invalidate Target
-                new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
-                // Walk to Target
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.runnerConfigs.runnerXenoAttackSpeed).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
-                // Xeno attacking
-                new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
+                new JumpToTargetTask<>(20),
+                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
     }
 
     /*
