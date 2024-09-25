@@ -347,14 +347,15 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
 
     @Override
     public BrainActivityGroup<FacehuggerEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new FleeFireTask<>(2.2F).whenStarting(
+                entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new LookAtTarget<>(), new MoveToWalkTarget<>().stopIf(entity -> this.isFleeing()));
     }
 
     @Override
     public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new FirstApplicableBehaviour<FacehuggerEntity>(
-                        new TargetOrRetaliate<>(),
+                        new TargetOrRetaliate<>().stopIf(entity -> this.isFleeing()),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
@@ -367,7 +368,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
-                                target) || target.getType().is(EntityTypeTags.UNDEAD)),
+                                target) || target.getType().is(EntityTypeTags.UNDEAD) || this.isFleeing()),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F), new FacehuggerPounceTask<>(6));
     }
 
