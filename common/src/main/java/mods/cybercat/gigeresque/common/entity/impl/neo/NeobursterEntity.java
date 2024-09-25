@@ -79,7 +79,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8),
+                        (entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack<>(20));
     }
 
