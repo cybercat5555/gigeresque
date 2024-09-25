@@ -26,6 +26,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -75,7 +76,8 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack<>(20));
     }
 
