@@ -28,10 +28,11 @@ public record GigMeleeAttackSelector() {
     };
 
     public static final AnimationSelector<?> NORMAL_ANIM_SELECTOR = entity -> {
+        var basicCheck = entity.isInWater();
         var animKey = switch (entity.getRandom().nextInt(4)) {
             case 1 -> Constants.RIGHT_CLAW;
-            case 2 -> Constants.LEFT_TAIL;
-            case 3 -> Constants.RIGHT_TAIL;
+            case 2 -> basicCheck ? Constants.RIGHT_CLAW : Constants.LEFT_TAIL;
+            case 3 -> basicCheck ? Constants.LEFT_CLAW : Constants.RIGHT_TAIL;
             default -> Constants.LEFT_CLAW;
         };
         entity.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
