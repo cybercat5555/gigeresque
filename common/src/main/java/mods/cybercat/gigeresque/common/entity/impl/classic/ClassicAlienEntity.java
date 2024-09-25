@@ -37,7 +37,6 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienHeadBiteTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.ClassicXenoMeleeAttackTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
@@ -110,6 +109,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public void tick() {
         super.tick();
+        GigEntityUtils.breakblocks(this);
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
         if (this.isPassedOut() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
@@ -212,7 +212,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
-                new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && this.isAggressive()).stopIf(entity -> !this.isVehicle() && !this.isAggressive()),
+                new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle()).stopIf(entity -> !this.isVehicle()),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
@@ -238,8 +238,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 new KillLightsTask<>().startCondition(
                         entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
-                // Break blocks
-                new BreakBlocksTask<>(90, true),
                 // Find Darkness
                 new FindDarknessTask<>(),
                 // Do first
@@ -261,8 +259,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                         new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
-                        // Searches
-                        new EnterStasisTask<>(6000)));
+                        new EnterStasisTask<>(6000)).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0));
     }
 
     @Override

@@ -35,7 +35,6 @@ import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -82,6 +81,12 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphConfigs.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
                 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(
                 Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphConfigs.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        GigEntityUtils.breakblocks(this);
     }
 
     @Override
@@ -199,7 +204,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new BreakBlocksTask<>(90, true), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(),
+                new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),

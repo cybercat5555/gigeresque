@@ -33,7 +33,6 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
@@ -140,7 +139,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new BreakBlocksTask<>(90, false), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
+                new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
@@ -162,6 +161,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     @Override
     public void tick() {
         super.tick();
+        GigEntityUtils.breakblocks(this);
         if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
     }
 

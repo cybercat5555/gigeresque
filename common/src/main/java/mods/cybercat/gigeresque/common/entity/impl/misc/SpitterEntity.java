@@ -34,7 +34,6 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienProjectileAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -207,7 +206,6 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         return BrainActivityGroup.idleTasks(
                 // Kill Lights
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new BreakBlocksTask<>(90, true),
                 // Do first
                 new FirstApplicableBehaviour<SpitterEntity>(
                         // Targeting
@@ -246,7 +244,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     @Override
     public void tick() {
         super.tick();
-
+        GigEntityUtils.breakblocks(this);
         if (!this.isInWater())
             this.setIsCrawling(
                     this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
