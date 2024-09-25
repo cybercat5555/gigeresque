@@ -38,6 +38,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -224,8 +225,8 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (entity, target) -> target.isAlive()));
     }
 
     /*
