@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -78,6 +79,14 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
         if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
             return;
+
+        if (entity.isInWater() && !target.isInWater()) {
+            Vec3 vec3 = entity.getDeltaMovement();
+            Vec3 vec32 = new Vec3(this.target.getX() - entity.getX(), 0.0, this.target.getZ() - entity.getZ());
+            if (vec32.lengthSqr() > 1.0E-7)
+                vec32 = vec32.normalize().scale(1.4).add(vec3.scale(0.2));
+            entity.setDeltaMovement(vec32.x, 1.3F, vec32.z);
+        }
 
         var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
         var randomPhase = entity.getRandom().nextInt(0, 100);
