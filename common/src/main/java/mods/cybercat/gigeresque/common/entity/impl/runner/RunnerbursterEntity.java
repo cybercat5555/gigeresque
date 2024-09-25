@@ -57,7 +57,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
 
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-        this.vibrationUser = new AzureVibrationUser(this, 0.7F);
+        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -22,6 +22,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
@@ -40,6 +41,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
+        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -59,26 +60,17 @@ public class AlienPanic extends Behavior<PathfinderMob> {
 
     @Override
     protected void tick(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
-        Vec3 vec3;
-        if (pathfinderMob.getNavigation().isDone() && (vec3 = this.getPanicPos(pathfinderMob, serverLevel)) != null) {
-            pathfinderMob.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speedMultiplier, 0));
-        }
-    }
+        var attacker = pathfinderMob.getLastHurtByMob();  // Get the entity that hit this mob
+        if (attacker != null && pathfinderMob.getNavigation().isDone()) {
+            // Calculate the direction away from the attacker
+            var mobPos = pathfinderMob.position();
+            var attackerPos = attacker.position();
+            var runAwayDirection = mobPos.subtract(attackerPos).normalize().scale(30.0); // Scale to desired run distance
 
-    @Nullable
-    private Vec3 getPanicPos(PathfinderMob pathfinderMob, ServerLevel serverLevel) {
-        Optional<Vec3> optional;
-        if (pathfinderMob.isOnFire() && (optional = this.lookForWater(serverLevel, pathfinderMob).map(Vec3::atBottomCenterOf)).isPresent()) {
-            return optional.get();
-        }
-        return LandRandomPos.getPos(pathfinderMob, 5, 4);
-    }
+            var panicPos = mobPos.add(runAwayDirection);  // Position away from the attacker
 
-    private Optional<BlockPos> lookForWater(BlockGetter blockGetter, Entity entity) {
-        BlockPos blockPos2 = entity.blockPosition();
-        if (!blockGetter.getBlockState(blockPos2).getCollisionShape(blockGetter, blockPos2).isEmpty()) {
-            return Optional.empty();
+            // Set the panic position as the target
+            pathfinderMob.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(panicPos, this.speedMultiplier, 0));
         }
-        return BlockPos.findClosestMatch(blockPos2, 5, 1, blockPos -> blockGetter.getFluidState(blockPos).is(FluidTags.WATER));
     }
 }
