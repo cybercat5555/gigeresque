@@ -5,20 +5,16 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.ai.util.LandRandomPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,30 +52,28 @@ public class FleeFireTask<E extends PathfinderMob & AbstractAlien & GeoEntity> e
 
     @Override
     protected void tick(@NotNull ServerLevel level, PathfinderMob owner, long gameTime) {
-        Vec3 vec3;
         if (owner.level().dimensionType().piglinSafe())
             return;
-        if (owner.getNavigation().isDone() && (vec3 = this.getPanicPos(owner, level)) != null)
-            owner.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speed, 0));
-        if (owner.getFirstPassenger() != null)
-            owner.getFirstPassenger().removeVehicle();
-    }
+        var mobPos = owner.blockPosition();
+        var searchRadius = 5; // Define the radius to search for lava blocks
+        var isLavaNearby = false;
+        var runAwayDirection = new Vec3(0, 0, 0);
 
-    @Nullable
-    private Vec3 getPanicPos(PathfinderMob pathfinder, ServerLevel level) {
-        Optional<Vec3> optional;
-        if (pathfinder.isOnFire() && (optional = this.lookForWater(level, pathfinder).map(
-                Vec3::atBottomCenterOf)).isPresent())
-            return optional.get();
-        return LandRandomPos.getPos(pathfinder, 15, 4);
-    }
+        // Iterate through blocks around the mob to detect lava
+        for (var pos : BlockPos.betweenClosed(mobPos.offset(-searchRadius, -1, -searchRadius), mobPos.offset(searchRadius, 1, searchRadius))) {
+            if (level.getBlockState(pos).is(GigTags.ALIEN_REPELLENTS)) {
+                isLavaNearby = true;
+                // Calculate a direction away from the lava block
+                var lavaPos = Vec3.atCenterOf(pos);
+                runAwayDirection = runAwayDirection.add(owner.position().subtract(lavaPos).normalize());
+            }
+        }
 
-    private Optional<BlockPos> lookForWater(BlockGetter level, Entity entity) {
-        var blockPos2 = entity.blockPosition();
-        if (!level.getBlockState(blockPos2).getCollisionShape(level, blockPos2).isEmpty())
-            return Optional.empty();
-        return BlockPos.findClosestMatch(blockPos2, 5, 1,
-                blockPos -> level.getFluidState(blockPos).is(FluidTags.WATER));
+        // If lava is nearby, set the walk target to move away from it
+        if (isLavaNearby && owner.getNavigation().isDone()) {
+            var panicPos = owner.position().add(runAwayDirection.normalize().scale(20.0)); // Scale to desired distance
+            owner.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(panicPos, this.speed, 0));
+        }
     }
 
 }
