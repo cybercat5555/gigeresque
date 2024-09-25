@@ -290,9 +290,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     this.getY() + (this.isExecuting() ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)),
                     this.getZ() - ((this.isExecuting() ? -2.4f : -1.85f) * g));
             mob.yBodyRot = this.yBodyRot;
-            mob.xxa = this.xxa;
-            mob.zza = this.zza;
-            mob.yya = this.yya;
             mob.setSpeed(0);
         }
     }
