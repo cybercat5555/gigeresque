@@ -168,7 +168,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
     public void noMilkRemoval(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.ACID) || this.hasEffect(GigStatusEffects.DNA))
+        if (this.hasEffect(GigStatusEffects.EGGMORPHING) || this.hasEffect(GigStatusEffects.DUNGEON_EFFECT) || this.hasEffect(GigStatusEffects.ACID) || this.hasEffect(GigStatusEffects.DNA) || this.hasEffect(GigStatusEffects.SPORE) || this.hasEffect(GigStatusEffects.IMPREGNATION))
             callbackInfo.setReturnValue(false);
     }
 
