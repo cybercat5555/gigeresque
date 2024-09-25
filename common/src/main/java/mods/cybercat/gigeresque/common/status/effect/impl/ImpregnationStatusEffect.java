@@ -76,7 +76,7 @@ public class ImpregnationStatusEffect extends MobEffect {
             entity.level().addFreshEntity(burster);
             entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL, 2.0f,
                     1.0f);
-            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), entity.getMaxHealth());
+            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Integer.MAX_VALUE);
         }
     }
 

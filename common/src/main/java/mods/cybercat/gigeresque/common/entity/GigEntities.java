@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 public record GigEntities() implements CommonEntityRegistryInterface, CommonBlockEntityRegistryInterface {
 
     public static final Supplier<EntityType<ClassicAlienEntity>> ALIEN = CommonEntityRegistryInterface.registerEntity(
-            CommonMod.MOD_ID, EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, MobCategory.MONSTER, 0.9f, 2.45f);
+            CommonMod.MOD_ID, EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, MobCategory.MONSTER, 0.9f, 1.95f);
     public static final Supplier<EntityType<AquaticAlienEntity>> AQUATIC_ALIEN = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, MobCategory.MONSTER, 2.0f, 2.0f);
     public static final Supplier<EntityType<AquaticChestbursterEntity>> AQUATIC_CHESTBURSTER = CommonEntityRegistryInterface.registerEntity(

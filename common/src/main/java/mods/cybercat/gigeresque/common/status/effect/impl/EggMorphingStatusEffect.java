@@ -43,6 +43,6 @@ public class EggMorphingStatusEffect extends MobEffect {
         if (entity.level().getBlockState(entity.blockPosition().above()).is(GigTags.NEST_BLOCKS))
             entity.level().setBlockAndUpdate(entity.blockPosition().above(), Blocks.AIR.defaultBlockState());
         entity.level().addFreshEntity(egg);
-        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.EGGMORPHING), Float.MAX_VALUE);
+        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.EGGMORPHING), Integer.MAX_VALUE);
     }
 }

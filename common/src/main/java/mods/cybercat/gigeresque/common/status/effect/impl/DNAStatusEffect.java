@@ -50,18 +50,19 @@ public class DNAStatusEffect extends MobEffect {
                 if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(
                         entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     GigEntityUtils.spawnMutant(entity);
+                    entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
                 }
             } else {
                 if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(
                         entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     placeGoo(entity);
+                    entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
                 }
             }
         }
     }
 
     private static void placeGoo(LivingEntity entity) {
-        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
         spawnGoo(entity);
     }
 

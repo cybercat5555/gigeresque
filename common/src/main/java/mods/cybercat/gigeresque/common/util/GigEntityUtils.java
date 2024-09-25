@@ -110,7 +110,6 @@ public record GigEntityUtils() {
             assert summon != null;
             GigEntityUtils.moveToAndSpawn(entity, summon);
         }
-        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
     }
 
     private static void moveToAndSpawn(@NotNull LivingEntity entity, Entity summon) {
