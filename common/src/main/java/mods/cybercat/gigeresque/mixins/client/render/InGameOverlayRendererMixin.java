@@ -57,6 +57,9 @@ public class InGameOverlayRendererMixin {
     }
 
     private static void renderOverlay(Minecraft client, PoseStack matrices, float progress, ResourceLocation resourceLocation) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
         BlockPos blockpos = BlockPos.containing(client.player.getX(), client.player.getEyeY(), client.player.getZ());
@@ -72,6 +75,8 @@ public class InGameOverlayRendererMixin {
         bufferbuilder.addVertex(matrix4f, 1.0F, 1.0F, -0.5F).setUv(0.0F + f7, 0.0F + f8);
         bufferbuilder.addVertex(matrix4f, -1.0F, 1.0F, -0.5F).setUv(4.0F + f7, 0.0F + f8);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
     }
