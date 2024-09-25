@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -8,15 +9,20 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class DNAStatusEffect extends MobEffect {
     private static BlockPos lightBlockPos = null;
@@ -51,14 +57,32 @@ public class DNAStatusEffect extends MobEffect {
                         entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     GigEntityUtils.spawnMutant(entity);
                     entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
+                    if (Constants.isNotCreativeSpecPlayer.test(entity)) {
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom());
+                    }
                 }
             } else {
                 if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(
                         entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     placeGoo(entity);
                     entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
+                    if (Constants.isNotCreativeSpecPlayer.test(entity)) {
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.FEET), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.LEGS), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom());
+                        damageArmor(entity.getItemBySlot(EquipmentSlot.HEAD), entity.getRandom());
+                    }
                 }
             }
+        }
+    }
+
+    private static void damageArmor(ItemStack itemStack, RandomSource randomSource) {
+        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
+            itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
     }
 
