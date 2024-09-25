@@ -10,6 +10,7 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,6 +28,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
@@ -34,6 +36,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -42,12 +45,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEntity, Growable, AbstractAlien {
+public abstract class WaterAlienEntity extends WaterAnimal implements Enemy, GeoEntity, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(WaterAlienEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -69,13 +73,32 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
     protected int slowticks = 0;
     public int wakeupCounter = 0;
 
-    public WaterAlienEntity(EntityType<? extends Dolphin> entityType, Level level) {
+    public WaterAlienEntity(EntityType<? extends WaterAnimal> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
         navigation = new AmphibiousPathNavigation(this, level());
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
         setPathfindingMalus(PathType.WATER, 0.0f);
+    }
+
+    @Override
+    protected void handleAirSupply(int airSupply) {
+    }
+
+    @Override
+    public int getMaxAirSupply() {
+        return 4800;
+    }
+
+    @Override
+    public int getMaxHeadXRot() {
+        return 1;
+    }
+
+    @Override
+    public int getMaxHeadYRot() {
+        return 1;
     }
 
     @Override
@@ -119,6 +142,12 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
         }
+        if (this.onGround())
+            this.setDeltaMovement(
+                    this.getDeltaMovement()
+                            .add(0, 0,
+                                    0)
+            );
         if (!this.level().isClientSide) slowticks++;
         if (this.slowticks > 10 && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(
                 this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
@@ -139,6 +168,30 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
         }
+    }
+
+    @Override
+    public void travel(Vec3 travelVector) {
+        if (this.isEffectiveAi() && this.isInWater()) {
+            this.moveRelative(this.getSpeed(), travelVector);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
+            if (this.getTarget() == null) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
+            }
+        } else {
+            super.travel(travelVector);
+        }
+    }
+
+    @Override
+    protected @NotNull SoundEvent getSwimSplashSound() {
+        return SoundEvents.DOLPHIN_SPLASH;
+    }
+
+    @Override
+    protected @NotNull SoundEvent getSwimSound() {
+        return SoundEvents.DOLPHIN_SWIM;
     }
 
     @Override

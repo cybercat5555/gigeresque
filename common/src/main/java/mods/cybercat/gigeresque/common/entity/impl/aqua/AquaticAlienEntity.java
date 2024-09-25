@@ -79,7 +79,7 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 CommonMod.config.aquaticXenoConfigs.aquaticXenoHealth).add(Attributes.ARMOR, CommonMod.config.aquaticXenoConfigs.aquaticXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
-                32.0).add(Attributes.MOVEMENT_SPEED, 0.2500000417232513).add(Attributes.ATTACK_DAMAGE,
+                32.0).add(Attributes.MOVEMENT_SPEED, 0.5600000417232513).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
