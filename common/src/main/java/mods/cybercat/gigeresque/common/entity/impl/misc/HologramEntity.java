@@ -6,9 +6,8 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -74,7 +73,7 @@ public class HologramEntity extends Entity implements GeoEntity {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
-            if (this.tickCount >= 200)
+            if (this.tickCount >= 100)
                 this.kill();
             // Sim Gravity Credit to Boston for this
             this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
@@ -82,19 +81,18 @@ public class HologramEntity extends Entity implements GeoEntity {
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
         }
         var isInsideWaterBlock = level().isWaterAt(blockPosition());
-        CommonUtils.spawnLightSource(this, isInsideWaterBlock);
-        this.setGlowingTag(true);
+        if (this.tickCount >= 14)
+            CommonUtils.spawnLightSource(this, isInsideWaterBlock);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            // TODO: Set aniamtions for each state with the state 1 being the default
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 0, event -> {
             if (this.getDistanceState() == 2)
-                return PlayState.CONTINUE;
+                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("middle"));
             if (this.getDistanceState() == 3)
-                return PlayState.CONTINUE;
-            return PlayState.CONTINUE;
+                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("close"));
+            return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("far"));
         }));
     }
 

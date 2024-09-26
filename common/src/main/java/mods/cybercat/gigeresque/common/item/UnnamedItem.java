@@ -64,7 +64,7 @@ public class UnnamedItem extends Item {
                 }
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), GigSounds.TRACKER_SUMMON.get(),
                         SoundSource.NEUTRAL, 1.0F, 1.0F);
-                player.getCooldowns().addCooldown(this, 200);
+                player.getCooldowns().addCooldown(this, 100);
                 return InteractionResultHolder.success(itemstack);
             } else {
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CRAFTER_FAIL,
