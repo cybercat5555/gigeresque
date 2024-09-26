@@ -81,6 +81,16 @@ public class HologramEntity extends Entity implements GeoEntity {
     }
 
     @Override
+    public boolean fireImmune() {
+        return true;
+    }
+
+    @Override
+    public boolean displayFireAnimation() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
