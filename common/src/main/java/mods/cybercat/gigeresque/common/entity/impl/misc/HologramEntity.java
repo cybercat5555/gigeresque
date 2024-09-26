@@ -70,6 +70,11 @@ public class HologramEntity extends Entity implements GeoEntity {
     }
 
     @Override
+    public boolean dampensVibrations() {
+        return true;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
