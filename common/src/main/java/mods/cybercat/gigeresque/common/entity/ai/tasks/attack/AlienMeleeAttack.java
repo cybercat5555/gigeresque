@@ -73,11 +73,14 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntit
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
+                this.attackIntervalSupplier.applyAsInt(entity));
 
-        if (this.target == null) return;
+        if (this.target == null)
+            return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target)) return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+            return;
 
         if (entity instanceof StalkerEntity) {
             this.target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, true, true));
@@ -91,6 +94,7 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntit
                 vec32 = vec32.normalize().scale(1.4).add(vec3.scale(0.2));
             entity.setDeltaMovement(vec32.x, 1.3F, vec32.z);
         }
+        entity.swing(InteractionHand.MAIN_HAND);
         entity.doHurtTarget(this.target);
     }
 }
