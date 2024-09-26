@@ -214,4 +214,9 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                 new AlienMeleeAttack<>(5, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR));
     }
 
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (DamageSourceUtils.isDamageFromFront(source, this)) return false;
+        return super.hurt(source, amount);
+    }
 }
