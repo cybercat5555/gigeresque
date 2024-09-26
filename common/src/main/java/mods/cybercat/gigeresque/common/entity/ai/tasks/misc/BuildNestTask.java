@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
@@ -45,7 +46,10 @@ public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity &
 
     @Override
     protected void doDelayedAction(E alien) {
-        if (!alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getInBlockState().is(
+        final var dungeonBlockCheck = alien.level().getBlockStates(
+                        new AABB(alien.blockPosition()).inflate(64D))
+                .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS));
+        if (!dungeonBlockCheck && !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getInBlockState().is(
                 GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(
                 LightLayer.SKY, alien.blockPosition()) <= 5)
             NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition());
