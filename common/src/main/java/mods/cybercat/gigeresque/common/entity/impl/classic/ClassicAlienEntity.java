@@ -112,7 +112,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         GigEntityUtils.breakblocks(this);
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
-        if (this.isPassedOut() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
+        if (this.isPassedOut() && this.getNavigation() != null && this.getNavigation() instanceof GigNav gigNav) gigNav.hardStop();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         if (!this.level().getBlockState(blockPos).blocksMotion()) {
             this.inTwoBlockSpace = false;
         }
-        return this.inTwoBlockSpace;
+        return this.inTwoBlockSpace && !this.isInWater();
     }
 
     @Override
@@ -256,7 +256,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
+                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
                         new EnterStasisTask<>(6000)).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0));
@@ -297,11 +297,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (event.isMoving() && !this.isCrawling() && !isDead && (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())) {
-                        if (this.isAggressive() && !this.isVehicle())
-                            return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                        else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-                    }
+                    if (event.isMoving() && !this.isCrawling() && !isDead && this.isInWater() && !this.isExecuting() && !this.isVehicle())
+                        return event.setAndContinue(GigAnimationsDefault.SWIM);
                     if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUN);
                     if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && !this.isAggressive() && !this.isVehicle())

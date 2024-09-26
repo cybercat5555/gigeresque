@@ -133,7 +133,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
         return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<HammerpedeEntity>(new TargetOrRetaliate<>(),
                 new SetPlayerLookTarget<>().predicate(
                         target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
-                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
+                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
                 new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 

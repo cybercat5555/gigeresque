@@ -114,7 +114,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<RunnerbursterEntity>(new SetRandomWalkTarget<>().speedModifier(0.65f),
+                new OneRandomBehaviour<RunnerbursterEntity>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
                         new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 

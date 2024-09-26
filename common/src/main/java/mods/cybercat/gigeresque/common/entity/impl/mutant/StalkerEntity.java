@@ -143,7 +143,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.9f),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.9f),
                         new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
                                 entity -> entity.getRandom().nextInt(30, 60))));
     }

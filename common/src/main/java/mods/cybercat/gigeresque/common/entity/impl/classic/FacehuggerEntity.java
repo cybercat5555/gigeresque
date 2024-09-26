@@ -360,7 +360,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
                 new OneRandomBehaviour<>(
-                        new SetRandomWalkTarget<>().speedModifier(0.65f),
+                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
                         new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 

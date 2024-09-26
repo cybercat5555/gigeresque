@@ -72,7 +72,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<ChestbursterEntity>(new SetRandomWalkTarget<>().speedModifier(0.45f),
+                new OneRandomBehaviour<ChestbursterEntity>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.45f),
                         new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 

@@ -227,7 +227,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
+                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
                         // Idle
