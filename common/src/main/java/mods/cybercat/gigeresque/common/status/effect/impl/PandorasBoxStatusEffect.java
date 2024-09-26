@@ -9,26 +9,20 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class PandorasBoxStatusEffect extends MobEffect {
-    private static BlockPos nonSolidBlockPos = null;
     private int spawnTimer = 0;
 
     public PandorasBoxStatusEffect() {
@@ -77,21 +71,19 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 }
 
                 // Check if dungeon or nest blocks are present within the area
-                final var dungeonBlockCheck = player.level().getBlockStates(
+                final var dungeonNestBlockCheck = player.level().getBlockStates(
                                 new AABB(player.blockPosition()).inflate(64D))
-                        .findAny().get().is(GigTags.DUNGEON_BLOCKS);
-                final var nestBlockCheck = player.level().getBlockStates(new AABB(player.blockPosition()).inflate(64D))
-                        .findAny().get().is(GigTags.NEST_BLOCKS);
+                        .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS) || blockState.is(
+                                GigTags.NEST_BLOCKS));
 
                 // Check if the time has passed and conditions are met for spawning
-                if (spawnTimer >= minTicksBetweenSpawns && player.getRandom().nextDouble() < spawnChanceModifier) {
-                    if (entityCount < 4 && !dungeonBlockCheck && !nestBlockCheck) {
-                        this.spawnWave(player);
-                        if (CommonMod.config.enableDevEntites)
-                            AzureLib.LOGGER.info("Spawned Mob");
-                        spawnTimer = 0; // Reset spawnTimer after spawning
-                    }
+                if (spawnTimer >= minTicksBetweenSpawns && player.getRandom().nextDouble() < spawnChanceModifier && entityCount < 4 && !dungeonNestBlockCheck) {
+                    this.spawnWave(player);
+                    if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
+                        AzureLib.LOGGER.info("Spawned Mob");
+                    spawnTimer = 0; // Reset spawnTimer after spawning
                 }
+
 
                 // Reset the spawn timer after max time
                 if (spawnTimer >= maxTicksBetweenSpawns) {
@@ -112,7 +104,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
         var offsetZ = -lookAngle.z * distance; // negative to get behind
 
         if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
-            var randomBurster = player.getRandom().nextInt(0, 100) > 70 ? GigEntities.RUNNERBURSTER.get(): GigEntities.CHESTBURSTER.get();
+            var randomBurster = player.getRandom().nextInt(0,
+                    100) > 70 ? GigEntities.RUNNERBURSTER.get() : GigEntities.CHESTBURSTER.get();
             var entityTypeToSpawn = player.getY() < 20 ? randomBurster : GigEntities.FACEHUGGER.get();
             for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4 : 2); ++k) {
                 var faceHugger = entityTypeToSpawn.create(player.level());
@@ -136,7 +129,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                                     ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
                                     : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
 
-                            if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
+                            if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(
+                                    resinPos) && player.level().isLoaded(resinPos)) {
                                 player.level().setBlockAndUpdate(resinPos, resinBlockState);
                             }
                         }
