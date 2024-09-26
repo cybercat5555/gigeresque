@@ -39,6 +39,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -303,7 +304,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
         PathNavigation pathNavigation;
         if (this.isUnderWater()) {
-            pathNavigation = new SmoothAmphibiousPathNavigation(this, level());
+            pathNavigation = new AmphibiousPathNavigation(this, level());
         } else {
             pathNavigation = new GigNav(this, level());
             pathNavigation.setCanFloat(true);
