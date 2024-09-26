@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque;
 import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
 import mods.cybercat.gigeresque.client.particle.AcidParticleFactory;
 import mods.cybercat.gigeresque.client.particle.BloodParticleFactory;
 import mods.cybercat.gigeresque.client.particle.GooParticleFactory;
@@ -38,6 +39,7 @@ public class NeoForgeClientMod {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ALIEN.get(), AlienEntityRenderer::new);

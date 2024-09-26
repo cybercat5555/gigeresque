@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.client.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
 import mods.cybercat.gigeresque.client.particle.AcidParticleFactory;
 import mods.cybercat.gigeresque.client.particle.BloodParticleFactory;
 import mods.cybercat.gigeresque.client.particle.GooParticleFactory;
@@ -31,6 +32,7 @@ public class FabricModClient implements ClientModInitializer {
         registerParticle("acid", GigParticles.ACID.get(), AcidParticleFactory::new);
         registerParticle("goo", GigParticles.GOO.get(), GooParticleFactory::new);
         registerParticle("blood", GigParticles.BLOOD.get(), BloodParticleFactory::new);
+        EntityRenderers.register(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
