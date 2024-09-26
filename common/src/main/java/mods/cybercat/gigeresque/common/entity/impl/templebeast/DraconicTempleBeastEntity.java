@@ -35,20 +35,18 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -75,10 +73,10 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth).add(Attributes.ARMOR,
-                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
-                Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
-                1.000000041723251).add(Attributes.ATTACK_DAMAGE,
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth)
+                .add(Attributes.ARMOR, CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor)
+                .add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+                .add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 5.0);
     }
 
@@ -177,37 +175,31 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     }
 
     @Override
-    public BrainActivityGroup<DraconicTempleBeastEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching()),
-                // Flee Fire
-                new FleeFireTask<>(3.5F),
-                // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
-                        entity -> this.isPassedOut()));
-    }
-
-    @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 // Kill Lights
-                new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
+                new KillLightsTask<>().startCondition(
+                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
+                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Do first
                 new FirstApplicableBehaviour<DraconicTempleBeastEntity>(
                         // Targeting
-                        new TargetOrRetaliate<>(),
+                        new TargetOrRetaliate<>().stopIf(
+                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
                         // Look at players
                         new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
+                                entity -> this.isPassedOut() || this.isExecuting()),
                         // Look around randomly
-                        new SetRandomLookTarget<>()),
+                        new SetRandomLookTarget<>().startCondition(
+                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
+                        entity -> this.isPassedOut() || this.isExecuting()),
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().speedModifier(0.90f).startCondition(
-                                entity -> !this.isPassedOut()).stopIf(entity -> this.isPassedOut()),
+                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
+                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
+                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
                         // Idle
                         new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
                                 entity -> entity.getRandom().nextInt(30, 60))));
@@ -216,15 +208,10 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                // Invalidate Target
-                new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
-                // Walk to Target
-                new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> (12.0F)).stopIf(
-                        entity -> this.isPassedOut()),
-                // Xeno attacking
-                new AlienMeleeAttack<>(10, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR));
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
+                new JumpToTargetTask<>(20),
+                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR));
     }
 
 }
