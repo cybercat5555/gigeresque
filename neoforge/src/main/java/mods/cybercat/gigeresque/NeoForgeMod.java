@@ -23,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
@@ -31,6 +32,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -57,6 +59,9 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -65,6 +70,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -140,6 +146,7 @@ public final class NeoForgeMod {
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(this::onLootTableLoad);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
     }
 
@@ -174,6 +181,21 @@ public final class NeoForgeMod {
 
     public void onServerStarted(final ServerStartedEvent event) {
         GigVillagerTrades.addTrades();
+    }
+
+    public void onLootTableLoad(final LootTableLoadEvent event) {
+        var key = event.getName();
+        if (Constants.DESERT_PYRAMID.equals(key) ||
+                Constants.DESERT_WELL.equals(key) ||
+                Constants.OCEAN_RUIN_COLD.equals(key) ||
+                Constants.OCEAN_RUIN_WARM.equals(key) ||
+                Constants.TRAIL_RUINS_RARE.equals(key)) {
+            LootPool poolBuilder = LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .add(LootItem.lootTableItem(GigItems.TRACKER.get()))
+                    .build();
+            event.getTable().addPool(poolBuilder);
+        }
     }
 
     public void onWorldTick(final LevelTickEvent.Post event) {

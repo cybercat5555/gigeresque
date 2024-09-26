@@ -21,6 +21,7 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
@@ -29,11 +30,16 @@ import mods.cybercat.gigeresque.compat.GigCompats;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public final class FabricMod implements ModInitializer {
 
@@ -47,25 +53,43 @@ public final class FabricMod implements ModInitializer {
         GigCompats.initialize();
         FabricDefaultAttributeRegistry.register(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.AQUATIC_CHESTBURSTER.get(), ChestbursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.AQUATIC_CHESTBURSTER.get(),
+                ChestbursterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.CHESTBURSTER.get(), ChestbursterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.EGG.get(), AlienEggEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.FACEHUGGER.get(), FacehuggerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.RUNNER_ALIEN.get(), RunnerAlienEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.RUNNERBURSTER.get(), RunnerbursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.RUNNERBURSTER.get(),
+                RunnerbursterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.MUTANT_POPPER.get(), PopperEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.MUTANT_HAMMERPEDE.get(), HammerpedeEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.MUTANT_HAMMERPEDE.get(),
+                HammerpedeEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.MUTANT_STALKER.get(), StalkerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.NEOBURSTER.get(), NeobursterEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.NEOMORPH_ADOLESCENT.get(), NeomorphAdolescentEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.NEOMORPH_ADOLESCENT.get(),
+                NeomorphAdolescentEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.NEOMORPH.get(), NeomorphEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.SPITTER.get(), SpitterEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.DRACONICTEMPLEBEAST.get(), DraconicTempleBeastEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.DRACONICTEMPLEBEAST.get(),
+                DraconicTempleBeastEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.RAVENOUSTEMPLEBEAST.get(),
+                RavenousTempleBeastEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(),
+                MoonlightHorrorTempleBeastEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.HELLMORPH_RUNNER.get(),
+                HellmorphRunnerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
+        LootTableEvents.MODIFY.register((key, table, source, registries) -> {
+            if (Constants.DESERT_PYRAMID.equals(key.location()) || Constants.DESERT_WELL.equals(
+                    key.location()) || Constants.OCEAN_RUIN_COLD.equals(
+                    key.location()) || Constants.OCEAN_RUIN_WARM.equals(
+                    key.location()) || Constants.TRAIL_RUINS_RARE.equals(key.location())) {
+                LootPool poolBuilder = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .with(LootItem.lootTableItem(GigItems.TRACKER.get()).build()).build();
+                table.pool(poolBuilder);
+            }
+        });
     }
 
     private void onWorldTick(ServerLevel level) {
@@ -83,7 +107,8 @@ public final class FabricMod implements ModInitializer {
             for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
                 // Apply effect to all players
                 if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
-                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
+                    serverPlayer.addEffect(
+                            new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
                 PandoraData.setIsTriggered(true);
             }
         }

@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.api.common.helper.CommonUtils;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -80,6 +81,9 @@ public class HologramEntity extends Entity implements GeoEntity {
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
         }
+        var isInsideWaterBlock = level().isWaterAt(blockPosition());
+        CommonUtils.spawnLightSource(this, isInsideWaterBlock);
+        this.setGlowingTag(true);
     }
 
     @Override

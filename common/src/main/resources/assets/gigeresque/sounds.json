@@ -1,4 +1,11 @@
 {
+  "tracker_summon": {
+    "sounds": [
+      {
+        "name": "gigeresque:tracker_summon"
+      }
+    ]
+  },
   "alien_hiss": {
     "sounds": [
       {

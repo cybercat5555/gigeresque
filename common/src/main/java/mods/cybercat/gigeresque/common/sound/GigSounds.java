@@ -7,6 +7,12 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.function.Supplier;
 
 public record GigSounds() implements CommonSoundRegistryInterface {
+    public static Supplier<SoundEvent> TRACKER_SUMMON = CommonSoundRegistryInterface.registerSound(
+            CommonMod.MOD_ID,
+            "tracker_summon",
+            () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(CommonMod.MOD_ID,
+                            "tracker_summon")));
     public static Supplier<SoundEvent> ALIEN_HISS = CommonSoundRegistryInterface.registerSound(
             CommonMod.MOD_ID,
             "alien_hiss",

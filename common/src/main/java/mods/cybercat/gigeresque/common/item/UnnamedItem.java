@@ -2,7 +2,9 @@ package mods.cybercat.gigeresque.common.item;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.platform.Services;
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -46,20 +48,25 @@ public class UnnamedItem extends Item {
                 }
                 if (Services.PLATFORM.isDevelopmentEnvironment())
                     AzureLib.LOGGER.info("Distance Category: {}", distanceCategory);
+                var viewVector = player.getViewVector(1.0F); // Gets the player's look direction
+                var spawnX = player.getX() + viewVector.x * 5;
+                var spawnY = player.getY();
+                var spawnZ = player.getZ() + viewVector.z * 5;
+                var angleToStructure = Math.atan2(blockpos.getZ() - spawnZ, blockpos.getX() - spawnX);
                 var hologramEntity = GigEntities.ENGINEER_HOLOGRAM.get().create(level);
                 if (hologramEntity != null) {
+                    hologramEntity.setPos(spawnX, spawnY, spawnZ);
                     hologramEntity.setDistanceState(distanceCategory);
                     hologramEntity.setDistanceFromStructure((int) horizontalDistance);
+                    hologramEntity.setYRot((float) Math.toDegrees(angleToStructure) - 90);
                     hologramEntity.setOnGround(true);
                     level.addFreshEntity(hologramEntity);
                 }
-                // TODO: replace with custom sound
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_EYE_LAUNCH,
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), GigSounds.TRACKER_SUMMON.get(),
                         SoundSource.NEUTRAL, 1.0F, 1.0F);
-                player.swing(hand, true);
+                player.getCooldowns().addCooldown(this, 200);
                 return InteractionResultHolder.success(itemstack);
             } else {
-                // TODO: play sound if no dungeons can be found?
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CRAFTER_FAIL,
                         SoundSource.NEUTRAL, 1.0F, 1.0F);
             }

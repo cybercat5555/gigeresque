@@ -49,6 +49,17 @@ public record Constants() {
     public static final String ATTACK = "attack";
     public static final String ATTACK_NORMAL = "attack_normal";
 
+    public static final ResourceLocation DESERT_PYRAMID = ResourceLocation.fromNamespaceAndPath("minecraft",
+            "archaeology/desert_pyramid");
+    public static final ResourceLocation DESERT_WELL = ResourceLocation.fromNamespaceAndPath("minecraft",
+            "archaeology/desert_well");
+    public static final ResourceLocation OCEAN_RUIN_COLD = ResourceLocation.fromNamespaceAndPath("minecraft",
+            "archaeology/ocean_ruin_cold");
+    public static final ResourceLocation OCEAN_RUIN_WARM = ResourceLocation.fromNamespaceAndPath("minecraft",
+            "archaeology/ocean_ruin_warm");
+    public static final ResourceLocation TRAIL_RUINS_RARE = ResourceLocation.fromNamespaceAndPath("minecraft",
+            "archaeology/trail_ruins_rare");
+
     public static <T> T self(Object object) {
         return (T) object;
     }
