@@ -1,7 +1,9 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.client.entity.model.DraconicTempleBeastEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,8 +17,10 @@ public class DraconicTempleBeastEntityRenderer extends GeoEntityRenderer<Draconi
     }
 
     @Override
-    public void render(DraconicTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    public void preRender(PoseStack poseStack, DraconicTempleBeastEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, colour);
+        poseStack.scale(1.23F, 1.23F, 1.23F);
     }
 
     @Override
