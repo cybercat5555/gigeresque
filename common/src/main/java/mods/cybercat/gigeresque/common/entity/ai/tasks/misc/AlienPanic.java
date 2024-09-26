@@ -13,9 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class AlienPanic extends Behavior<PathfinderMob> {
-    private static final Predicate<PathfinderMob> DEFAULT_SHOULD_PANIC_PREDICATE = pathfinderMob -> pathfinderMob.getLastHurtByMob() != null || pathfinderMob.isFreezing() || pathfinderMob.isOnFire();
+    private static final Predicate<PathfinderMob> DEFAULT_SHOULD_PANIC_PREDICATE = pathfinderMob -> pathfinderMob.getLastAttacker() != null || pathfinderMob.isFreezing() || pathfinderMob.isOnFire();
     private final float speedMultiplier;
-    private final Predicate<PathfinderMob> shouldPanic;
 
     public AlienPanic(float f) {
         this(f, DEFAULT_SHOULD_PANIC_PREDICATE);
@@ -24,12 +23,6 @@ public class AlienPanic extends Behavior<PathfinderMob> {
     public AlienPanic(float f, Predicate<PathfinderMob> predicate) {
         super(ImmutableMap.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED, MemoryModuleType.HURT_BY, MemoryStatus.VALUE_PRESENT), 20, 40);
         this.speedMultiplier = f;
-        this.shouldPanic = predicate;
-    }
-
-    @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, @NotNull PathfinderMob pathfinderMob) {
-        return this.shouldPanic.test(pathfinderMob) && !pathfinderMob.isAggressive();
     }
 
     @Override
@@ -51,16 +44,13 @@ public class AlienPanic extends Behavior<PathfinderMob> {
 
     @Override
     protected void tick(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
-        var attacker = pathfinderMob.getLastHurtByMob();  // Get the entity that hit this mob
-        if (attacker != null && pathfinderMob.getNavigation().isDone()) {
-            // Calculate the direction away from the attacker
+        var attacker = pathfinderMob.getLastAttacker();  // Get the entity that hit this mob
+        if (attacker != null) {
             var mobPos = pathfinderMob.position();
             var attackerPos = attacker.position();
             var runAwayDirection = mobPos.subtract(attackerPos).normalize().scale(30.0); // Scale to desired run distance
+            var panicPos = mobPos.add(runAwayDirection);
 
-            var panicPos = mobPos.add(runAwayDirection);  // Position away from the attacker
-
-            // Set the panic position as the target
             pathfinderMob.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(panicPos, this.speedMultiplier, 0));
         }
     }

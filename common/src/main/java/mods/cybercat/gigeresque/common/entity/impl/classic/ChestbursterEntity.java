@@ -14,7 +14,6 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
@@ -22,6 +21,8 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRet
 import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
+import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -200,8 +201,9 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     @Override
     public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate(
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate(
                         (block, entity) -> block.is(BlockTags.CROPS)),
+                new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) ->  GigEntityUtils.entityTest(target, self) && !target.getType().is(GigTags.GIG_ALIENS)),
                 new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
                 new ItemEntitySensor<>(), new HurtBySensor<>());
@@ -215,9 +217,9 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(new EatFoodTask<>(40), new KillCropsTask<>(),
-                new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
+                new FirstApplicableBehaviour<ChestbursterEntity>(
+                        new TargetOrRetaliate<>().stopIf(entity -> this.isFleeing()),
+                        new SetPlayerLookTarget<>(),
                         new SetRandomLookTarget<>()),
                 new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
                         new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
@@ -225,8 +227,8 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> !target.isAlive()));
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)));
     }
 
     /*
