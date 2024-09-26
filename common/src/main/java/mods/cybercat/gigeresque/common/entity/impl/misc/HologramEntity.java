@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,6 +72,11 @@ public class HologramEntity extends Entity implements GeoEntity {
 
     @Override
     public boolean dampensVibrations() {
+        return true;
+    }
+
+    @Override
+    public boolean ignoreExplosion(@NotNull Explosion explosion) {
         return true;
     }
 
