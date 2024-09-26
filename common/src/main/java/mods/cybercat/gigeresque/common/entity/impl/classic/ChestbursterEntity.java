@@ -211,7 +211,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.9f), new MoveToWalkTarget<>());
     }
 
     @Override
