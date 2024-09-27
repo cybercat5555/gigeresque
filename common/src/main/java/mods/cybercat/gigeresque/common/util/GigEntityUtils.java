@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.AmbientCreature;
@@ -125,34 +126,16 @@ public record GigEntityUtils() {
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {
-        if (!world.isClientSide()) for (var i = 0; i < 2; i++)
-            ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),
-                    entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
-                    entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
-                    0.15000000596046448);
+        if (!world.isClientSide())
+            for (var i = 0; i < 2; i++)
+                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),
+                        entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
+                        entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
+                        0.15000000596046448);
     }
 
-    public static BlockPos findFreeSpace(Level world, BlockPos blockPos, int radius) {
-        if (blockPos == null) return null;
-
-        var offsets = new int[radius + 1];
-        for (var i = radius; i <= radius; i += radius) {
-            offsets[i - 1] = i / radius;
-            offsets[i] = -i / radius;
-        }
-        for (var x : offsets)
-            for (var y : offsets)
-                for (var z : offsets) {
-                    var offsetPos = blockPos.offset(x, y, z);
-                    var state = world.getBlockState(offsetPos);
-                    if (state.isAir()) return offsetPos;
-                }
-
-        return null;
-    }
-
-    public static void breakblocks(AlienEntity alienEntity) {
-        if (!alienEntity.isCrawling() && !alienEntity.isDeadOrDying() && !alienEntity.isPassedOut() && !(alienEntity.level().getFluidState(
+    public static void breakBlocks(AlienEntity alienEntity) {
+        if (!alienEntity.isVehicle() && !alienEntity.isCrawling() && !alienEntity.isDeadOrDying() && !alienEntity.isPassedOut() && !(alienEntity.level().getFluidState(
                 alienEntity.blockPosition()).is(Fluids.WATER) && alienEntity.level().getFluidState(
                 alienEntity.blockPosition()).getAmount() >= 8) && alienEntity.level().getGameRules().getBoolean(
                 GameRules.RULE_MOBGRIEFING)) {
@@ -160,43 +143,48 @@ public record GigEntityUtils() {
                 alienEntity.breakingCounter++;
             }
             if (alienEntity.breakingCounter > 10) {
-                for (var testPos : BlockPos.betweenClosed(alienEntity.blockPosition().relative(alienEntity.getDirection()),
+                for (var testPos : BlockPos.betweenClosed(
+                        alienEntity.blockPosition().relative(alienEntity.getDirection()),
                         alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2))) {
                     var state = alienEntity.level().getBlockState(testPos);
-                    if (!(state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS))) {
-                        if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
-                            if (!alienEntity.level().isClientSide) {
-                                alienEntity.level().destroyBlock(testPos, true, null, 512);
-                            }
-                            if (!alienEntity.isVehicle()) {
-                                alienEntity.triggerAnim("attackController", "swipe");
-                            }
-                            if (alienEntity.isVehicle()) {
-                                alienEntity.triggerAnim("attackController", "swipe_left_tail");
-                            }
-                            alienEntity.breakingCounter = -90;
-                            if (alienEntity.level().isClientSide()) {
-                                for (var i = 2; i < 10; i++) {
-                                    alienEntity.level().addAlwaysVisibleParticle(GigParticles.ACID.get(),
-                                            alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
-                                            alienEntity.getEyeY() - ((alienEntity.getEyeY() - alienEntity.blockPosition().getY()) / 2.0),
-                                            alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
-                                            0.0, -0.15, 0.0);
-                                }
-                                alienEntity.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-                                        SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-                                        0.2f + alienEntity.getRandom().nextFloat() * 0.2f, 0.9f + alienEntity.getRandom().nextFloat() * 0.15f, false);
-                            }
+                    if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(BlockTags.FLOWERS)) {
+                        continue;
+                    }
+                    if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
+                        if (!alienEntity.level().isClientSide) {
+                            alienEntity.level().destroyBlock(testPos, true, null, 512);
                         }
-                        else if (!state.is(GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth() * 0.50))) {
-                            if (!alienEntity.level().isClientSide) {
-                                var acid = GigEntities.ACID.get().create(alienEntity.level());
+                        if (!alienEntity.isVehicle()) {
+                            alienEntity.triggerAnim("attackController", "swipe");
+                        }
+                        if (alienEntity.isVehicle()) {
+                            alienEntity.triggerAnim("attackController", "swipe_left_tail");
+                        }
+                        alienEntity.breakingCounter = -90;
+                        if (alienEntity.level().isClientSide()) {
+                            for (var i = 2; i < 10; i++) {
+                                alienEntity.level().addAlwaysVisibleParticle(GigParticles.ACID.get(),
+                                        alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
+                                        alienEntity.getEyeY() - ((alienEntity.getEyeY() - alienEntity.blockPosition().getY()) / 2.0),
+                                        alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
+                                        0.0, -0.15, 0.0);
+                            }
+                            alienEntity.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
+                                    SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
+                                    0.2f + alienEntity.getRandom().nextFloat() * 0.2f,
+                                    0.9f + alienEntity.getRandom().nextFloat() * 0.15f, false);
+                        }
+                    } else if (!state.is(
+                            GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth() * 0.50))) {
+                        if (!alienEntity.level().isClientSide) {
+                            var acid = GigEntities.ACID.get().create(alienEntity.level());
+                            if (acid != null) {
                                 acid.setPos(testPos.above().getX(), testPos.above().getY(), testPos.above().getZ());
                                 alienEntity.level().addFreshEntity(acid);
                             }
-                            alienEntity.hurt(GigDamageSources.of(alienEntity.level(), GigDamageSources.ACID), 5);
-                            alienEntity.breakingCounter = -90;
                         }
+                        alienEntity.hurt(GigDamageSources.of(alienEntity.level(), GigDamageSources.ACID), 5);
+                        alienEntity.breakingCounter = -90;
                     }
                 }
             }

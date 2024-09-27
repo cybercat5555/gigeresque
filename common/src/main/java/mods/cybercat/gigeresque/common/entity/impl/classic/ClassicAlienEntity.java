@@ -109,7 +109,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakblocks(this);
+        GigEntityUtils.breakBlocks(this);
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
         if (this.isPassedOut() && this.getNavigation() != null && this.getNavigation() instanceof GigNav gigNav) gigNav.hardStop();

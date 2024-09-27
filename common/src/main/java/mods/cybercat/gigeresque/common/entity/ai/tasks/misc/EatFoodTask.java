@@ -69,6 +69,6 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
-        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 0.7F, 0));
+        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 3.7F, 0));
     }
 }

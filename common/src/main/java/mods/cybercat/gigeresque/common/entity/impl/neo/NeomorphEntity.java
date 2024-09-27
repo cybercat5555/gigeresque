@@ -80,13 +80,13 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 CommonMod.config.neomorphConfigs.neomorphXenoHealth).add(Attributes.ARMOR, CommonMod.config.neomorphConfigs.neomorphXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphConfigs.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
                 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(
-                Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphConfigs.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphConfigs.neomorphAttackDamage + 5).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakblocks(this);
+        GigEntityUtils.breakBlocks(this);
     }
 
     @Override

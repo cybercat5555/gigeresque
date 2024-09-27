@@ -244,7 +244,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakblocks(this);
+        GigEntityUtils.breakBlocks(this);
         if (!this.isInWater())
             this.setIsCrawling(
                     this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());

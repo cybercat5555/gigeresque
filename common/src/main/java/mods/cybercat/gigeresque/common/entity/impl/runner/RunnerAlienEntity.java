@@ -136,7 +136,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakblocks(this);
+        GigEntityUtils.breakBlocks(this);
         if (this.isPassedOut() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
     }
 

@@ -161,7 +161,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakblocks(this);
+        GigEntityUtils.breakBlocks(this);
         if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
     }
 
