@@ -17,6 +17,8 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -605,6 +607,19 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
+        for (var testPos : BlockPos.betweenClosed(
+                this.blockPosition().relative(this.getDirection(), 1),
+                this.blockPosition().relative(this.getDirection(), 2).above(2)
+        )) {
+            if (entity.blockPosition().equals(testPos)) {
+                return true;
+            }
+        }
+        return super.isWithinMeleeAttackRange(entity);
     }
 
     @Override
