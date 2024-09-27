@@ -30,11 +30,6 @@ public class PandorasBoxStatusEffect extends MobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-        return true;
-    }
-
-    @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
         super.applyEffectTick(livingEntity, amplifier);
 
