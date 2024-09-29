@@ -13,7 +13,12 @@ public class StalkerEntityModel extends DefaultedEntityGeoModel<StalkerEntity> {
     }
 
     @Override
+    public ResourceLocation getTextureResource(StalkerEntity animatable) {
+        return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? Constants.modResource("textures/entity/stalker/stalker_transparent.png") :super.getTextureResource(animatable);
+    }
+
+    @Override
     public RenderType getRenderType(StalkerEntity animatable, ResourceLocation texture) {
-        return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? RenderType.entityTranslucentCull(getTextureResource(animatable)) : RenderType.entityTranslucent(getTextureResource(animatable));
+        return RenderType.entityTranslucent(getTextureResource(animatable));
     }
 }
