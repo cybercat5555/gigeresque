@@ -46,9 +46,7 @@ public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity &
 
     @Override
     protected void doDelayedAction(E alien) {
-        final var dungeonBlockCheck = alien.level().getBlockStates(
-                        new AABB(alien.blockPosition()).inflate(64D))
-                .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS));
+        final var dungeonBlockCheck = alien.level().getBlockStates(new AABB(alien.blockPosition()).inflate(8D)).anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS));
         if (!dungeonBlockCheck && !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getInBlockState().is(
                 GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(
                 LightLayer.SKY, alien.blockPosition()) <= 5)
