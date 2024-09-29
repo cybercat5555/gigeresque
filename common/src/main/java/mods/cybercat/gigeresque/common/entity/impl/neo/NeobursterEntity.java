@@ -10,7 +10,6 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
@@ -69,10 +68,10 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                        CommonMod.config.neobursterConfigs.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(
-                        Attributes.ARMOR_TOUGHNESS, 3.0f).add(Attributes.KNOCKBACK_RESISTANCE, 7.0)
-                .add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                        CommonMod.config.neobursterConfigs.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+                CommonMod.config.neobursterConfigs.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(
+                Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE,
+                32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
+                CommonMod.config.neobursterConfigs.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     /*
@@ -108,11 +107,9 @@ public class NeobursterEntity extends RunnerbursterEntity {
                 // Flee Fire
                 new FleeFireTask<>(3.5F), new AlienPanic(4.0f),
                 // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching()),
+                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(entity -> !this.isPassedOut() || !this.isSearching()),
                 // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
-                        entity -> this.isPassedOut()));
+                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(entity -> this.isPassedOut()));
     }
 
     @Override
@@ -138,17 +135,19 @@ public class NeobursterEntity extends RunnerbursterEntity {
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f)),
-                // Idle
-                new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                        entity -> entity.getRandom().nextInt(30, 60)));
+                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
+                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
+                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
+                        // Idle
+                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
+                                entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 5.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
                 new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR));
     }
 

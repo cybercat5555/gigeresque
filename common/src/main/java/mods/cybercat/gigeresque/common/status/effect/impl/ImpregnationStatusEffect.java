@@ -51,6 +51,7 @@ public class ImpregnationStatusEffect extends MobEffect {
         return super.applyEffectTick(livingEntity, amplifier);
     }
 
+    @SafeVarargs
     private void handleStatusEffects(@NotNull LivingEntity livingEntity, int ticks, Holder<MobEffect>... statusEffects) {
         for (Holder<MobEffect> effect : statusEffects)
             if (!livingEntity.hasEffect(effect)) livingEntity.addEffect(new MobEffectInstance(effect, ticks, 3, true, true));

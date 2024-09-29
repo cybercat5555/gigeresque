@@ -89,14 +89,6 @@ public class GooEntity extends Entity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    @Override
-    public void checkDespawn() {}
-
-    @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override

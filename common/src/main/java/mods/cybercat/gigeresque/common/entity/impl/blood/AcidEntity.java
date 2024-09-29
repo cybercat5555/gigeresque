@@ -75,9 +75,6 @@ public class AcidEntity extends Entity {
                         this.damageLivingEntities(livingEntity, this.random);
                         if (!CommonMod.config.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
                             DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random, 1, 4);
-                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS), this.random, 1, 4);
-                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST), this.random, 1, 4);
-                            DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD), this.random, 1, 4);
                         }
                     }
                     if (entity instanceof ItemEntity itemEntity) {
@@ -129,14 +126,6 @@ public class AcidEntity extends Entity {
     public boolean isPushedByFluid() {
         return false;
     }
-
-    @Override
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    @Override
-    public void checkDespawn() {}
 
     @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
