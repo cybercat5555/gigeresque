@@ -19,6 +19,10 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * TODO: Add new aniamtions when compeleted.
+ * TODO: Animate Model to time with tracker item timing
+ */
 public class HologramEntity extends Entity implements GeoEntity {
 
     public static final EntityDataAccessor<Integer> DISTANCE_STATE = SynchedEntityData.defineId(HologramEntity.class,

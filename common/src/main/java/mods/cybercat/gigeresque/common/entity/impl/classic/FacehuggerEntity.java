@@ -73,6 +73,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * TODO: Ensure crawling works good
+ */
 public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
 
     public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,

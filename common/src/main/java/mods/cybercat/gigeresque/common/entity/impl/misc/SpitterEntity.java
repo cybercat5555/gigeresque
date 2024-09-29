@@ -67,6 +67,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * TODO: Finish AI
+ */
 public class SpitterEntity extends AlienEntity implements SmartBrainOwner<SpitterEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

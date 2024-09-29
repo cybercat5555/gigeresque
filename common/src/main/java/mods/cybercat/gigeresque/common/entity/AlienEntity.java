@@ -61,6 +61,9 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+/**
+ * TODO: Create new version of this class that will will use crawling library when ready.
+ */
 public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,

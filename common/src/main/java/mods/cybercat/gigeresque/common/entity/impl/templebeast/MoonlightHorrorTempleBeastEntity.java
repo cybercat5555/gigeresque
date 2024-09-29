@@ -14,6 +14,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
+/**
+ * TODO: Add animations once animated
+ * TODO: Start on AI
+ */
 public class MoonlightHorrorTempleBeastEntity extends AlienEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 

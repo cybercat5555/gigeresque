@@ -16,6 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * TODO: Get name
+ * TODO: Get Model
+ * TODO: Animate Model to time with Hologram
+ */
 public class UnnamedItem extends Item {
 
     public UnnamedItem() {

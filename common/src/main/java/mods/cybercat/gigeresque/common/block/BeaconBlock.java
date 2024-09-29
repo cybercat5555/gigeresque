@@ -13,6 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * TODO: Get name
+ * TODO: Get Model
+ * TODO: Add check to not trigger on creative/spec players
+ */
 public class BeaconBlock extends Block {
     private long lastEffectTime = 0;
 
@@ -34,7 +39,6 @@ public class BeaconBlock extends Block {
         if (currentTime - lastEffectTime >= cooldown) {
             var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(10));
             for (var player : nearbyPlayers) {
-                // TODO: added check to not trigger on creative/spec players
                 if (player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS)) {
                     player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0));  // Apply blindness for 200 ticks (10 seconds)
                 }

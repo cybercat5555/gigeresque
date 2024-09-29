@@ -58,6 +58,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * TODO: Update animations once remodel/reanimated
+ */
 public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainOwner<NeomorphAdolescentEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

@@ -60,6 +60,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * TODO: Ensure crawling works good
+ * TODO: Redo it's transparent state, maybe new texture?
+ */
 public class StalkerEntity extends AlienEntity implements SmartBrainOwner<StalkerEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

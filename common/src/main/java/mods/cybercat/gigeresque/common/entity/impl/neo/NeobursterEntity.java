@@ -57,6 +57,9 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 
+/**
+ * TODO: Update animations once remodel/reanimated
+ */
 public class NeobursterEntity extends RunnerbursterEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

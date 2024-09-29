@@ -63,6 +63,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * TODO: Ensure crawling works good
+ */
 public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

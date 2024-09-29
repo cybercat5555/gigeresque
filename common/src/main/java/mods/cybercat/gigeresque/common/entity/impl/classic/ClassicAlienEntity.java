@@ -77,6 +77,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.SplittableRandom;
 
+/**
+ * TODO: Ensure crawling works good
+ */
 public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<ClassicAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

@@ -69,6 +69,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * TODO: Update animations once reanimated
+ */
 public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<RunnerAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

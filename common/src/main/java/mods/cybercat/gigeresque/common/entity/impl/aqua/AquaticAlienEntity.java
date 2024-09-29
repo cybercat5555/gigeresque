@@ -62,6 +62,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * TODO: Update animations once done
+ * TODO: Add Aqua egg?
+ * TODO: Add Egg placement system
+ */
 public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
