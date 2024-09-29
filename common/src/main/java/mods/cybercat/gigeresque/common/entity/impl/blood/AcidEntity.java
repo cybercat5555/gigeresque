@@ -31,6 +31,7 @@ public class AcidEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        this.applyGravity();
         var canGrief = this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
         if (this.level().isClientSide()) {
             for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
