@@ -58,7 +58,7 @@ public class PetrifiedOjbect4Entity extends BlockEntity implements GeoBlockEntit
                 level.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
                 var runnerbursterEntity = GigEntities.RUNNERBURSTER.get().create(level);
                 if (runnerbursterEntity != null) {
-                    runnerbursterEntity.moveTo(pos.getX() + 0.3 + 0, (double) pos.getY() + 1, pos.getZ() + 0.3, 0.0f, 0.0f);
+                    runnerbursterEntity.moveTo(pos.getX(), pos.getY(), pos.getZ(), 0.0f, 0.0f);
                     level.addFreshEntity(runnerbursterEntity);
                     level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }

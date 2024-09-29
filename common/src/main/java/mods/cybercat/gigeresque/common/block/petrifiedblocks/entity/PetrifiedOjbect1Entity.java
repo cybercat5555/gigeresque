@@ -58,8 +58,7 @@ public class PetrifiedOjbect1Entity extends BlockEntity implements GeoBlockEntit
                 level.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
                 var aquaticChestbursterEntity = GigEntities.AQUATIC_CHESTBURSTER.get().create(level);
                 if (aquaticChestbursterEntity != null) {
-                    aquaticChestbursterEntity.moveTo(pos.getX() + 0.3 + 0, (double) pos.getY() + 1, pos.getZ() + 0.3,
-                            0.0f, 0.0f);
+                    aquaticChestbursterEntity.moveTo(pos.getX(), pos.getY(), pos.getZ(), 0.0f, 0.0f);
                     level.addFreshEntity(aquaticChestbursterEntity);
                     level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }
