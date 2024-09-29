@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -27,6 +28,11 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
     public PandorasBoxStatusEffect() {
         super(MobEffectCategory.HARMFUL, Color.RED.getColor());
+    }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+        return true;
     }
 
     @Override
@@ -44,6 +50,11 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 final var aabb = new AABB(player.blockPosition()).inflate(64D);
                 final var entityCount = player.level().getEntities(EntityTypeTest.forClass(AlienEntity.class), aabb,
                         Entity::isAlive).size();
+
+                // Check if dungeon or nest blocks are present within the area
+                final var dungeonNestBlockCheck = player.level().getBlockStates(new AABB(player.blockPosition()).inflate(8D))
+                        .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS) || blockState.is(
+                                GigTags.NEST_BLOCKS));
 
                 // Time between spawn attempts
                 var minTicksBetweenSpawns = player.getY() < 20 ? 6000 : 12000; // 5 to 10 mins under Y=20, 10 to 15 mins above
@@ -65,17 +76,9 @@ public class PandorasBoxStatusEffect extends MobEffect {
                     spawnChanceModifier *= 1.5; // More likely to spawn at night
                 }
 
-                // Check if dungeon or nest blocks are present within the area
-                final var dungeonNestBlockCheck = player.level().getBlockStates(
-                                new AABB(player.blockPosition()).inflate(64D))
-                        .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS) || blockState.is(
-                                GigTags.NEST_BLOCKS));
-
                 // Check if the time has passed and conditions are met for spawning
                 if (spawnTimer >= minTicksBetweenSpawns && player.getRandom().nextDouble() < spawnChanceModifier && entityCount < 4 && !dungeonNestBlockCheck) {
                     this.spawnWave(player);
-                    if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
-                        AzureLib.LOGGER.info("Spawned Mob");
                     spawnTimer = 0; // Reset spawnTimer after spawning
                 }
 
@@ -99,8 +102,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
         var offsetZ = -lookAngle.z * distance; // negative to get behind
 
         if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
-            var randomBurster = player.getRandom().nextInt(0,
-                    100) > 70 ? GigEntities.RUNNERBURSTER.get() : GigEntities.CHESTBURSTER.get();
+            var randomBurster = player.getRandom().nextInt(0, 100) > 70 ? GigEntities.RUNNERBURSTER.get() : GigEntities.CHESTBURSTER.get();
             var entityTypeToSpawn = player.getY() < 20 ? randomBurster : GigEntities.FACEHUGGER.get();
             for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4 : 2); ++k) {
                 var faceHugger = entityTypeToSpawn.create(player.level());
@@ -116,6 +118,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                         spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
                         GigTags.AQUASPAWN_BIOMES)) {
                     player.level().addFreshEntity(faceHugger);
+                    if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
+                        AzureLib.LOGGER.info("Spawned Mob");
 
                     for (var x = -1; x <= 1; x++) {
                         for (var z = -1; z <= 1; z++) {
@@ -141,6 +145,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
             var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
             if (player.level().isLoaded(spawnPos)) {
+                if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
+                    AzureLib.LOGGER.info("Spawned Mob");
                 player.level().addFreshEntity(aquaticAlien);
 
                 for (var x = -1; x <= 1; x++) {
