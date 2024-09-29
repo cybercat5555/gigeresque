@@ -15,6 +15,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.TallGrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -91,28 +92,9 @@ public abstract class BlackFluid extends FlowingFluid {
                         // Ensure the position is within the loaded world chunk
                         if (!level.isLoaded(targetPos)) continue;
                         var targetBlockState = level.getBlockState(targetPos);
+                        if (targetBlockState.getBlock() instanceof TallGrassBlock) continue;
                         if (targetBlockState.is(GigTags.SPORE_REPLACE) && CommonMod.config.enableDevEntites) {
-                            // Handle tall grass: replace bottom, clear top
-                            if (targetBlockState.getBlock() instanceof TallGrassBlock) {
-                                var belowPos = targetPos.below();
-                                var abovePos = targetPos.above();
-                                // Check if the current block is the bottom of tall grass
-                                if (level.getBlockState(belowPos).getBlock() instanceof TallGrassBlock) {
-                                    // Replace the bottom part with SPORE_BLOCK
-                                    level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
-                                    // Set the top part to air
-                                    if (level.getBlockState(abovePos).getBlock() instanceof TallGrassBlock) {
-                                        level.setBlockAndUpdate(abovePos, Blocks.AIR.defaultBlockState());
-                                    }
-                                } else {
-                                    // If the current block is the top part, just replace it with air
-                                    level.setBlockAndUpdate(targetPos, Blocks.AIR.defaultBlockState());
-                                }
-                            } else {
-                                // Replace the current block with SPORE_BLOCK if it's not tall grass
-                                level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
-                            }
-                            return; // Stop after one replacement
+                            level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
                         }
                     }
                 }
