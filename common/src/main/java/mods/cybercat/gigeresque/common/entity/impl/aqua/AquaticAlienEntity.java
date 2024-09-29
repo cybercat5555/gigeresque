@@ -30,6 +30,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySe
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.WaterAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -45,6 +46,8 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -70,6 +73,7 @@ import java.util.List;
 public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends WaterAlienEntity> type, Level world) {
         super(type, world);
@@ -201,6 +205,20 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
     public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
         double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
         return d <= this.getMeleeAttackRangeSqr(livingEntity);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.getTarget() != null && this.getTarget().getLastHurtMob() == this && this.getTarget().isDeadOrDying()) {
+            this.killCounter++;
+        }
+        if (this.killCounter >= 3) {
+//            var aquaEgg = GigEntities.AQUA_EGG.get().create(level());
+//            if (aquaEgg != null)
+//                this.level().addFreshEntity(aquaEgg);
+            this.killCounter = 0;
+        }
     }
 
     /*

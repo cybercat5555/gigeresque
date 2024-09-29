@@ -13,14 +13,14 @@ public interface Growable {
 
     float getMaxGrowth();
 
-    default void grow(LivingEntity entity, float amount) {
+    default void grow(Entity entity, float amount) {
         setGrowth(min(getGrowth() + amount, getMaxGrowth()));
         if (getGrowth() >= getMaxGrowth()) growUp(entity);
     }
 
     LivingEntity growInto();
 
-    default void growUp(LivingEntity entity) {
+    default void growUp(Entity entity) {
         var world = entity.level();
         if (!world.isClientSide()) {
             var newEntity = growInto();
