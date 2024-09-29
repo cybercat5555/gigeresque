@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.*;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;

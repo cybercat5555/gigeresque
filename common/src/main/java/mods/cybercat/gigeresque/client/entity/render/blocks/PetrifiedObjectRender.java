@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
 import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.client.entity.model.blocks.PetrifiedObjectModel;
-import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 public class PetrifiedObjectRender extends GeoBlockRenderer<PetrifiedOjbectEntity> {

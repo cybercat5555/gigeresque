@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.client.entity.model.blocks;
 import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 

@@ -1,7 +1,8 @@
-package mods.cybercat.gigeresque.common.block;
+package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;

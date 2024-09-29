@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedObjectBlock;
 import mods.cybercat.gigeresque.common.block.storage.*;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.CommonItemRegistryInterface;
