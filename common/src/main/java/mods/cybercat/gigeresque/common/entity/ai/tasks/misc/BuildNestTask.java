@@ -35,9 +35,7 @@ public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity &
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E alien) {
-        if (alien.level().getBlockStatesIfLoaded(alien.getBoundingBox().inflate(10)).anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS)))
-            return false;
-        if (alien.level().getBlockStatesIfLoaded(alien.getBoundingBox().inflate(10)).anyMatch(blockState -> blockState.is(GigTags.DUNGEON_STAIRS)))
+        if (alien.level().getBlockStatesIfLoaded(alien.getBoundingBox().inflate(10)).anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS) || blockState.is(GigTags.DUNGEON_STAIRS)))
             return false;
         return !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth() && !alien.level().canSeeSky(
                 alien.blockPosition()) && !alien.level().getBlockState(alien.blockPosition()).is(
