@@ -27,8 +27,7 @@ public class UnnamedItem extends Item {
         var itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
         if (level instanceof ServerLevel serverlevel) {
-            var blockpos = serverlevel.findNearestMapStructure(GigTags.GIG_EXPLORER_MAPS,
-                    player.blockPosition(), 100, false);
+            var blockpos = serverlevel.findNearestMapStructure(GigTags.GIG_EXPLORER_MAPS, player.blockPosition(), 100, false);
             if (blockpos != null) {
                 var dx = player.getX() - blockpos.getX();
                 var dz = player.getZ() - blockpos.getZ();
@@ -42,29 +41,25 @@ public class UnnamedItem extends Item {
                 } else {
                     distanceCategory = 1; // Far (greater than 75 blocks)
                 }
-                if (Services.PLATFORM.isDevelopmentEnvironment())
-                    AzureLib.LOGGER.info("Distance Category: {}", distanceCategory);
-                var viewVector = player.getViewVector(1.0F); // Gets the player's look direction
+                var viewVector = player.getViewVector(1.0F);
                 var spawnX = player.getX() + viewVector.x * 5;
-                var spawnY = player.getY();
                 var spawnZ = player.getZ() + viewVector.z * 5;
-                var angleToStructure = Math.atan2(blockpos.getZ() - spawnZ, blockpos.getX() - spawnX);
                 var hologramEntity = GigEntities.ENGINEER_HOLOGRAM.get().create(level);
                 if (hologramEntity != null) {
-                    hologramEntity.setPos(spawnX, spawnY, spawnZ);
+                    if (Services.PLATFORM.isDevelopmentEnvironment())
+                        AzureLib.LOGGER.info("Distance Category: {}", distanceCategory);
+                    hologramEntity.setPos(spawnX, player.getY(), spawnZ);
                     hologramEntity.setDistanceState(distanceCategory);
                     hologramEntity.setDistanceFromStructure((int) horizontalDistance);
-                    hologramEntity.setYRot((float) Math.toDegrees(angleToStructure) - 90);
+                    hologramEntity.setYRot((float) Math.toDegrees(Math.atan2(blockpos.getZ() - spawnZ, blockpos.getX() - spawnX)) - 90);
                     hologramEntity.setOnGround(true);
                     level.addFreshEntity(hologramEntity);
                 }
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), GigSounds.TRACKER_SUMMON.get(),
-                        SoundSource.NEUTRAL, 1.0F, 1.0F);
-                player.getCooldowns().addCooldown(this, 100);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), GigSounds.TRACKER_SUMMON.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+                player.getCooldowns().addCooldown(this, 50);
                 return InteractionResultHolder.success(itemstack);
             } else {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CRAFTER_FAIL,
-                        SoundSource.NEUTRAL, 1.0F, 1.0F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CRAFTER_FAIL, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
             return InteractionResultHolder.consume(itemstack);
         }

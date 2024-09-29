@@ -1,23 +1,17 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
-import mod.azure.azurelib.common.api.common.helper.CommonUtils;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
@@ -100,16 +94,14 @@ public class HologramEntity extends Entity implements GeoEntity {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide()) {
-            if (this.tickCount >= 100)
+            if (this.tickCount >= 250) {
                 this.kill();
+            }
             // Sim Gravity Credit to Boston for this
             this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
         }
-        var isInsideWaterBlock = level().isWaterAt(blockPosition());
-        if (this.tickCount >= 14)
-            CommonUtils.spawnLightSource(this, isInsideWaterBlock);
     }
 
     @Override
@@ -120,15 +112,11 @@ public class HologramEntity extends Entity implements GeoEntity {
             if (this.getDistanceState() == 3)
                 return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("close"));
             return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("far_away"));
-        }).setSoundKeyframeHandler(event -> {
-            if (this.level().isClientSide && event.getKeyframeData().getSound().matches("step"))
-                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_BLOCK_STEP,
-                            SoundSource.HOSTILE, 0.5F, 1.0F, true);})
-                .setParticleKeyframeHandler(event -> {
+        }).setParticleKeyframeHandler(event -> {
                     if (this.level().isClientSide && event.getKeyframeData().getEffect().matches("smoke")) {
                             double d2 = this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D;
                             double f2 = this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D;
-                            this.level().addParticle(ParticleTypes.SMOKE, true, d2, this.getY(0.5), f2, 0, 0, 0);
+                            this.level().addParticle(ParticleTypes.FLASH, true, d2, this.getY(0.5), f2, 0, 0, 0);
                         }
                 }));
     }
