@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
@@ -46,7 +47,16 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
             var g = blockPos.getX() + 0.5 * e + f;
             var h = blockPos.getY() + 0.5 + (EntityType.ITEM.getHeight() / 2.0F);
             var i = blockPos.getZ() + 0.5 * e + f;
-            var randomItem = this.random.nextInt(0, 10) > 5 ? GigBlocks.PETRIFIED_OBJECT_BLOCK.get(): GigItems.TRACKER.get();
+            ItemLike randomItem;
+            switch (this.random.nextInt(0, 10)) {
+                case 5 -> randomItem = GigBlocks.PETRIFIED_OBJECT_BLOCK_ITEM.get();
+                case 6 -> randomItem = GigBlocks.PETRIFIED_OBJECT_1_BLOCK_ITEM.get();
+                case 7 -> randomItem = GigBlocks.PETRIFIED_OBJECT_2_BLOCK_ITEM.get();
+                case 8 -> randomItem = GigBlocks.PETRIFIED_OBJECT_3_BLOCK_ITEM.get();
+                case 9 -> randomItem = GigBlocks.PETRIFIED_OBJECT_4_BLOCK_ITEM.get();
+                case 10 -> randomItem = GigBlocks.PETRIFIED_OBJECT_5_BLOCK_ITEM.get();
+                default -> randomItem = GigItems.TRACKER.get();
+            }
             var itemEntity = new ItemEntity(this.level, g, h, i, randomItem.asItem().getDefaultInstance());
             itemEntity.setDeltaMovement(Vec3.ZERO);
             this.level.addFreshEntity(itemEntity);

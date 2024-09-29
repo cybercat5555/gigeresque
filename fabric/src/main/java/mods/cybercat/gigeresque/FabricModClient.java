@@ -56,6 +56,11 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntityRenderer::new);
         EntityRenderers.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
         BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
+        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render());
+        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render());
+        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_3.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject3Render());
+        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_4.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject4Render());
+        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_5.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render());
         BlockEntityRenderers.register(GigEntities.SPORE_ENTITY.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
         BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
         BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());

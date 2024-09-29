@@ -1,0 +1,82 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=1": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=2": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=3": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=4": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=5": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=6": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=7": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=8": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=9": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=10": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=11": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=12": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=13": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=14": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=15": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=16": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=17": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=18": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=19": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=20": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=21": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=22": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=23": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=24": {
+      "model": "gigeresque:block/petrified_object_3"
+    },
+    "age=25": {
+      "model": "gigeresque:block/petrified_object_3"
+    }
+  }
+}

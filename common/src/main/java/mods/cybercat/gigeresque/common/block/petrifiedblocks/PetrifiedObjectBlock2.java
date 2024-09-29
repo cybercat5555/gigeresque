@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
 import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect2Entity;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
@@ -27,21 +28,17 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
-
-public class PetrifiedObjectBlock extends BaseEntityBlock {
+public class PetrifiedObjectBlock2 extends BaseEntityBlock {
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
-    public static final MapCodec<PetrifiedObjectBlock> CODEC = simpleCodec(PetrifiedObjectBlock::new);
+    public static final MapCodec<PetrifiedObjectBlock2> CODEC = simpleCodec(PetrifiedObjectBlock2::new);
 
-    public PetrifiedObjectBlock(Properties properties) {
+    public PetrifiedObjectBlock2(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
     }
@@ -81,7 +78,7 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
             var y = pos.getY() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25) - d;
             var z = pos.getZ() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
             var itemEntity = new ItemEntity(level, x, y, z,
-                    GigBlocks.PETRIFIED_OBJECT_BLOCK.get().asItem().getDefaultInstance());
+                    GigBlocks.PETRIFIED_OBJECT_2_BLOCK.get().asItem().getDefaultInstance());
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
             state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
@@ -96,18 +93,16 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return GigEntities.PETRIFIED_OBJECT.get().create(pos, state);
+        return GigEntities.PETRIFIED_OBJECT_2.get().create(pos, state);
     }
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return Stream.of(Block.box(3.5, 0, 3.5, 12.5, 2, 12.5), Block.box(3, 1, 3, 13, 10, 13),
-                Block.box(4, 10, 3.5, 12, 12, 12.5), Block.box(5, 11.5, 4.5, 11, 13.5, 11.5)).reduce(
-                (v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+        return Block.box(4, 0, 5, 12, 2, 13);
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        return createTickerHelper(type, GigEntities.PETRIFIED_OBJECT.get(), PetrifiedOjbectEntity::tick);
+        return createTickerHelper(type, GigEntities.PETRIFIED_OBJECT_2.get(), PetrifiedOjbect2Entity::tick);
     }
 }

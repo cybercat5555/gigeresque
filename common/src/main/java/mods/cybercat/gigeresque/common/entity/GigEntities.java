@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.*;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.*;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -123,6 +123,31 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
             () -> BlockEntityType.Builder.of(
                     PetrifiedOjbectEntity::new,
                     GigBlocks.PETRIFIED_OBJECT_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<PetrifiedOjbect1Entity>> PETRIFIED_OBJECT_1 = CommonBlockEntityRegistryInterface.registerBlockEntity(
+            CommonMod.MOD_ID, "petrified_object_1",
+            () -> BlockEntityType.Builder.of(
+                    PetrifiedOjbect1Entity::new,
+                    GigBlocks.PETRIFIED_OBJECT_1_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<PetrifiedOjbect2Entity>> PETRIFIED_OBJECT_2 = CommonBlockEntityRegistryInterface.registerBlockEntity(
+            CommonMod.MOD_ID, "petrified_object_2",
+            () -> BlockEntityType.Builder.of(
+                    PetrifiedOjbect2Entity::new,
+                    GigBlocks.PETRIFIED_OBJECT_2_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<PetrifiedOjbect3Entity>> PETRIFIED_OBJECT_3 = CommonBlockEntityRegistryInterface.registerBlockEntity(
+            CommonMod.MOD_ID, "petrified_object_3",
+            () -> BlockEntityType.Builder.of(
+                    PetrifiedOjbect3Entity::new,
+                    GigBlocks.PETRIFIED_OBJECT_3_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<PetrifiedOjbect4Entity>> PETRIFIED_OBJECT_4 = CommonBlockEntityRegistryInterface.registerBlockEntity(
+            CommonMod.MOD_ID, "petrified_object_4",
+            () -> BlockEntityType.Builder.of(
+                    PetrifiedOjbect4Entity::new,
+                    GigBlocks.PETRIFIED_OBJECT_4_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<PetrifiedOjbect5Entity>> PETRIFIED_OBJECT_5 = CommonBlockEntityRegistryInterface.registerBlockEntity(
+            CommonMod.MOD_ID, "petrified_object_5",
+            () -> BlockEntityType.Builder.of(
+                    PetrifiedOjbect5Entity::new,
+                    GigBlocks.PETRIFIED_OBJECT_5_BLOCK.get()).build(null));
 
     public static void initialize() {
     }

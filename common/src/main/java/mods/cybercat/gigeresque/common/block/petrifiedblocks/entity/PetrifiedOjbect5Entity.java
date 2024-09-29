@@ -6,6 +6,8 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mods.cybercat.gigeresque.common.block.GigBlock;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedObjectBlock;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
@@ -21,26 +23,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity {
+public class PetrifiedOjbect5Entity extends BlockEntity implements GeoBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public PetrifiedOjbectEntity(BlockPos pos, BlockState state) {
-        super(GigEntities.PETRIFIED_OBJECT.get(), pos, state);
+    public PetrifiedOjbect5Entity(BlockPos pos, BlockState state) {
+        super(GigEntities.PETRIFIED_OBJECT_5.get(), pos, state);
     }
 
     public StorageStates getChestState() {
-        return this.getBlockState().getValue(PetrifiedOjbectEntity.CHEST_STATE);
+        return this.getBlockState().getValue(PetrifiedOjbect5Entity.CHEST_STATE);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
-            if (getChestState().equals(StorageStates.OPENED))
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("hatched_empty"));
-            else return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("idle"));
-        }));
     }
 
     @Override
@@ -48,27 +45,19 @@ public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity
         return cache;
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedOjbectEntity blockEntity) {
+    public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedOjbect5Entity blockEntity) {
         if (blockEntity.level != null && (level.getRandom().nextInt(0, 200) == 0)) {
             int i = state.getValue(PetrifiedObjectBlock.HATCH);
             if (i < level.getRandom().nextInt(2, 25) && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
-                level.playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.3f,
-                        0.9f + level.getRandom().nextFloat() * 0.2f);
-                level.setBlock(pos,
-                        state.setValue(PetrifiedObjectBlock.HATCH, i + 1).setValue(CHEST_STATE, StorageStates.CLOSED),
-                        2);
+                level.playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+                level.setBlock(pos, state.setValue(PetrifiedObjectBlock.HATCH, i + 1).setValue(CHEST_STATE, StorageStates.CLOSED), 2);
             } else if (i >= 24 && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
                 level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState()), pos.getX() + (level.getRandom().nextDouble()),
                         pos.getY() + 0.5D * (level.getRandom().nextDouble()),
                         pos.getZ() + (level.getRandom().nextDouble()),0,0,0);
-                level.playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.3f,
-                        0.9f + level.getRandom().nextFloat() * 0.2f);
-                level.setBlockAndUpdate(pos,
-                        state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
-                var facehugger = GigEntities.FACEHUGGER.get().create(level);
-                assert facehugger != null;
-                facehugger.moveTo(pos.getX() + 0.3 + 0, (double) pos.getY() + 1, pos.getZ() + 0.3, 0.0f, 0.0f);
-                level.addFreshEntity(facehugger);
+                level.playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+                level.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
+                level.setBlockAndUpdate(pos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
             }
         }
     }

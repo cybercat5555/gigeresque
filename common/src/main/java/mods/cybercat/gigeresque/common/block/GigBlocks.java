@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedObjectBlock;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.*;
 import mods.cybercat.gigeresque.common.block.storage.*;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.CommonItemRegistryInterface;
@@ -27,9 +27,49 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
             CommonMod.MOD_ID,
             "petrified_object",
             () -> new PetrifiedObjectBlock(
-                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable()));
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
     public static final Supplier<BlockItem> PETRIFIED_OBJECT_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "petrified_object", () -> new BlockItem(PETRIFIED_OBJECT_BLOCK.get(), new Item.Properties()));
+
+    public static final Supplier<PetrifiedObjectBlock1> PETRIFIED_OBJECT_1_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "petrified_object_1",
+            () -> new PetrifiedObjectBlock1(
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
+    public static final Supplier<BlockItem> PETRIFIED_OBJECT_1_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "petrified_object_1", () -> new BlockItem(PETRIFIED_OBJECT_1_BLOCK.get(), new Item.Properties()));
+
+    public static final Supplier<PetrifiedObjectBlock2> PETRIFIED_OBJECT_2_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "petrified_object_2",
+            () -> new PetrifiedObjectBlock2(
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
+    public static final Supplier<BlockItem> PETRIFIED_OBJECT_2_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "petrified_object_2", () -> new BlockItem(PETRIFIED_OBJECT_2_BLOCK.get(), new Item.Properties()));
+
+    public static final Supplier<PetrifiedObjectBlock3> PETRIFIED_OBJECT_3_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "petrified_object_3",
+            () -> new PetrifiedObjectBlock3(
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
+    public static final Supplier<BlockItem> PETRIFIED_OBJECT_3_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "petrified_object_3", () -> new BlockItem(PETRIFIED_OBJECT_3_BLOCK.get(), new Item.Properties()));
+
+    public static final Supplier<PetrifiedObjectBlock4> PETRIFIED_OBJECT_4_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "petrified_object_4",
+            () -> new PetrifiedObjectBlock4(
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
+    public static final Supplier<BlockItem> PETRIFIED_OBJECT_4_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "petrified_object_4", () -> new BlockItem(PETRIFIED_OBJECT_4_BLOCK.get(), new Item.Properties()));
+
+    public static final Supplier<PetrifiedObjectBlock5> PETRIFIED_OBJECT_5_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "petrified_object_5",
+            () -> new PetrifiedObjectBlock5(
+                    Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()));
+    public static final Supplier<BlockItem> PETRIFIED_OBJECT_5_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "petrified_object_5", () -> new BlockItem(PETRIFIED_OBJECT_5_BLOCK.get(), new Item.Properties()));
 
     /*
      * NORMAL BLOCKS
