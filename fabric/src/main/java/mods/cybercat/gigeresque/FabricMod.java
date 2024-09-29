@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -80,16 +81,6 @@ public final class FabricMod implements ModInitializer {
                 HellmorphRunnerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
-        LootTableEvents.MODIFY.register((key, table, source, registries) -> {
-            if (Constants.DESERT_PYRAMID.equals(key.location()) || Constants.DESERT_WELL.equals(
-                    key.location()) || Constants.OCEAN_RUIN_COLD.equals(
-                    key.location()) || Constants.OCEAN_RUIN_WARM.equals(
-                    key.location()) || Constants.TRAIL_RUINS_RARE.equals(key.location())) {
-                LootPool poolBuilder = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                        .with(LootItem.lootTableItem(GigItems.TRACKER.get()).build()).build();
-                table.pool(poolBuilder);
-            }
-        });
     }
 
     private void onWorldTick(ServerLevel level) {
@@ -107,8 +98,7 @@ public final class FabricMod implements ModInitializer {
             for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
                 // Apply effect to all players
                 if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
-                    serverPlayer.addEffect(
-                            new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
+                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
                 PandoraData.setIsTriggered(true);
             }
         }

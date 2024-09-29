@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.item.GigItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -36,7 +37,7 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
 
     @Inject(method = "dropContent", at = {@At("HEAD")})
     private void dropEggTest(Player player, CallbackInfo ci) {
-        if (this.level != null && this.level.getServer() != null && random.nextInt(0, 100) > 95) {
+        if (this.level != null && this.level.getServer() != null && random.nextInt(0, 100) > 70) {
             var d = EntityType.ITEM.getWidth();
             var e = 1.0 - d;
             var f = d / 2.0;
@@ -45,7 +46,8 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
             var g = blockPos.getX() + 0.5 * e + f;
             var h = blockPos.getY() + 0.5 + (EntityType.ITEM.getHeight() / 2.0F);
             var i = blockPos.getZ() + 0.5 * e + f;
-            var itemEntity = new ItemEntity(this.level, g, h, i, GigBlocks.PETRIFIED_OBJECT_BLOCK.get().asItem().getDefaultInstance());
+            var randomItem = this.random.nextInt(0, 10) > 5 ? GigBlocks.PETRIFIED_OBJECT_BLOCK.get(): GigItems.TRACKER.get();
+            var itemEntity = new ItemEntity(this.level, g, h, i, randomItem.asItem().getDefaultInstance());
             itemEntity.setDeltaMovement(Vec3.ZERO);
             this.level.addFreshEntity(itemEntity);
             this.item = ItemStack.EMPTY;

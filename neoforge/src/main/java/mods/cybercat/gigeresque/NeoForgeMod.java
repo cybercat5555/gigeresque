@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.azure.azurelib.common.internal.common.AzureLib;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -146,7 +147,6 @@ public final class NeoForgeMod {
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
-        NeoForge.EVENT_BUS.addListener(this::onLootTableLoad);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
     }
 
@@ -181,21 +181,6 @@ public final class NeoForgeMod {
 
     public void onServerStarted(final ServerStartedEvent event) {
         GigVillagerTrades.addTrades();
-    }
-
-    public void onLootTableLoad(final LootTableLoadEvent event) {
-        var key = event.getName();
-        if (Constants.DESERT_PYRAMID.equals(key) ||
-                Constants.DESERT_WELL.equals(key) ||
-                Constants.OCEAN_RUIN_COLD.equals(key) ||
-                Constants.OCEAN_RUIN_WARM.equals(key) ||
-                Constants.TRAIL_RUINS_RARE.equals(key)) {
-            LootPool poolBuilder = LootPool.lootPool()
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(LootItem.lootTableItem(GigItems.TRACKER.get()))
-                    .build();
-            event.getTable().addPool(poolBuilder);
-        }
     }
 
     public void onWorldTick(final LevelTickEvent.Post event) {
