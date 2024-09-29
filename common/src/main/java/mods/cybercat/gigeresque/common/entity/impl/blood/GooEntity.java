@@ -29,6 +29,12 @@ public class GooEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        // Ensures it's always at the center of the block
+        if (tickCount == 1)
+            this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
+        this.applyGravity();
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
         if (this.level().isClientSide()) {
             for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
                 this.level().addAlwaysVisibleParticle(GigParticles.GOO.get(),
@@ -37,8 +43,6 @@ public class GooEntity extends Entity {
             }
         }
         if (!this.level().isClientSide()) {
-            // Ensures it's always at the center of the block
-            this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
             // Kill this after it's tickCount is higher
             if (this.tickCount >= this.random.nextIntBetweenInclusive(400, 800)) {
                 this.kill();
@@ -51,10 +55,6 @@ public class GooEntity extends Entity {
             if (this.tickCount % 40 == 0) {
                 doParticleSounds(this.random);
             }
-            // Sim Gravity Credit to Boston for this
-            this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
-            this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
             // Do things
             this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                 if (entity instanceof LivingEntity livingEntity) {

@@ -92,16 +92,14 @@ public class HologramEntity extends Entity implements GeoEntity {
 
     @Override
     public void tick() {
+        // Ensures it's always at the center of the block
+        if (tickCount == 1)
+            this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
+        this.applyGravity();
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
         super.tick();
-        if (!this.level().isClientSide()) {
-            if (this.tickCount >= 250) {
-                this.kill();
-            }
-            // Sim Gravity Credit to Boston for this
-            this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
-            this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
-        }
+        if (!this.level().isClientSide() && this.tickCount >= 250) this.kill();
     }
 
     @Override
