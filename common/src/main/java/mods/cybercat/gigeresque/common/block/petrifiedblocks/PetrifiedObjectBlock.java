@@ -43,8 +43,7 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
 
     protected PetrifiedObjectBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(
-                this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
     }
 
     @Override
