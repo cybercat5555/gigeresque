@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity;
+package mods.cybercat.gigeresque.common.block.entity;
 
 import mods.cybercat.gigeresque.platform.GigServices;
 import net.minecraft.world.level.block.entity.BlockEntity;
