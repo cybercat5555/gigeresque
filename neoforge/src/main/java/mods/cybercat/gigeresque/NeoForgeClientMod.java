@@ -4,10 +4,7 @@ import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
-import mods.cybercat.gigeresque.client.particle.AcidParticleFactory;
-import mods.cybercat.gigeresque.client.particle.BloodParticleFactory;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.client.particle.GooParticleFactory;
+import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
@@ -81,5 +78,6 @@ public class NeoForgeClientMod {
         event.registerSpriteSet(GigParticles.ACID.get(), AcidParticleFactory::new);
         event.registerSpriteSet(GigParticles.GOO.get(), GooParticleFactory::new);
         event.registerSpriteSet(GigParticles.BLOOD.get(), BloodParticleFactory::new);
+        event.registerSpriteSet(GigParticles.MIST.get(), MistParticleFactory::new);
     }
 }

@@ -65,20 +65,24 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigBlocks.NEST_RESIN_WEB_CROSS.get());
                         if (CommonMod.config.enableDevEntites)
                             entries.accept(GigBlocks.SPORE_BLOCK.get());
+                        entries.accept(GigBlocks.ORGANIC_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_SLAB.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_STAIRS.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_WALL.get());
+                        entries.accept(GigBlocks.RESINOUS_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.RESINOUS_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.RESINOUS_ALIEN_PILLAR.get());
                         entries.accept(GigBlocks.RESINOUS_ALIEN_SLAB.get());
                         entries.accept(GigBlocks.RESINOUS_ALIEN_STAIRS.get());
                         entries.accept(GigBlocks.RESINOUS_ALIEN_WALL.get());
+                        entries.accept(GigBlocks.RIBBED_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.RIBBED_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.RIBBED_ALIEN_PILLAR.get());
                         entries.accept(GigBlocks.RIBBED_ALIEN_SLAB.get());
                         entries.accept(GigBlocks.RIBBED_ALIEN_STAIRS.get());
                         entries.accept(GigBlocks.RIBBED_ALIEN_WALL.get());
+                        entries.accept(GigBlocks.SINOUS_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ROUGH_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ROUGH_ALIEN_SLAB.get());
                         entries.accept(GigBlocks.ROUGH_ALIEN_STAIRS.get());

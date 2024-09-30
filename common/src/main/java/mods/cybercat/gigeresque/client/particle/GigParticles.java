@@ -15,6 +15,9 @@ public record GigParticles() implements CommonParticleRegistryInterface {
     public static final Supplier<SimpleParticleType> BLOOD = CommonParticleRegistryInterface.registerParticle(
             CommonMod.MOD_ID, "blood",
             () -> new GigPaticleType(true));
+    public static final Supplier<SimpleParticleType> MIST = CommonParticleRegistryInterface.registerParticle(
+            CommonMod.MOD_ID, "mist",
+            () -> new GigPaticleType(true));
 
     public static void initialize() {
     }

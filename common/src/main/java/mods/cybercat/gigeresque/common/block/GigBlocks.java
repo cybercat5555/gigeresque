@@ -159,6 +159,13 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
                             CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.NETHERRACK).explosionResistance(10)));
     public static final Supplier<BlockItem> ORGANIC_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "organic_alien_block", () -> new BlockItem(ORGANIC_ALIEN_BLOCK.get(), new Item.Properties()));
+    public static final Supplier<Block> ORGANIC_FRAGILE_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "organic_fragile_alien_block",
+            () -> new FragileRoughBlock(
+                    Properties.of().requiresCorrectToolForDrops().strength(Float.MAX_VALUE, Float.MAX_VALUE).explosionResistance(10).noOcclusion().noLootTable()));
+    public static final Supplier<BlockItem> ORGANIC_FRAGILE_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "organic_fragile_alien_block", () -> new BlockItem(ORGANIC_FRAGILE_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> RESINOUS_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "resinous_alien_block",
@@ -167,6 +174,13 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
                             CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> RESINOUS_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "resinous_alien_block", () -> new BlockItem(RESINOUS_ALIEN_BLOCK.get(), new Item.Properties()));
+    public static final Supplier<Block> RESINOUS_FRAGILE_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "resinous_fragile_alien_block",
+            () -> new FragileRoughBlock(
+                    Properties.of().requiresCorrectToolForDrops().strength(Float.MAX_VALUE, Float.MAX_VALUE).explosionResistance(10).noOcclusion().noLootTable()));
+    public static final Supplier<BlockItem> RESINOUS_FRAGILE_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "resinous_fragile_alien_block", () -> new BlockItem(RESINOUS_FRAGILE_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> RIBBED_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "ribbed_alien_block",
@@ -175,6 +189,13 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
                             CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> RIBBED_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "ribbed_alien_block", () -> new BlockItem(RIBBED_ALIEN_BLOCK.get(), new Item.Properties()));
+    public static final Supplier<Block> RIBBED_FRAGILE_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "ribbed_fragile_alien_block",
+            () -> new FragileRoughBlock(
+                    Properties.of().requiresCorrectToolForDrops().strength(Float.MAX_VALUE, Float.MAX_VALUE).explosionResistance(10).noOcclusion().noLootTable()));
+    public static final Supplier<BlockItem> RIBBED_FRAGILE_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "ribbed_fragile_alien_block", () -> new BlockItem(RIBBED_FRAGILE_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> ROUGH_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "rough_alien_block",
@@ -183,6 +204,20 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
                             CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> ROUGH_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "rough_alien_block", () -> new BlockItem(ROUGH_ALIEN_BLOCK.get(), new Item.Properties()));
+    public static final Supplier<Block> ROUGH_FRAGILE_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "rough_fragile_alien_block",
+            () -> new FragileRoughBlock(
+                    Properties.of().requiresCorrectToolForDrops().strength(Float.MAX_VALUE, Float.MAX_VALUE).explosionResistance(10).noOcclusion().noLootTable()));
+    public static final Supplier<BlockItem> ROUGH_FRAGILE_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "rough_fragile_alien_block", () -> new BlockItem(ROUGH_FRAGILE_ALIEN_BLOCK.get(), new Item.Properties()));
+    public static final Supplier<Block> SINOUS_FRAGILE_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID,
+            "sinous_fragile_alien_block",
+            () -> new FragileRoughBlock(
+                    Properties.of().requiresCorrectToolForDrops().strength(Float.MAX_VALUE, Float.MAX_VALUE).explosionResistance(10).noOcclusion().noLootTable()));
+    public static final Supplier<BlockItem> SINOUS_FRAGILE_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "sinous_fragile_alien_block", () -> new BlockItem(SINOUS_FRAGILE_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> SINOUS_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "sinous_alien_block",
@@ -343,13 +378,13 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     public static final Supplier<Block> RESINOUS_ALIEN_PILLAR = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "resinous_alien_pillar",
-            () -> new RotatedPillarBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
+            () -> new GigRotatedPillarBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RESINOUS_ALIEN_PILLAR_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "resinous_alien_pillar", () -> new BlockItem(RESINOUS_ALIEN_PILLAR.get(), new Item.Properties()));
     public static final Supplier<Block> RIBBED_ALIEN_PILLAR = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "ribbed_alien_pillar",
-            () -> new RotatedPillarBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
+            () -> new GigRotatedPillarBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RIBBED_ALIEN_PILLAR_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "ribbed_alien_pillar", () -> new BlockItem(RIBBED_ALIEN_PILLAR.get(), new Item.Properties()));
     public static final Supplier<Block> RIBBED_ALIEN_STAIRS = CommonBlockRegistryInterface.registerBlock(
@@ -361,7 +396,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     public static final Supplier<Block> SMOOTH_ALIEN_PILLAR = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "smooth_alien_pillar",
-            () -> new RotatedPillarBlock(Properties.ofFullCopy(SINOUS_ALIEN_BLOCK.get())));
+            () -> new GigRotatedPillarBlock(Properties.ofFullCopy(SINOUS_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> SMOOTH_ALIEN_PILLAR_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "smooth_alien_pillar", () -> new BlockItem(SMOOTH_ALIEN_PILLAR.get(), new Item.Properties()));
     public static final Supplier<Block> SMOOTH_ALIEN_STAIRS = CommonBlockRegistryInterface.registerBlock(
@@ -376,31 +411,31 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     public static final Supplier<Block> ORGANIC_ALIEN_SLAB = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "organic_alien_slab",
-            () -> new SlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
+            () -> new GigSlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> ORGANIC_ALIEN_SLAB_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "organic_alien_slab", () -> new BlockItem(ORGANIC_ALIEN_SLAB.get(), new Item.Properties()));
     public static final Supplier<Block> RESINOUS_ALIEN_SLAB = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "resinous_alien_slab",
-            () -> new SlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
+            () -> new GigSlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RESINOUS_ALIEN_SLAB_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "resinous_alien_slab", () -> new BlockItem(RESINOUS_ALIEN_SLAB.get(), new Item.Properties()));
     public static final Supplier<Block> RIBBED_ALIEN_SLAB = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "ribbed_alien_slab",
-            () -> new SlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
+            () -> new GigSlabBlock(Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RIBBED_ALIEN_SLAB_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "ribbed_alien_slab", () -> new BlockItem(RIBBED_ALIEN_SLAB.get(), new Item.Properties()));
     public static final Supplier<Block> ROUGH_ALIEN_SLAB = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "rough_alien_slab",
-            () -> new SlabBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
+            () -> new GigSlabBlock(Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> ROUGH_ALIEN_SLAB_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "rough_alien_slab", () -> new BlockItem(ROUGH_ALIEN_SLAB.get(), new Item.Properties()));
     public static final Supplier<Block> SINOUS_ALIEN_SLAB = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "sinous_alien_slab",
-            () -> new SlabBlock(Properties.ofFullCopy(SINOUS_ALIEN_BLOCK.get())));
+            () -> new GigSlabBlock(Properties.ofFullCopy(SINOUS_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> SINOUS_ALIEN_SLAB_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "sinous_alien_slab", () -> new BlockItem(SINOUS_ALIEN_SLAB.get(), new Item.Properties()));
     /*
@@ -436,35 +471,35 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     public static final Supplier<WallBlock> ORGANIC_ALIEN_WALL = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "organic_alien_wall",
-            () -> new WallBlock(
+            () -> new GigWallBlock(
                     Properties.ofFullCopy(ORGANIC_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> ORGANIC_ALIEN_WALL_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "organic_alien_wall", () -> new BlockItem(ORGANIC_ALIEN_WALL.get(), new Item.Properties()));
     public static final Supplier<WallBlock> RESINOUS_ALIEN_WALL = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "resinous_alien_wall",
-            () -> new WallBlock(
+            () -> new GigWallBlock(
                     Properties.ofFullCopy(RESINOUS_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RESINOUS_ALIEN_WALL_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "resinous_alien_wall", () -> new BlockItem(RESINOUS_ALIEN_WALL.get(), new Item.Properties()));
     public static final Supplier<WallBlock> RIBBED_ALIEN_WALL = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "ribbed_alien_wall",
-            () -> new WallBlock(
+            () -> new GigWallBlock(
                     Properties.ofFullCopy(RIBBED_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> RIBBED_ALIEN_WALL_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "ribbed_alien_wall", () -> new BlockItem(RIBBED_ALIEN_WALL.get(), new Item.Properties()));
     public static final Supplier<WallBlock> ROUGH_ALIEN_WALL = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "rough_alien_wall",
-            () -> new WallBlock(
+            () -> new GigWallBlock(
                     Properties.ofFullCopy(ROUGH_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> ROUGH_ALIEN_WALL_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "rough_alien_wall", () -> new BlockItem(ROUGH_ALIEN_WALL.get(), new Item.Properties()));
     public static final Supplier<WallBlock> SINOUS_ALIEN_WALL = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "sinous_alien_wall",
-            () -> new WallBlock(
+            () -> new GigWallBlock(
                     Properties.ofFullCopy(SINOUS_ALIEN_BLOCK.get())));
     public static final Supplier<BlockItem> SINOUS_ALIEN_WALL_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "sinous_alien_wall", () -> new BlockItem(SINOUS_ALIEN_WALL.get(), new Item.Properties()));

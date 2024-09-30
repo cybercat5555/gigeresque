@@ -1,0 +1,64 @@
+package mods.cybercat.gigeresque.common.block;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Fallable;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+
+public class FragileRoughBlock extends Block implements Fallable {
+    private int standingTick = 0;
+    public FragileRoughBlock(Properties properties) {
+        super(properties.randomTicks());
+    }
+
+    @Override
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+        super.animateTick(state, level, pos, random);
+        if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
+            for (var i = 0; i < 5; i++) {
+                var offsetX = random.nextDouble() * 0.6D + 0.2D;
+                var offsetY = 1.0D;
+                var offsetZ = random.nextDouble() * 0.6D + 0.2D;
+
+                level.addParticle(GigParticles.MIST.get(),
+                        pos.getX() + offsetX,
+                        pos.getY() + offsetY,
+                        pos.getZ() + offsetZ,
+                        0.0D, 0.002D, 0.0D);
+            }
+    }
+
+    @Override
+    public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, Entity entity) {
+        if (entity.getType().is(GigTags.GIG_ALIENS)) return;
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
+        super.stepOn(level, pos, state, entity);
+        if (entity instanceof LivingEntity) {
+            standingTick++;
+            if (standingTick >= 40) {
+                var areaEffectCloudEntity = new AreaEffectCloud(level, pos.getX(), pos.getY(), pos.getZ());
+                areaEffectCloudEntity.setRadius(1.0F);
+                areaEffectCloudEntity.setDuration(60);
+                areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
+                areaEffectCloudEntity.setRadiusPerTick(
+                        -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+                level.addFreshEntity(areaEffectCloudEntity);
+                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                standingTick = 0;
+            }
+        } else {
+            standingTick = 0;
+        }
+    }
+}

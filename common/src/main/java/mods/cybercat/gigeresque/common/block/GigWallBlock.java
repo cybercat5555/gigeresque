@@ -4,14 +4,13 @@ import mods.cybercat.gigeresque.client.particle.GigParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class GigBlock extends Block {
-
-    public GigBlock(Properties settings) {
-        super(settings.randomTicks());
+public class GigWallBlock extends WallBlock {
+    public GigWallBlock(Properties properties) {
+        super(properties.randomTicks());
     }
 
     @Override
@@ -30,5 +29,4 @@ public class GigBlock extends Block {
                         0.0D, 0.002D, 0.0D);
             }
     }
-
 }
