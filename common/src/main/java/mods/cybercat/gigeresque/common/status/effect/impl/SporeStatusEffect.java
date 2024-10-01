@@ -47,8 +47,7 @@ public class SporeStatusEffect extends MobEffect {
         if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof SporeStatusEffect)) return;
         if (entity instanceof Mob mob && mob.isNoAi()) return;
         var neoBurster = GigEntities.NEOBURSTER.get().create(entity.level());
-        if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
-                GigTags.NEOHOST) && (Constants.isNotCreativeSpecPlayer.test(entity))) {
+        if (entity.getType().is(GigTags.NEOHOST)) {
             assert neoBurster != null;
             neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
