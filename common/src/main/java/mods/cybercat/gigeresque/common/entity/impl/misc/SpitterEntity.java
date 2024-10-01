@@ -304,18 +304,10 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
                     serverLevel.sendParticles(GigParticles.ACID.get(), vec34.x, vec34.y, vec34.z, 1, 0, 0, 0, 0);
             }
             this.playSound(SoundEvents.LAVA_EXTINGUISH, 3.0f, 1.0f);
+
             var acidEntity = GigEntities.ACID.get().create(this.level());
             if (acidEntity != null){
-                double offsetX, offsetY, offsetZ, distance;
-                do {
-                    offsetX = (Math.random() * 10) - 5;
-                    offsetY = (Math.random() * 10) - 5;
-                    offsetZ = (Math.random() * 10) - 5;
-
-                    distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ);
-                } while (distance < 2);
-
-                acidEntity.setPos(targetPos.x + offsetX, targetPos.y + offsetY, targetPos.z + offsetZ);
+                acidEntity.setPos(target.blockPosition().getX(), target.blockPosition().getY(), target.blockPosition().getZ());
                 this.level().addFreshEntity(acidEntity);
             }
 
