@@ -49,7 +49,7 @@ public class PetrifiedOjbect5Entity extends BlockEntity implements GeoBlockEntit
         if (blockEntity.level != null && (level.getRandom().nextInt(0, 200) == 0)) {
             int i = state.getValue(PetrifiedObjectBlock.HATCH);
             if (i < level.getRandom().nextInt(2, 25) && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
-                level.playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+                level.playSound(null, pos, SoundEvents.STONE_HIT, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
                 level.setBlock(pos, state.setValue(PetrifiedObjectBlock.HATCH, i + 1).setValue(CHEST_STATE, StorageStates.CLOSED), 2);
             } else if (i >= 24 && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
                 level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState()), pos.getX() + (level.getRandom().nextDouble()),
