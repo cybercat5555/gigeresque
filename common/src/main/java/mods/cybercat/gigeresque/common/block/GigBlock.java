@@ -17,7 +17,7 @@ public class GigBlock extends Block {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, level, pos, random);
-        if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
+        if ((level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigBlocks.ALIEN_STORAGE_BLOCK_2.get())) && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
                 var offsetX = random.nextDouble() - 0.5D;
                 var offsetY = 1.1D + (random.nextDouble() * 0.2D);

@@ -25,7 +25,7 @@ public class FragileRoughBlock extends Block implements Fallable {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, level, pos, random);
-        if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
+        if ((level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigTags.ALLOW_MIST_BLOCKS)) && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
                 var offsetX = random.nextDouble() - 0.5D;
                 var offsetY = 1.1D + (random.nextDouble() * 0.2D);

@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ public class GigSlabBlock extends SlabBlock {
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, level, pos, random);
         var slabtype = state.getValue(TYPE);
-        if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
+        if ((level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigTags.ALLOW_MIST_BLOCKS)) && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
                 var startingY = switch (slabtype) {
                     case DOUBLE, TOP -> 1.1D;
