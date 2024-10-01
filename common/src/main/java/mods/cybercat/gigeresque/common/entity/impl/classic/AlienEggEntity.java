@@ -258,7 +258,7 @@ public class AlienEggEntity extends AlienEntity {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source != damageSources().genericKill() && source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
+        if (source != damageSources().genericKill() && source.getDirectEntity() != null && !this.isHatched())
             setIsHatching(true);
         return source != damageSources().inWall() && super.hurt(source, amount);
     }
@@ -269,6 +269,9 @@ public class AlienEggEntity extends AlienEntity {
 
         // Increment the hatch check timer
         hatchCheckTimer++;
+
+        if (this.getLastHurtMob() != null)
+            setIsHatching(true);
 
         // Perform hatching check once every second (20 ticks)
         if (hatchCheckTimer >= 20) {
@@ -308,39 +311,40 @@ public class AlienEggEntity extends AlienEntity {
             });
         }
 
-        // Loop through nearby blocks in different directions (this logic remains the same)
-        for (var testPos : BlockPos.betweenClosed(this.blockPosition().above(1), this.blockPosition().above(1))) {
-            for (var testPos1 : BlockPos.betweenClosed(this.blockPosition().below(1), this.blockPosition().below(1))) {
-                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1), this.blockPosition().east(1))) {
-                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1), this.blockPosition().west(1))) {
-                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1), this.blockPosition().south(1))) {
-                            for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1), this.blockPosition().north(1))) {
-                                // Check if any nearby blocks are not air
-                                boolean isAnyBlockNotAir = !this.level().getBlockState(testPos).isAir() &&
-                                        !this.level().getBlockState(testPos1).isAir() &&
-                                        !this.level().getBlockState(testPos2).isAir() &&
-                                        !this.level().getBlockState(testPos3).isAir() &&
-                                        !this.level().getBlockState(testPos4).isAir() &&
-                                        !this.level().getBlockState(testPos5).isAir();
+        if (this.getLastHurtMob() == null)
+            // Loop through nearby blocks in different directions (this logic remains the same)
+            for (var testPos : BlockPos.betweenClosed(this.blockPosition().above(1), this.blockPosition().above(1))) {
+                for (var testPos1 : BlockPos.betweenClosed(this.blockPosition().below(1), this.blockPosition().below(1))) {
+                    for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1), this.blockPosition().east(1))) {
+                        for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1), this.blockPosition().west(1))) {
+                            for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1), this.blockPosition().south(1))) {
+                                for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1), this.blockPosition().north(1))) {
+                                    // Check if any nearby blocks are not air
+                                    boolean isAnyBlockNotAir = !this.level().getBlockState(testPos).isAir() &&
+                                            !this.level().getBlockState(testPos1).isAir() &&
+                                            !this.level().getBlockState(testPos2).isAir() &&
+                                            !this.level().getBlockState(testPos3).isAir() &&
+                                            !this.level().getBlockState(testPos4).isAir() &&
+                                            !this.level().getBlockState(testPos5).isAir();
 
-                                // Check if any nearby blocks are solid
-                                boolean isAnyBlockSolid = !this.level().getBlockState(testPos).isCollisionShapeFullBlock(level(), testPos) &&
-                                        !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
-                                        !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
-                                        !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
-                                        !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
-                                        !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
+                                    // Check if any nearby blocks are solid
+                                    boolean isAnyBlockSolid = !this.level().getBlockState(testPos).isCollisionShapeFullBlock(level(), testPos) &&
+                                            !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
+                                            !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
+                                            !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
+                                            !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
+                                            !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
 
-                                // Set isHatching to false if conditions are met
-                                if (isAnyBlockSolid || isAnyBlockNotAir) {
-                                    setIsHatching(false);
+                                    // Set isHatching to false if conditions are met
+                                    if (isAnyBlockSolid || isAnyBlockNotAir) {
+                                        setIsHatching(false);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
     }
 
     @Override
