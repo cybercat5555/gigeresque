@@ -1,15 +1,40 @@
 package mods.cybercat.gigeresque.client.particle;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class MistParticle extends TextureSheetParticle {
     private final SpriteSet spriteProvider;
     private boolean reachedGround;
+    ParticleRenderType PARTICLE_SHEET_TRANSLUCENT_LIT = new ParticleRenderType() {
+        @Override
+        public BufferBuilder begin(Tesselator tesselator, @NotNull TextureManager textureManager) {
+            RenderSystem.depthMask(true);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            RenderSystem.depthMask(false);
+
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+        }
+
+        @Override
+        public String toString() {
+            return "PARTICLE_SHEET_TRANSLUCENT_LIT";
+        }
+    };
 
     public MistParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
         super(clientWorld, d, e, f);
@@ -58,6 +83,7 @@ public class MistParticle extends TextureSheetParticle {
     @Override
     public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        //return PARTICLE_SHEET_TRANSLUCENT_LIT;
     }
 
     @Override
