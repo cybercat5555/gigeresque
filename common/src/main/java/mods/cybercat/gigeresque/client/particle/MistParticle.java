@@ -16,10 +16,10 @@ public class MistParticle extends TextureSheetParticle {
         xd = g;
         yd = h;
         zd = i;
-        setColor(100, 109, 126);
-        setAlpha(0.45f);
+        setColor(0.3f, 0.4f, 0.8f);
+        setAlpha(0.2f);
         quadSize *= 1.5f;
-        lifetime = (int) (20.0 / ((random.nextFloat()) * 0.8 + 0.2));
+        lifetime = (int) (100.0 / ((random.nextFloat()) * 0.5 + 0.5));
         reachedGround = false;
         hasPhysics = false;
         this.spriteProvider = spriteProvider;
@@ -31,18 +31,26 @@ public class MistParticle extends TextureSheetParticle {
         xo = x;
         yo = y;
         zo = z;
-        if (age++ >= lifetime) remove();
-        else {
+
+        if (age++ >= lifetime) {
+            remove();
+        } else {
             setSpriteFromAge(spriteProvider);
             if (onGround) {
                 yd = 0.0;
                 reachedGround = true;
             }
-            if (reachedGround) yd += 0.002;
+            if (reachedGround) {
+                yd += 0.001;
+            } else {
+                yd *= 0.95;
+            }
+            xd *= 0.8;
+            zd *= 0.8;
             this.move(xd, yd, zd);
             if (y == yo) {
-                xd *= 1.1;
-                zd *= 1.1;
+                xd *= 0.5;
+                zd *= 0.5;
             }
         }
     }

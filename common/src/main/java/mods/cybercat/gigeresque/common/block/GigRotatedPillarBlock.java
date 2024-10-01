@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GigRotatedPillarBlock extends RotatedPillarBlock {
     public GigRotatedPillarBlock(Properties properties) {
-        super(properties.randomTicks());
+        super(properties);
     }
 
     @Override
@@ -18,14 +18,14 @@ public class GigRotatedPillarBlock extends RotatedPillarBlock {
         super.animateTick(state, level, pos, random);
         if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
-                var offsetX = random.nextDouble() * 0.6D + 0.2D;
-                var offsetY = 1.0D;
-                var offsetZ = random.nextDouble() * 0.6D + 0.2D;
+                var offsetX = random.nextDouble() - 0.5D;
+                var offsetY = 1.1D + (random.nextDouble() * 0.2D);
+                var offsetZ = random.nextDouble() - 0.5D;
 
                 level.addParticle(GigParticles.MIST.get(),
-                        pos.getX() + offsetX,
+                        pos.getX() + 0.5D + offsetX,
                         pos.getY() + offsetY,
-                        pos.getZ() + offsetZ,
+                        pos.getZ() + 0.5D + offsetZ,
                         0.0D, 0.002D, 0.0D);
             }
     }
