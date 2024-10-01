@@ -6,6 +6,42 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:suspicious_stew",
+					"quality": 1,
+					"functions": [
+						{
+							"function": "minecraft:set_components",
+							"components": {
+								"minecraft:food": {
+									"nutrition": 0,
+									"saturation": 0,
+									"effects": [
+										{
+											"effect": {
+												"id": "minecraft:wither",
+												"amplifier": 0,
+												"duration": 200
+											},
+											"probability": 0.8
+										}
+									]
+								}
+							}
+						},
+						{
+							"add": false,
+							"count": {
+								"type": "minecraft:uniform",
+								"max": 2.0,
+								"min": 1.0
+							},
+							"function": "minecraft:set_count"
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
 					"functions": [
 						{
 							"add": false,
@@ -776,8 +812,8 @@
 			],
 			"rolls": {
 				"type": "minecraft:uniform",
-				"max": 3.0,
-				"min": 1.0
+				"max": 9.0,
+				"min": 5.0
 			}
 		}
 	]
