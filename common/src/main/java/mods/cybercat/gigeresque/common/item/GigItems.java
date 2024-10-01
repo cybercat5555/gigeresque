@@ -26,7 +26,7 @@ public record GigItems() implements CommonItemRegistryInterface {
                     new Item.Properties()));
     public static final Supplier<SpawnEggItem> AQUATIC_ALIEN_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "aquatic_alien_spawn_egg",
-            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.AQUATIC_ALIEN, 0x404345, 0x949597,
+            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.AQUATIC_ALIEN, 0x4a597b, 0x9ab5c8,
                     new Item.Properties()));
     public static final Supplier<SpawnEggItem> AQUATIC_CHESTBURSTER_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "aquatic_chestburster_spawn_egg",
