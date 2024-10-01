@@ -41,8 +41,9 @@ public class MistParticle extends TextureSheetParticle {
         xd = g;
         yd = h;
         zd = i;
-        setColor(0.3f, 0.4f, 0.8f);
-        setAlpha(0.2f);
+        //setColor(0.3f, 0.4f, 0.8f); blue
+        setColor(0.682f, 0.678f, 0.6f);
+        setAlpha(0.18f);
         quadSize *= 1.5f;
         lifetime = (int) (100.0 / ((random.nextFloat()) * 0.5 + 0.5));
         reachedGround = false;
