@@ -6,6 +6,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.phys.shapes.Shapes;
 import org.jetbrains.annotations.NotNull;
 
 public class GigSlabBlock extends SlabBlock {
@@ -16,10 +18,15 @@ public class GigSlabBlock extends SlabBlock {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, level, pos, random);
+        var slabtype = state.getValue(TYPE);
         if (level.getBlockState(pos.above()).isAir() && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
+                var startingY = switch (slabtype) {
+                    case DOUBLE, TOP -> 1.1D;
+                    default -> 0.55D;
+                };
                 var offsetX = random.nextDouble() - 0.5D;
-                var offsetY = 1.1D + (random.nextDouble() * 0.2D);
+                var offsetY = startingY + (random.nextDouble() * 0.2D);
                 var offsetZ = random.nextDouble() - 0.5D;
 
                 level.addParticle(GigParticles.MIST.get(),
