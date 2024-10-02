@@ -202,9 +202,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
             if (ticksAttachedToHost > CommonMod.config.getFacehuggerAttachTickTimer()) {
                 if (getVehicle() instanceof Player player && player instanceof ServerPlayer serverPlayer) {
                     var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("facehugged"));
-                    if (advancement == null) return;
-                    var advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
-                    if (!advancementProgress.isDone()) {
+                    if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
                         for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
                             serverPlayer.getAdvancements().award(advancement, s);
                         }
