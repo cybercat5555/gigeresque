@@ -41,8 +41,8 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
                             entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
                             entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
-                            entries.accept(GigItems.SPITTER_SPAWN_EGG.get());
                         }
+                        entries.accept(GigItems.SPITTER_SPAWN_EGG.get());
                     })
                     .build());
 
