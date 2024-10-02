@@ -44,13 +44,12 @@ public class NestResinBlock extends AbstractNestBlock {
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+        return  ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
     public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(
-                state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? Block.box(0, 0, 0, 0, 0, 0) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
