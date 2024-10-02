@@ -134,12 +134,6 @@ public abstract class LivingEntityMixin extends Entity {
                 GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(false);
     }
 
-    @Inject(method = {"isPushable"}, at = {@At("RETURN")}, cancellable = true)
-    public void noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING) && GigEntityUtils.isTargetHostable(this))
-            callbackInfo.setReturnValue(false);
-    }
-
     private void applyParticle() {
         if (this.isAlive()) {
             var yOffset = this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0);
@@ -162,8 +156,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = {"isImmobile"}, at = {@At("RETURN")}, cancellable = true)
     protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(true);
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.setReturnValue(true);
     }
 
     @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
