@@ -7,7 +7,7 @@ import mods.cybercat.gigeresque.common.entity.impl.misc.AquaEggEntity;
 public class AquaEggEntityModel extends DefaultedEntityGeoModel<AquaEggEntity> {
 
     public AquaEggEntityModel() {
-        super(Constants.modResource("aquatic_egg/aquatic_egg"), false);
+        super(Constants.modResource("egg/egg"), false);
     }
 
 }
