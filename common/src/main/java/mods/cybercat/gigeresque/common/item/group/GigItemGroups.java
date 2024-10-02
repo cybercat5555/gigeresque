@@ -33,12 +33,12 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get());
                         entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG.get());
                         if (CommonMod.config.enableDevEntites) {
-                            entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
-                            entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
-                            entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
                             entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
                             entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
                             entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
+                        entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
+                        entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
+                        entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
                             entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
                             entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
                             entries.accept(GigItems.SPITTER_SPAWN_EGG.get());
@@ -63,8 +63,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigBlocks.NEST_RESIN_BLOCK.get());
                         entries.accept(GigBlocks.NEST_RESIN_WEB.get());
                         entries.accept(GigBlocks.NEST_RESIN_WEB_CROSS.get());
-                        if (CommonMod.config.enableDevEntites)
-                            entries.accept(GigBlocks.SPORE_BLOCK.get());
+                        entries.accept(GigBlocks.SPORE_BLOCK.get());
                         entries.accept(GigBlocks.ORGANIC_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.ORGANIC_ALIEN_SLAB.get());

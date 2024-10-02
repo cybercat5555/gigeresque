@@ -93,7 +93,7 @@ public abstract class BlackFluid extends FlowingFluid {
                         if (!level.isLoaded(targetPos)) continue;
                         var targetBlockState = level.getBlockState(targetPos);
                         if (targetBlockState.getBlock() instanceof TallGrassBlock) continue;
-                        if (targetBlockState.getFluidState().isEmpty() && targetBlockState.is(GigTags.SPORE_REPLACE) && CommonMod.config.enableDevEntites) {
+                        if (targetBlockState.getFluidState().isEmpty() && targetBlockState.is(GigTags.SPORE_REPLACE)) {
                             level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
                         }
                     }
