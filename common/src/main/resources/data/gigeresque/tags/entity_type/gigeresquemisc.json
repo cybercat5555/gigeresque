@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "gigeresque:spitter"
+    "gigeresque:spitter",
+    "gigeresque:hellmorph_runner",
+    "gigeresque:baphomorph"
   ]
 }
