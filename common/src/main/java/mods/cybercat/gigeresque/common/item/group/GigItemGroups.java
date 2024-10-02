@@ -32,13 +32,12 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG.get());
                         entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get());
                         entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG.get());
-                        if (CommonMod.config.enableDevEntites) {
-                            entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
-                            entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
-                            entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
                         entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
                         entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
                         entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
+                        entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
+                        entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
+                        entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
                             entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
                             entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
                         }

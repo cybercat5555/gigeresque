@@ -118,7 +118,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                         spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
                         GigTags.AQUASPAWN_BIOMES)) {
                     player.level().addFreshEntity(faceHugger);
-                    if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
+                    if (Services.PLATFORM.isDevelopmentEnvironment())
                         AzureLib.LOGGER.info("Spawned Mob");
                     if (player instanceof ServerPlayer serverPlayer) {
                         var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
@@ -153,7 +153,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
             var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
             if (player.level().isLoaded(spawnPos)) {
-                if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
+                if (Services.PLATFORM.isDevelopmentEnvironment())
                     AzureLib.LOGGER.info("Spawned Mob");
                 player.level().addFreshEntity(aquaticAlien);
                 if (player instanceof ServerPlayer serverPlayer) {
