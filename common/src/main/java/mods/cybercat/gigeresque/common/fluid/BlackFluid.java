@@ -95,6 +95,7 @@ public abstract class BlackFluid extends FlowingFluid {
                         if (targetBlockState.getBlock() instanceof TallGrassBlock) continue;
                         if (targetBlockState.getFluidState().isEmpty() && targetBlockState.is(GigTags.SPORE_REPLACE)) {
                             level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
+                            break;
                         }
                     }
                 }
