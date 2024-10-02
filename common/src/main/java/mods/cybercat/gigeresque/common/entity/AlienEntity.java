@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.GigNav;
@@ -11,6 +12,7 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
@@ -47,6 +49,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
@@ -607,7 +610,34 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        return InteractionResult.PASS;
+        if (player.getItemInHand(hand).is(Items.BUCKET) && !player.level().isClientSide()) {
+            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 100, 0), this);
+            if (player instanceof ServerPlayer serverPlayer) {
+                var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontdothat"));
+                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        serverPlayer.getAdvancements().award(advancement, s);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
+            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontacidbottle"));
+                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        serverPlayer.getAdvancements().award(advancement, s);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        return super.mobInteract(player, hand);
     }
 
     @Override

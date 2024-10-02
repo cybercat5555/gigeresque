@@ -3,18 +3,24 @@ package mods.cybercat.gigeresque.common.entity.impl.blood;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
@@ -100,5 +106,25 @@ public class GooEntity extends Entity {
     @Override
     public boolean dampensVibrations() {
         return true;
+    }
+
+    @Override
+    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
+        if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
+            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 1000, 0));
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+                var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontgoobottle"));
+                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        serverPlayer.getAdvancements().award(advancement, s);
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        return super.interact(player, hand);
     }
 }
