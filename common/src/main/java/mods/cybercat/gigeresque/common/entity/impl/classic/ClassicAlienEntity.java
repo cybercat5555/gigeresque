@@ -193,7 +193,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 // Player Sensor
                 new NearbyPlayersSensor<>(),
                 // Living Sensor
-                new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((target, self) ->  GigEntityUtils.entityTest(target, self) && !target.getType().is(GigTags.GIG_ALIENS)),
+                new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((target, self) ->  GigEntityUtils.entityTest(target, self) && !target.getType().is(GigTags.GIG_ALIENS) && !this.isPassedOut()),
                 // Block Sensor
                 new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
                 // Fire Sensor
@@ -247,7 +247,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 new FirstApplicableBehaviour<ClassicAlienEntity>(
                         // Targeting
                         new TargetOrRetaliate<>().stopIf(
-                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
+                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())),
                         // Look at players
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
@@ -268,7 +268,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) && !this.isPassedOut()),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
                 new JumpToTargetTask<>(20),
                 new ClassicXenoMeleeAttackTask<>(5));
