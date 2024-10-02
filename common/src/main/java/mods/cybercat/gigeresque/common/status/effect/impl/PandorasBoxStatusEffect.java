@@ -120,6 +120,14 @@ public class PandorasBoxStatusEffect extends MobEffect {
                     player.level().addFreshEntity(faceHugger);
                     if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
                         AzureLib.LOGGER.info("Spawned Mob");
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
+                        if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                            for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                                serverPlayer.getAdvancements().award(advancement, s);
+                            }
+                        }
+                    }
 
                     for (var x = -1; x <= 1; x++) {
                         for (var z = -1; z <= 1; z++) {
@@ -148,6 +156,14 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 if (CommonMod.config.enableDevEntites && Services.PLATFORM.isDevelopmentEnvironment())
                     AzureLib.LOGGER.info("Spawned Mob");
                 player.level().addFreshEntity(aquaticAlien);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
+                    if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                        for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                            serverPlayer.getAdvancements().award(advancement, s);
+                        }
+                    }
+                }
 
                 for (var x = -1; x <= 1; x++) {
                     for (var z = -1; z <= 1; z++) {
