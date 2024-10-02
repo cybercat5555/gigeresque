@@ -38,6 +38,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
                         entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
                         entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
+                        if (Services.PLATFORM.isDevelopmentEnvironment() || GigServices.COMMON_REGISTRY.isModLoaded("hwg")) {
                             entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
                             entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
                         }
