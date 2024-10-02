@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "gigeresque:petrified_object"
+    "gigeresque:petrified_object",
+    "gigeresque:petrified_object_1",
+    "gigeresque:petrified_object_2",
+    "gigeresque:petrified_object_3",
+    "gigeresque:petrified_object_4",
+    "gigeresque:petrified_object_5"
   ]
 }
