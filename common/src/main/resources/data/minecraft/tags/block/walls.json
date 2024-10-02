@@ -1,15 +1,9 @@
 {
-  "replace": false,
   "values": [
     "gigeresque:organic_alien_wall",
     "gigeresque:rough_alien_wall",
     "gigeresque:sinous_alien_wall",
     "gigeresque:resinous_alien_wall",
-    "gigeresque:ribbed_alien_wall",
-    "gigeresque:organic_fragile_alien_wall",
-    "gigeresque:rough_fragile_alien_wall",
-    "gigeresque:sinous_fragile_alien_wall",
-    "gigeresque:resinous_fragile_alien_wall",
-    "gigeresque:ribbed_fragile_alien_wall"
+    "gigeresque:ribbed_alien_wall"
   ]
 }
