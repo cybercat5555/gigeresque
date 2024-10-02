@@ -32,25 +32,23 @@ public class SurgeryKitItem extends Item {
     @Override
     public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack, @NotNull Player player, LivingEntity livingEntity, @NotNull InteractionHand interactionHand) {
         if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+            // Calculate kill chance based on durability
+            var currentDurability = itemStack.getDamageValue();
+            var maxDurability = itemStack.getMaxDamage();
+            var killChance = calculateKillChance(currentDurability, maxDurability);
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             livingEntity.getActiveEffects().clear();
-            // Calculate kill chance based on durability
-            int currentDurability = itemStack.getDamageValue();
-            int maxDurability = itemStack.getMaxDamage();
-            double killChance = calculateKillChance(currentDurability, maxDurability);
-
-            // Apply the chance to kill the player
+            if (livingEntity.getRandom().nextDouble() < killChance) {
+                livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+            }
             if (player instanceof ServerPlayer serverPlayer) {
-                if (serverPlayer.getRandom().nextDouble() < killChance) {
-                    serverPlayer.hurt(GigDamageSources.of(serverPlayer.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
-                }
-
-                // Award advancement if applicable
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    serverPlayer.getAdvancements().award(advancement, "minecraft:using_item");
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        serverPlayer.getAdvancements().award(advancement, s);
+                    }
                 }
             }
         }
@@ -60,24 +58,21 @@ public class SurgeryKitItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand) {
         if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)){
+            ItemStack itemStack = user.getItemInHand(hand);
+            var currentDurability = itemStack.getDamageValue();
+            var maxDurability = itemStack.getMaxDamage();
+            var killChance = calculateKillChance(currentDurability, maxDurability);
             tryRemoveParasite(user.getItemInHand(hand), user);
             user.getActiveEffects().clear();
-            // Calculate kill chance based on durability
-            ItemStack itemStack = user.getItemInHand(hand);
-            int currentDurability = itemStack.getDamageValue();
-            int maxDurability = itemStack.getMaxDamage();
-            double killChance = calculateKillChance(currentDurability, maxDurability);
-
-            // Apply the chance to kill the player
+            if (user.getRandom().nextDouble() < killChance) {
+                user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+            }
             if (user instanceof ServerPlayer serverPlayer) {
-                if (serverPlayer.getRandom().nextDouble() < killChance) {
-                    serverPlayer.hurt(GigDamageSources.of(serverPlayer.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
-                }
-
-                // Award advancement if applicable
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    serverPlayer.getAdvancements().award(advancement, "surgery_kit");
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        serverPlayer.getAdvancements().award(advancement, s);
+                    }
                 }
             }
         }
