@@ -9,6 +9,8 @@ import net.minecraft.world.item.*;
 import java.util.function.Supplier;
 
 public record GigItems() implements CommonItemRegistryInterface {
+    public static final Supplier<Item> DEV_DEBUG_STICK = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "dev_debug_stick", DevDebugItem::new);
     public static final Supplier<Item> TRACKER = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID, "tracker", UnnamedItem::new);
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "black_fluid_bucket", () ->
