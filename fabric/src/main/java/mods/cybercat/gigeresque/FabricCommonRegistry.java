@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque;
 
 import mods.cybercat.gigeresque.platform.CommonRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
@@ -23,6 +24,11 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.function.Supplier;
 
 public class FabricCommonRegistry implements CommonRegistry {
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return FabricLoader.getInstance().isModLoaded(modId);
+    }
 
     private static <T, R extends Registry<? super T>> Supplier<T> registerSupplier(R registry, String modID, String id, Supplier<T> object) {
         final T registeredObject = Registry.register((Registry<T>) registry,

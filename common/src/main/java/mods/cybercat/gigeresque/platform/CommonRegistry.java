@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 
 public interface CommonRegistry {
 
+    boolean isModLoaded(String modId);
+
     <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(String modID, String blockEntityName, Supplier<BlockEntityType<T>> blockEntityType);
 
     <T extends Block> Supplier<T> registerBlock(String modID, String blockName, Supplier<T> block);
