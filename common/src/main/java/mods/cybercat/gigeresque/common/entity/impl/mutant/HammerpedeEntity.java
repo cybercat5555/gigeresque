@@ -59,7 +59,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public HammerpedeEntity(EntityType<? extends Monster> entityType, Level world) {
+    public HammerpedeEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         navigation = new GigNav(this, level());

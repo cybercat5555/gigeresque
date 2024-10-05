@@ -59,7 +59,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
+    public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         navigation = new GigNav(this, level());
