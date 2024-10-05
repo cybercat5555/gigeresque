@@ -92,13 +92,15 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var velocityLength = this.getDeltaMovement().horizontalDistance();
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null)
+                    if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && !this.isInWater())
                         if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
                             return event.setAndContinue(GigAnimationsDefault.RUNNING);
                         else return event.setAndContinue(GigAnimationsDefault.MOVING);
-                    if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging)
+                    if (event.isMoving() && !isDead && this.isInWater())
+                        return event.setAndContinue(GigAnimationsDefault.SWIM);
+                    if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging && !this.isInWater())
                         return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
-                    return event.setAndContinue(GigAnimationsDefault.IDLE);
+                    return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
                 }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
                         .triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack
                         .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
