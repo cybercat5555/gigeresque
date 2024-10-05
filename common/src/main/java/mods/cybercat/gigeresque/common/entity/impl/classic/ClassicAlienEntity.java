@@ -318,7 +318,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                         return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
                     if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
                         return event.setAndContinue(GigAnimationsDefault.HISS);
-                    return event.setAndContinue(
+                    return event.setAndContinue(this.isPassedOut() ? GigAnimationsDefault.STATIS_LOOP :
                             this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
                 }).setSoundKeyframeHandler(event -> {
                             if (this.level().isClientSide) {
@@ -348,7 +348,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                         .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)) // idle
                 .add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0, event -> {
                     if (event.getAnimatable().isPassedOut())
-                        return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+                        return event.setAndContinue(GigAnimationsDefault.STATIS_LOOP);
                     if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
                     if (this.isVehicle() && !this.isExecuting())
                         return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
