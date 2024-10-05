@@ -62,8 +62,10 @@ public class AzureVibrationUser implements VibrationSystem.User {
         var entity = context.sourceEntity();
         if (entity != null) {
             if (entity.isSpectator()) return false;
-            if (entity.isSteppingCarefully() && gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) return false;
             if (entity.dampensVibrations()) return false;
+            if (this.mob.level().getEntitiesOfClass(LivingEntity.class, this.mob.getBoundingBox().inflate(3)).stream().anyMatch(target -> !target.getType().is(GigTags.GIG_ALIENS))) return true;
+            if (this.mob.level().getEntitiesOfClass(LivingEntity.class, this.mob.getBoundingBox().inflate(this.getListenerRadius())).stream().anyMatch(
+                    Entity::isSteppingCarefully)) return false;
         }
         if (context.affectedState() != null)
             return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
