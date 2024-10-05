@@ -52,6 +52,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -69,13 +70,11 @@ import java.util.List;
 public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final GigNav landNavigation = new GigNav(this, level());
-    public int breakingCounter = 0;
 
     public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
-        navigation = landNavigation;
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

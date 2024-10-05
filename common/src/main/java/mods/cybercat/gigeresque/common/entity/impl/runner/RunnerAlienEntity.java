@@ -55,6 +55,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -79,6 +80,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

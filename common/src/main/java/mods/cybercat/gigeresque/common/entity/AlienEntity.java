@@ -6,7 +6,6 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -31,7 +30,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -44,17 +46,23 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +75,7 @@ import java.util.function.Predicate;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity, Growable, AbstractAlien {
+public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, GeoEntity, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -100,20 +108,47 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
     public int wakeupCounter = 0;
     public boolean inTwoBlockSpace = false;
+    public int breakingCounter = 0;
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
     protected User vibrationUser;
     protected int slowticks = 0;
     private Data vibrationData;
-    public int breakingCounter = 0;
 
-    protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
+    protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
         super(entityType, world);
+        this.noCulling = true;
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
+    }
+
+    @Override
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
+    }
+
+    public static boolean checkMonsterSpawnRules(EntityType<? extends WaterAnimal> type, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+        return level.getDifficulty() != Difficulty.PEACEFUL
+                && (MobSpawnType.ignoresLightRequirements(spawnType) || isDarkEnoughToSpawn(level, pos, random))
+                && checkMobSpawnRules(type, level, spawnType, pos, random);
+    }
+
+    public static boolean isDarkEnoughToSpawn(ServerLevelAccessor level, BlockPos pos, RandomSource random) {
+        if (level.getBrightness(LightLayer.SKY, pos) > random.nextInt(32)) {
+            return false;
+        } else {
+            DimensionType dimensiontype = level.dimensionType();
+            int i = dimensiontype.monsterSpawnBlockLightLimit();
+            if (i < 15 && level.getBrightness(LightLayer.BLOCK, pos) > i) {
+                return false;
+            } else {
+                int j = level.getLevel().isThundering() ? level.getMaxLocalRawBrightness(pos,
+                        10) : level.getMaxLocalRawBrightness(pos);
+                return j <= dimensiontype.monsterSpawnLightTest().sample(random);
+            }
+        }
     }
 
     @Override
@@ -131,6 +166,15 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             super.tickDeath();
             this.dropExperience(this);
         }
+    }
+
+    @Override
+    protected void handleAirSupply(int airSupply) {
+    }
+
+    @Override
+    public int getMaxAirSupply() {
+        return 4800;
     }
 
     @Override
@@ -308,18 +352,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        PathNavigation pathNavigation;
-        if (this.isUnderWater()) {
-            pathNavigation = new AmphibiousPathNavigation(this, level());
-        } else {
-            pathNavigation = new GigNav(this, level());
-            pathNavigation.setCanFloat(true);
-        }
-        return pathNavigation;
+        return new AmphibiousPathNavigation(this, level);
     }
 
     @Override
-    public boolean isPushedByFluid() {
+    protected boolean canRide(@NotNull Entity vehicle) {
         return false;
     }
 
@@ -360,6 +397,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
+        this.setAirSupply(this.getMaxAirSupply());
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
         }
@@ -380,10 +418,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                     if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
                 });
             if (this.isAggressive() || this.getSpeed() > 0.1) {
-                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isCollisionShapeFullBlock(level(), blockPosition().above());
-                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isCollisionShapeFullBlock(level(), blockPosition().above(2));
+                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isCollisionShapeFullBlock(
+                        level(), blockPosition().above());
+                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isCollisionShapeFullBlock(
+                        level(), blockPosition().above(2));
                 var offset = getDirectionVector();
-                var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isCollisionShapeFullBlock(level(), blockPosition().relative(getDirection()));
+                var isFacingSolid = this.level().getBlockState(
+                        blockPosition().relative(getDirection())).isCollisionShapeFullBlock(level(),
+                        blockPosition().relative(getDirection()));
 
                 /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
                  *  -----o                  -----o
@@ -394,9 +436,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                     offset = offset.offset(0, 1, 0);
                 }
 
-                var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isCollisionShapeFullBlock(level(), blockPosition().offset(offset));
+                var isOffsetFacingSolid = this.level().getBlockState(
+                        blockPosition().offset(offset)).isCollisionShapeFullBlock(level(),
+                        blockPosition().offset(offset));
                 var isOffsetFacingAboveSolid = this.level().getBlockState(
-                        blockPosition().offset(offset).above()).isCollisionShapeFullBlock(level(), blockPosition().offset(offset).above());
+                        blockPosition().offset(offset).above()).isCollisionShapeFullBlock(level(),
+                        blockPosition().offset(offset).above());
 
                 /** [- : blocks | o : alien | + : alien in solid block]
                  *   To handle these variants among other things:
@@ -451,6 +496,20 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
         if (this.level() instanceof ServerLevel serverLevel)
             biConsumer.accept(this.dynamicGameEventListener, serverLevel);
+    }
+
+    @Override
+    public void travel(@NotNull Vec3 travelVector) {
+        if (this.isEffectiveAi() && this.isInWater()) {
+            this.moveRelative(this.getSpeed(), travelVector);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
+            if (this.getTarget() == null) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
+            }
+        } else {
+            super.travel(travelVector);
+        }
     }
 
     /*
@@ -579,7 +638,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 AlienEntity.class::isInstance)) return false;
         if (livingEntity.getType().is(GigTags.GIG_ALIENS)) return false;
         if (this.isAggressive()) return false;
-        return this.level().getBlockState(this.blockPosition().below()).isCollisionShapeFullBlock(level(), this.blockPosition().below());
+        return this.level().getBlockState(this.blockPosition().below()).isCollisionShapeFullBlock(level(),
+                this.blockPosition().below());
     }
 
     public void drop(LivingEntity target, ItemStack itemStack) {
@@ -604,11 +664,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     @Override
-    public boolean canBeLeashed() {
-        return false;
-    }
-
-    @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (player.getItemInHand(hand).is(Items.BUCKET) && !player.level().isClientSide()) {
             player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
@@ -616,7 +671,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontdothat"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(
+                            advancement).getRemainingCriteria()) {
                         serverPlayer.getAdvancements().award(advancement, s);
                     }
                 }
@@ -630,7 +686,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontacidbottle"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(
+                            advancement).getRemainingCriteria()) {
                         serverPlayer.getAdvancements().award(advancement, s);
                     }
                 }

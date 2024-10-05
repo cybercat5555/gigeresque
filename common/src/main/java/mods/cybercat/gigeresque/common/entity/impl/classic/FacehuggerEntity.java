@@ -60,6 +60,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
@@ -92,6 +93,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.2F);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

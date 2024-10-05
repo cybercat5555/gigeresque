@@ -49,6 +49,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -67,9 +68,8 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
-        this.vibrationUser = new AzureVibrationUser(this,
-                (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                        this.blockPosition()).getAmount() >= 8) ? 1.3F : 2.65F);
+        this.vibrationUser = new AzureVibrationUser(this,2.65F);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

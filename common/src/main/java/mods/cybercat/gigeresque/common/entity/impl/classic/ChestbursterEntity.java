@@ -64,6 +64,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +90,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
         navigation = landNavigation;
     }
 

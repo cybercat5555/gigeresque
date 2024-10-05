@@ -30,8 +30,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySe
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.WaterAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -46,8 +45,6 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -70,12 +67,12 @@ import java.util.List;
  * TODO: Add Aqua egg?
  * TODO: Add Egg placement system
  */
-public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
+public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int killCounter;
 
-    public AquaticAlienEntity(EntityType<? extends WaterAlienEntity> type, Level world) {
+    public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
     }
 
@@ -90,16 +87,6 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
                 Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.5600000417232513).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public float getMaxGrowth() {
-        return Constants.TPM;
-    }
-
-    @Override
-    public LivingEntity growInto() {
-        return null;
     }
 
     @Override

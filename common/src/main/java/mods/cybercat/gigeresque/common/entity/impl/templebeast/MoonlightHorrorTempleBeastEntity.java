@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.level.Level;
 
 /**
@@ -23,6 +24,7 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity {
 
     public MoonlightHorrorTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
         super(entityType, level);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     @Override

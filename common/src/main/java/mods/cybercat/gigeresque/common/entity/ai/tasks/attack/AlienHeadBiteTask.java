@@ -57,7 +57,7 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                 }
                 // Check if enough time has elapsed since the last update
                 if (lastUpdateTime >= 600L) {
-                    if (entity.getNavigation() != null) ((GigNav)entity.getNavigation()).hardStop();
+                    if (entity.getNavigation() != null) entity.getNavigation().stop();
                     entity.getFirstPassenger().hurt(GigDamageSources.of(entity.level(), GigDamageSources.EXECUTION),
                             Integer.MAX_VALUE);
                     entity.heal(50);
