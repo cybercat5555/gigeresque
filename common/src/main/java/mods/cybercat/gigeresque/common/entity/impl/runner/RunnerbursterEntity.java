@@ -175,10 +175,12 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead)
+            if (event.isMoving() && !isDead && !this.isInWater())
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
                 else return event.setAndContinue(GigAnimationsDefault.WALK);
-            return event.setAndContinue(GigAnimationsDefault.IDLE);
+            if (event.isMoving() && !isDead && this.isInWater())
+                return event.setAndContinue(GigAnimationsDefault.SWIM);
+            return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
         }));
         controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
                 event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("birth",
