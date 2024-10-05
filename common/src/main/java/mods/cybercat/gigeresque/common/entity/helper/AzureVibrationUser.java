@@ -84,9 +84,14 @@ public class AzureVibrationUser implements VibrationSystem.User {
     public void onReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull Holder<GameEvent> gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
+        this.doVibrationAction(blockPos, entity2);
+    }
+
+    private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;
-            if (this.mob.isPassedOut() && this.mob.wakeupCounter == 1) this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
+            if (this.mob.isPassedOut() && this.mob.wakeupCounter == 1)
+                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
             if (this.mob.wakeupCounter == 2) {
                 if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
                     this.mob.setPassedOutStatus(false);
@@ -100,11 +105,14 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 this.mob.wakeupCounter = 0;
             }
         }
+
         if (this.mob.isCrawling() || this.mob.isTunnelCrawling()) {
             this.mob.setPassedOutStatus(false);
             this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
+
         if (this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
             mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
     }
+
 }
