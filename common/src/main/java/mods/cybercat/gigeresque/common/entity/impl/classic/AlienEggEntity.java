@@ -280,16 +280,11 @@ public class AlienEggEntity extends AlienEntity {
             // Get nearby entities within normal hatch range
             this.level().getEntitiesOfClass(LivingEntity.class,
                     this.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)).forEach(target -> {
-
                 // If the entity is alive and can be facehugged
                 if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-
                     // Apply random chance to hatch
                     if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
-
-                        if (target instanceof Player player && !player.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(player)) {
-                            setIsHatching(true);
-                        } else if (!(target instanceof Player)) {
+                        if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
                             setIsHatching(true);
                         }
                     }
