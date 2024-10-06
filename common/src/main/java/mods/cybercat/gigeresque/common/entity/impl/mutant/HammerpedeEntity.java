@@ -85,13 +85,15 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (velocityLength >= 0.000000001 && !isDead && this.entityData.get(STATE) == 0)
+            if (velocityLength >= 0.000000001 && !isDead && this.entityData.get(STATE) == 0 && !this.isInWater())
                 if (!this.isAggressive()) return event.setAndContinue(GigAnimationsDefault.WALK);
                 else return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
-            else if (this.getTarget() != null && !event.isMoving() && !isDead)
+            else if (this.getTarget() != null && !event.isMoving() && !isDead && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
-            else if (this.isAggressive()) return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
-            else return event.setAndContinue(GigAnimationsDefault.IDLE);
+            if (event.isMoving() && !isDead && this.isInWater())
+                return event.setAndContinue(GigAnimationsDefault.SWIM);
+            if (this.isAggressive()) return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
+            else return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
         }));
         controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
                 event -> PlayState.STOP).triggerableAnim("attack", GigAnimationsDefault.ATTACK).triggerableAnim("death",
