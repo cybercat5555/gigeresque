@@ -84,13 +84,15 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
+            if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround() && !this.isInWater())
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
                 else return event.setAndContinue(GigAnimationsDefault.WALK);
-            else if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            else if (this.isAggressive() && !this.onGround())
+            else if (this.isAggressive() && !this.onGround() && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CHARGE);
-            else return event.setAndContinue(GigAnimationsDefault.IDLE);
+            if (event.isMoving() && !isDead && this.isInWater())
+                return event.setAndContinue(GigAnimationsDefault.SWIM);
+            if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
+            else return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
         }).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 

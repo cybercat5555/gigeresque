@@ -1805,6 +1805,94 @@
 					}
 				}
 			}
+		},
+		"idle_water": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"root": {
+					"rotation": {
+						"vector": ["Math.sin(query.anim_time*180)*2", 0, 0]
+					},
+					"position": {
+						"vector": [0, "2+Math.cos(query.anim_time*180)*0.6", 0]
+					}
+				},
+				"front_left_arm": {
+					"rotation": {
+						"vector": ["79.6554+Math.cos(query.anim_time*180)*-2", "-63.0776+Math.cos(query.anim_time*180)*3", 20.56557]
+					}
+				},
+				"front_left_forearm1": {
+					"rotation": {
+						"vector": [0, 0, -105]
+					}
+				},
+				"front_right_arm": {
+					"rotation": {
+						"vector": ["79.6554+Math.cos(query.anim_time*180)*-2", "63.0776+Math.cos(query.anim_time*180)*3", -20.5656]
+					}
+				},
+				"front_right_forearm1": {
+					"rotation": {
+						"vector": [0, 0, 105]
+					}
+				},
+				"back_left_arm": {
+					"rotation": {
+						"vector": ["62.8237+Math.cos(query.anim_time*180)*-2", "4.511+Math.cos(query.anim_time*180)*3", 13.40823]
+					}
+				},
+				"back_right_arm": {
+					"rotation": {
+						"vector": ["74.6423+Math.cos(query.anim_time*180)*-2", "0.5831+Math.cos(query.anim_time*180)*3", -25.65678]
+					}
+				}
+			}
+		},
+		"swim": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"root": {
+					"rotation": {
+						"vector": [0, "Math.sin(query.anim_time*180)*8", "Math.cos(query.anim_time*180)*-4"]
+					},
+					"position": {
+						"vector": ["Math.cos(query.anim_time*180)*1", "2+Math.cos(query.anim_time*360)*-0.2", 0]
+					}
+				},
+				"front_left_arm": {
+					"rotation": {
+						"vector": ["79.6554+Math.cos(query.anim_time*180)*-2", "-63.0776+Math.cos(query.anim_time*180)*3", 20.56557]
+					}
+				},
+				"front_left_forearm1": {
+					"rotation": {
+						"vector": [0, 0, -105]
+					}
+				},
+				"front_right_arm": {
+					"rotation": {
+						"vector": ["79.6554+Math.cos(query.anim_time*180)*-2", "63.0776+Math.cos(query.anim_time*180)*3", -20.5656]
+					}
+				},
+				"front_right_forearm1": {
+					"rotation": {
+						"vector": [0, 0, 105]
+					}
+				},
+				"back_left_arm": {
+					"rotation": {
+						"vector": ["62.8237+Math.cos(query.anim_time*180)*-2", "4.511+Math.cos(query.anim_time*180)*3", 13.40823]
+					}
+				},
+				"back_right_arm": {
+					"rotation": {
+						"vector": ["74.6423+Math.cos(query.anim_time*180)*-2", "0.5831+Math.cos(query.anim_time*180)*3", -25.65678]
+					}
+				}
+			}
 		}
 	}
 }
