@@ -15,6 +15,11 @@ import net.minecraft.world.level.material.PushReaction;
 import java.util.function.Supplier;
 
 public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemRegistryInterface {
+    public static final Supplier<BeaconBlock> BEACON_BLOCK = CommonBlockRegistryInterface.registerBlock(
+            CommonMod.MOD_ID, "beacon_block", BeaconBlock::new);
+    public static final Supplier<BlockItem> BEACON_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
+            "beacon_block", () -> new GigBlockItem(BEACON_BLOCK.get(), new Item.Properties()));
+
     public static final Supplier<SporeBlock> SPORE_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "neomorph_spore_pods",
