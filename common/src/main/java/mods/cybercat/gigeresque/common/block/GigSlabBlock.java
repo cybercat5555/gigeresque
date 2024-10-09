@@ -27,7 +27,7 @@ public class GigSlabBlock extends SlabBlock {
                     default -> 0.55D;
                 };
                 var offsetX = random.nextDouble() - 0.5D;
-                var offsetY = startingY + (random.nextDouble() * 0.2D);
+                var offsetY = startingY + (random.nextDouble() * 1.3D);
                 var offsetZ = random.nextDouble() - 0.5D;
 
                 level.addParticle(GigParticles.MIST.get(),

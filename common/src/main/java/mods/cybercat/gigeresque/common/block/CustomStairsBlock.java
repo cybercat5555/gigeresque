@@ -29,7 +29,7 @@ public class CustomStairsBlock extends StairBlock {
         if ((level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigTags.ALLOW_MIST_BLOCKS)) && pos.getY() <= -50)
             for (var i = 0; i < 5; i++) {
                 var offsetX = random.nextDouble() - 0.5D;
-                var offsetY = 1.1D + (random.nextDouble() * 0.2D);
+                var offsetY = 0.1D + (random.nextDouble() * 1.3D);
                 var offsetZ = random.nextDouble() - 0.5D;
 
                 level.addParticle(GigParticles.MIST.get(),
