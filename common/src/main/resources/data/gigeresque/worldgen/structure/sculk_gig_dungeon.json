@@ -1,14 +1,49 @@
 {
   "type": "minecraft:jigsaw",
   "biomes": "#gigeresque:has_structure/sculk_gig_dungeon_biomes",
-  "step": "underground_structures",
-  "spawn_overrides": {},
+  "dimension_padding": 0,
+  "liquid_settings": "ignore_waterlogging",
+  "step": "strongholds",
   "terrain_adaptation": "encapsulate",
   "start_pool": "gigeresque:sculk_gig_dungeon",
-  "size": 15,
+  "size": 20,
   "start_height": {
     "absolute": -18
   },
-  "max_distance_from_center": 80,
+  "spawn_overrides": {
+    "ambient": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "axolotls": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "creature": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "misc": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "underground_water_creature": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "water_ambient": {
+      "bounding_box": "piece",
+      "spawns": []
+    },
+    "water_creature": {
+      "bounding_box": "piece",
+      "spawns": []
+    }
+  },
+  "max_distance_from_center": 116,
   "use_expansion_hack": false
 }
