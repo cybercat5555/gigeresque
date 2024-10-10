@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -21,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PandorasBoxStatusEffect extends MobEffect {
@@ -102,28 +104,83 @@ public class PandorasBoxStatusEffect extends MobEffect {
         var offsetZ = -lookAngle.z * distance; // negative to get behind
 
         if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
-            var randomBurster = player.getRandom().nextInt(0, 100) > 70 ? GigEntities.RUNNERBURSTER.get() : GigEntities.CHESTBURSTER.get();
-            var entityTypeToSpawn = player.getY() < 20 ? randomBurster : GigEntities.FACEHUGGER.get();
-            for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4 : 2); ++k) {
-                var faceHugger = entityTypeToSpawn.create(player.level());
-                Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D,
-                        player.getZ() + offsetZ);
-                faceHugger.setOnGround(true);
-                if (Services.PLATFORM.isDevelopmentEnvironment())
-                    faceHugger.setGlowingTag(true);
+            var entities = List.of(
+                    GigEntities.RUNNERBURSTER.get(),
+                    GigEntities.CHESTBURSTER.get(),
+                    GigEntities.FACEHUGGER.get()
+            );
+            EntityType<?> selectedEntity = null;
+            for (var i = 0; i < entities.size(); i++) {
+                if (player.getRandom().nextInt(100) < (i + 1) * 100 / entities.size()) {
+                    selectedEntity = entities.get(i);
+                    break;
+                }
+            }
+            if (selectedEntity != null)
+                for (var k = 1; k < 4; ++k) {
+                    var faceHugger = selectedEntity.create(player.level());
+                    if (faceHugger != null) {
+                        faceHugger.setPos(player.getX() + offsetX, player.getY() + 0.5D,
+                                player.getZ() + offsetZ);
+                        faceHugger.setOnGround(true);
+                        if (Services.PLATFORM.isDevelopmentEnvironment())
+                            faceHugger.setGlowingTag(true);
 
-                var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
-                if (player.level().isLoaded(spawnPos) && (faceHugger.level().getBlockState(
-                        spawnPos).isAir() || faceHugger.level().getBlockState(
-                        spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
-                        GigTags.AQUASPAWN_BIOMES)) {
-                    player.level().addFreshEntity(faceHugger);
+                        var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
+                        if (player.level().isLoaded(spawnPos) && (faceHugger.level().getBlockState(
+                                spawnPos).isAir() || faceHugger.level().getBlockState(
+                                spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
+                                GigTags.AQUASPAWN_BIOMES)) {
+                            player.level().addFreshEntity(faceHugger);
+                            if (Services.PLATFORM.isDevelopmentEnvironment())
+                                AzureLib.LOGGER.info("Spawned Mob");
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                var advancement = serverPlayer.server.getAdvancements().get(
+                                        Constants.modResource("firstspawnfromeffect"));
+                                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(
+                                        advancement).isDone()) {
+                                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(
+                                            advancement).getRemainingCriteria()) {
+                                        serverPlayer.getAdvancements().award(advancement, s);
+                                    }
+                                }
+                            }
+
+                            for (var x = -1; x <= 1; x++) {
+                                for (var z = -1; z <= 1; z++) {
+                                    var resinPos = spawnPos.offset(x, 0, z);
+                                    var resinBlockState = player.getRandom().nextBoolean()
+                                            ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
+                                            : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
+
+                                    if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(
+                                            resinPos) && player.level().isLoaded(resinPos)) {
+                                        player.level().setBlockAndUpdate(resinPos, resinBlockState);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        } else {
+            var aquaticAlien = GigEntities.AQUATIC_CHESTBURSTER.get().create(player.level());
+            if (aquaticAlien != null) {
+                aquaticAlien.setPos(player.getX() + offsetX, player.getY() - 9.5D, player.getZ() + offsetZ);
+                if (Services.PLATFORM.isDevelopmentEnvironment())
+                    aquaticAlien.setGlowingTag(true);
+
+                var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
+                if (player.level().isLoaded(spawnPos)) {
                     if (Services.PLATFORM.isDevelopmentEnvironment())
                         AzureLib.LOGGER.info("Spawned Mob");
+                    player.level().addFreshEntity(aquaticAlien);
                     if (player instanceof ServerPlayer serverPlayer) {
-                        var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
-                        if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                            for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                        var advancement = serverPlayer.server.getAdvancements().get(
+                                Constants.modResource("firstspawnfromeffect"));
+                        if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(
+                                advancement).isDone()) {
+                            for (var s : serverPlayer.getAdvancements().getOrStartProgress(
+                                    advancement).getRemainingCriteria()) {
                                 serverPlayer.getAdvancements().award(advancement, s);
                             }
                         }
@@ -136,44 +193,9 @@ public class PandorasBoxStatusEffect extends MobEffect {
                                     ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
                                     : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
 
-                            if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(
-                                    resinPos) && player.level().isLoaded(resinPos)) {
+                            if (player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
                                 player.level().setBlockAndUpdate(resinPos, resinBlockState);
                             }
-                        }
-                    }
-                }
-            }
-        } else {
-            var aquaticAlien = GigEntities.AQUATIC_CHESTBURSTER.get().create(player.level());
-            Objects.requireNonNull(aquaticAlien).setPos(player.getX() + offsetX, player.getY() - 9.5D,
-                    player.getZ() + offsetZ);
-            if (Services.PLATFORM.isDevelopmentEnvironment())
-                aquaticAlien.setGlowingTag(true);
-
-            var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
-            if (player.level().isLoaded(spawnPos)) {
-                if (Services.PLATFORM.isDevelopmentEnvironment())
-                    AzureLib.LOGGER.info("Spawned Mob");
-                player.level().addFreshEntity(aquaticAlien);
-                if (player instanceof ServerPlayer serverPlayer) {
-                    var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
-                    if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                        for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
-                            serverPlayer.getAdvancements().award(advancement, s);
-                        }
-                    }
-                }
-
-                for (var x = -1; x <= 1; x++) {
-                    for (var z = -1; z <= 1; z++) {
-                        var resinPos = spawnPos.offset(x, 0, z);
-                        var resinBlockState = player.getRandom().nextBoolean()
-                                ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
-                                : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
-
-                        if (player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
-                            player.level().setBlockAndUpdate(resinPos, resinBlockState);
                         }
                     }
                 }
