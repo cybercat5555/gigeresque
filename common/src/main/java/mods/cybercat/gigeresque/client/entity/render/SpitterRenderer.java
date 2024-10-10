@@ -18,6 +18,8 @@ public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
 
     @Override
     public void render(SpitterEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+        var scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
+        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
