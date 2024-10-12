@@ -17,9 +17,10 @@ public class NeomorphAdolescentRenderer extends GeoEntityRenderer<NeomorphAdoles
 
     @Override
     public void preRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
+        var scaleFactor = 1.0f + ((animatable.getGrowth() / animatable.getMaxGrowth()) / 5f);
+        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
                 packedOverlay, color);
-        poseStack.scale(0.6F, 0.6F, 0.6F);
     }
 
     @Override
