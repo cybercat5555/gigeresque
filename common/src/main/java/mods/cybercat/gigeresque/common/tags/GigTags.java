@@ -41,6 +41,7 @@ public record GigTags() {
     public static final TagKey<EntityType<?>> XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("xenoattackblacklist"));
     public static final TagKey<EntityType<?>> SMALL_XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("smallxenoattackblacklist"));
     public static final TagKey<EntityType<?>> ACID_RESISTANT_ENTITY = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("acidresistant"));
+    public static final TagKey<EntityType<?>> HWG_ENTITIES = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("hwg_entities"));
 
     /* GIG MOBS */
     public static final TagKey<EntityType<?>> GIG_ALIENS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquealiens"));

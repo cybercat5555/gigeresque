@@ -104,7 +104,8 @@ public class ImpregnationStatusEffect extends MobEffect {
             return GigEntities.NEOBURSTER.get().create(entity.level());
         } else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA)) {
             return GigEntities.SPITTER.get().create(entity.level());
-        }
+        } else if (entity.getType().is(GigTags.HWG_ENTITIES))
+            return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
         return defaultBurster;
     }
 
