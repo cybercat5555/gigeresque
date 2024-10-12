@@ -71,7 +71,7 @@ public record GigItems() implements CommonItemRegistryInterface {
                     new Item.Properties()));
     public static final Supplier<SpawnEggItem> NEOMORPH_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "neomorph_spawn_egg",
-            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.NEOMORPH, 0xfaf8f5, 0xa587a4, new Item.Properties()));
+            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.NEOMORPH, 0xa587a4, 0xe5d7dd, new Item.Properties()));
     public static final Supplier<SpawnEggItem> SPITTER_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "spitter_spawn_egg",
             GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.SPITTER, 0xccc737, 0x383a33, new Item.Properties()));
