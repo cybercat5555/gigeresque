@@ -112,12 +112,6 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-    }
-
-    @Override
     protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
