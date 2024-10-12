@@ -85,7 +85,7 @@ public record GigItems() implements CommonItemRegistryInterface {
                     new Item.Properties()));
     public static final Supplier<SpawnEggItem> MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "moonlighthorrortemplebeast_spawn_egg",
-            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.MOONLIGHTHORRORTEMPLEBEAST, 0xDEE0E2, 0x5f6d7f,
+            GigServices.COMMON_REGISTRY.makeSpawnEggFor(GigEntities.MOONLIGHTHORRORTEMPLEBEAST, 0x93a5bd, 0x31363a,
                     new Item.Properties()));
     public static final Supplier<SpawnEggItem> HELLMORPH_RUNNER_SPAWN_EGG = CommonItemRegistryInterface.registerItem(
             CommonMod.MOD_ID, "hellmorph_runner_spawn_egg",
