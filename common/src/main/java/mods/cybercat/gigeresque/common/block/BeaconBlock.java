@@ -8,7 +8,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +22,7 @@ public class BeaconBlock extends Block {
     private long lastEffectTime = 0;
 
     public BeaconBlock() {
-        super(Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(Float.MAX_VALUE, Float.MAX_VALUE).noOcclusion().noLootTable().randomTicks().noTerrainParticles());
+        super(Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(Float.MAX_VALUE, Float.MAX_VALUE).noOcclusion().noLootTable().randomTicks().noTerrainParticles().lightLevel(blockState -> 2));
     }
 
     @Override
