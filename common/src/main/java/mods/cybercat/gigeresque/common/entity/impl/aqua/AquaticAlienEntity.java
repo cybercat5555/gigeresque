@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -31,6 +32,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -42,13 +44,16 @@ import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -74,6 +79,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.010F, 1.0F, true);
     }
 
     @Override
@@ -180,6 +186,13 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         return super.doHurtTarget(target);
     }
 
+    @Override
+    public boolean killedEntity(@NotNull ServerLevel level, @NotNull LivingEntity entity) {
+        if (entity.getType().is(EntityTypeTags.AQUATIC))
+            this.killCounter++;
+        return super.killedEntity(level, entity);
+    }
+
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
@@ -197,13 +210,14 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     @Override
     public void tick() {
         super.tick();
-        if (this.getTarget() != null && this.getTarget().getLastHurtMob() == this && this.getTarget().isDeadOrDying()) {
-            this.killCounter++;
-        }
+        if (!this.level().isClientSide())
+            AzureLib.LOGGER.info(this.killCounter);
         if (this.killCounter >= 3) {
-//            var aquaEgg = GigEntities.AQUA_EGG.get().create(level());
-//            if (aquaEgg != null)
-//                this.level().addFreshEntity(aquaEgg);
+            var aquaEgg = GigEntities.AQUA_EGG.get().create(level());
+            if (aquaEgg != null) {
+                aquaEgg.setPos(this.getX(), this.getY(), this.getZ());
+                this.level().addFreshEntity(aquaEgg);
+            }
             this.killCounter = 0;
         }
     }

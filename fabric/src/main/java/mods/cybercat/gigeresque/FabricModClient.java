@@ -53,6 +53,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntityRenderer::new);
         EntityRenderers.register(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntityRenderer::new);
         EntityRenderers.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
+        EntityRenderers.register(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
         BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
         BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render());
         BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render());

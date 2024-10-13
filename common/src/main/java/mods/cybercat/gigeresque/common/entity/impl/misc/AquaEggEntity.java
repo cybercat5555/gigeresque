@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -23,28 +24,63 @@ import org.jetbrains.annotations.NotNull;
 
 public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
 
-    private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AquaEggEntity.class,
-            EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AquaEggEntity.class, EntityDataSerializers.FLOAT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public AquaEggEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
+        this.setYRot(this.random.nextFloat() * 360.0F);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && this.isAlive()) {
+        if (!level().isClientSide && this.isAlive())
             grow(this, 1 * getGrowthMultiplier());
-        }
-        if (this.isInWater() && this.getFluidHeight(FluidTags.WATER) > 0.1F) {
-            Vec3 vec3 = this.getDeltaMovement();
-            this.setDeltaMovement(vec3.x * 0.99F, vec3.y + (vec3.y < 0.06F ? 5.0E-4F : 0.0F), vec3.z * 0.99F);
+        /*
+          JFC floating is a bitch
+         */
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        var vec3 = this.getDeltaMovement();
+        var y = vec3.y + (vec3.y < 0.05999999865889549 ? 5.0E-4F : 0.0F);
+        if ((this.isInWater() && this.getFluidHeight(FluidTags.WATER) > 0.10000000149011612) || (this.isInLava() && this.getFluidHeight(FluidTags.LAVA) > 0.10000000149011612)) {
+            this.setDeltaMovement(vec3.x * 0.9900000095367432, y, vec3.z * 0.9900000095367432);
+        } else this.applyGravity();
+        if (this.level().isClientSide) {
+            this.noPhysics = false;
         } else {
-            this.applyGravity();
-            this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
+            this.noPhysics = !this.level().noCollision(this, this.getBoundingBox().deflate(1.0E-7));
+            if (this.noPhysics) {
+                this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
+            }
         }
+        if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > 9.999999747378752E-6 || (this.tickCount + this.getId()) % 4 == 0) {
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            var f = 0.98F;
+            if (this.onGround()) {
+                f = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction() * 0.98F;
+            }
+
+            this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.98, f));
+            if (this.onGround()) {
+                Vec3 vec31 = this.getDeltaMovement();
+                if (vec31.y < 0.0) {
+                    this.setDeltaMovement(vec31.multiply(1.0, -0.5, 1.0));
+                }
+            }
+        }
+    }
+
+    @Override
+    public @NotNull BlockPos getBlockPosBelowThatAffectsMyMovement() {
+        return this.getOnPos(0.999999F);
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return 0.04;
     }
 
     @Override

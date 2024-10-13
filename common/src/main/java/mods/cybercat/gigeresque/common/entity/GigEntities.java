@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.common.entity.impl.blood.AcidEntity;
 import mods.cybercat.gigeresque.common.entity.impl.blood.GooEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.misc.AquaEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.HologramEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
@@ -82,6 +83,8 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
             CommonMod.MOD_ID, EntityIdentifiers.GOO.getPath(), GooEntity::new, MobCategory.MISC, 0.8f, 0.05f);
     public static final Supplier<EntityType<HologramEntity>> ENGINEER_HOLOGRAM = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.ENGINEER_HOLOGRAM.getPath(), HologramEntity::new, MobCategory.MISC, 2.1f, 4.95f);
+    public static final Supplier<EntityType<AquaEggEntity>> AQUA_EGG = CommonEntityRegistryInterface.registerEntity(
+            CommonMod.MOD_ID, EntityIdentifiers.AQUA_EGG.getPath(), AquaEggEntity::new, MobCategory.MISC, 0.7f, 0.9f);
 
     public static final Supplier<BlockEntityType<AlienStorageEntity>> ALIEN_STORAGE_BLOCK_ENTITY_1 = CommonBlockEntityRegistryInterface.registerBlockEntity(
             CommonMod.MOD_ID, "alien_storage_block_entity",

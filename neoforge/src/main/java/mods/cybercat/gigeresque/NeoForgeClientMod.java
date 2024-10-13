@@ -58,6 +58,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
+        event.registerEntityRenderer(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
         event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
         event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render());
         event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render());

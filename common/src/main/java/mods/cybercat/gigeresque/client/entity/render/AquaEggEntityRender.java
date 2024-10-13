@@ -16,7 +16,7 @@ public class AquaEggEntityRender extends GeoEntityRenderer<AquaEggEntity> {
 
     @Override
     public void render(AquaEggEntity entity, float entityYaw, float partialTick, PoseStack stack, @NotNull MultiBufferSource bufferSource, int packedLightIn) {
-        var scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
+        var scaleFactor = 0.2f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
