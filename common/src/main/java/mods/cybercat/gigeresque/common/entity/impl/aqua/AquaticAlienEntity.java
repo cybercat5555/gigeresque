@@ -210,8 +210,8 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide())
-            AzureLib.LOGGER.info(this.killCounter);
+//        if (!this.level().isClientSide())
+//            AzureLib.LOGGER.info(this.killCounter);
         if (this.killCounter >= 3) {
             var aquaEgg = GigEntities.AQUA_EGG.get().create(level());
             if (aquaEgg != null) {
