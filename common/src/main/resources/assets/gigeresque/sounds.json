@@ -1,4 +1,23 @@
 {
+  "dungeon_idle": {
+    "sounds": [
+      {
+        "name": "gigeresque:dungeon_idle"
+      },
+      {
+        "name": "gigeresque:dungeon_idle1"
+      },
+      {
+        "name": "gigeresque:dungeon_idle2"
+      },
+      {
+        "name": "gigeresque:dungeon_idle3"
+      },
+      {
+        "name": "gigeresque:dungeon_idle4"
+      }
+    ]
+  },
   "tracker_summon": {
     "sounds": [
       {

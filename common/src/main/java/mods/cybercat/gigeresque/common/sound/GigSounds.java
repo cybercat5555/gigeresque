@@ -7,6 +7,12 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.function.Supplier;
 
 public record GigSounds() implements CommonSoundRegistryInterface {
+    public static Supplier<SoundEvent> DUNGEON_IDLE = CommonSoundRegistryInterface.registerSound(
+            CommonMod.MOD_ID,
+            "dungeon_idle",
+            () -> SoundEvent.createVariableRangeEvent(
+                    ResourceLocation.fromNamespaceAndPath(CommonMod.MOD_ID,
+                            "dungeon_idle")));
     public static Supplier<SoundEvent> TRACKER_SUMMON = CommonSoundRegistryInterface.registerSound(
             CommonMod.MOD_ID,
             "tracker_summon",
