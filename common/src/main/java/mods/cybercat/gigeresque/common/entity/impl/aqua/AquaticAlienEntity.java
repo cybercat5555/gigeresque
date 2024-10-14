@@ -69,8 +69,6 @@ import java.util.List;
 
 /**
  * TODO: Update animations once done
- * TODO: Add Aqua egg?
- * TODO: Add Egg placement system
  */
 public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
