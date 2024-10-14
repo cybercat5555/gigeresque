@@ -18,8 +18,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class SporeStatusEffect extends MobEffect {
 
     public SporeStatusEffect() {
@@ -29,11 +27,6 @@ public class SporeStatusEffect extends MobEffect {
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
-    }
-
-    @Override
-    public boolean isInstantenous() {
-        return false;
     }
 
     @Override

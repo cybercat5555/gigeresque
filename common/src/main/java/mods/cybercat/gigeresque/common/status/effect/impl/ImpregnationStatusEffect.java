@@ -22,8 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class ImpregnationStatusEffect extends MobEffect {
 
     public ImpregnationStatusEffect() {
@@ -33,11 +31,6 @@ public class ImpregnationStatusEffect extends MobEffect {
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
-    }
-
-    @Override
-    public boolean isInstantenous() {
-        return false;
     }
 
     @Override

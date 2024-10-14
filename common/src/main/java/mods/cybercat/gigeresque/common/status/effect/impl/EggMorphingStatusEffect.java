@@ -26,11 +26,6 @@ public class EggMorphingStatusEffect extends MobEffect {
         return true;
     }
 
-    @Override
-    public boolean isInstantenous() {
-        return false;
-    }
-
     public static void effectRemoval(@NotNull LivingEntity entity, MobEffectInstance mobEffectInstance) {
         if (Constants.isCreativeSpecPlayer.test(entity)) return;
         if (!GigEntityUtils.isTargetHostable(entity)) return;
