@@ -122,6 +122,26 @@ public record GigEntityUtils() {
         }
     }
 
+    public static LivingEntity spawnBurster(LivingEntity entity) {
+        var defaultBurster = GigEntities.CHESTBURSTER.get().create(entity.level());
+        if (!entity.hasEffect(GigStatusEffects.SPORE) && !entity.hasEffect(GigStatusEffects.DNA)) {
+            if (entity.getType().is(GigTags.RUNNER_HOSTS)) {
+                var runnerBurster = GigEntities.RUNNERBURSTER.get().create(entity.level());
+                if (runnerBurster != null) {
+                    runnerBurster.setHostId("runner");
+                    return runnerBurster;
+                }
+            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
+                return GigEntities.AQUATIC_CHESTBURSTER.get().create(entity.level());
+        } else if (GigEntityUtils.convertToNeo(entity))
+            return GigEntities.NEOBURSTER.get().create(entity.level());
+        else if (GigEntityUtils.convertToSpitter(entity))
+            return GigEntities.SPITTER.get().create(entity.level());
+        else if (entity.getType().is(GigTags.HWG_ENTITIES))
+            return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
+        return defaultBurster;
+    }
+
     private static void moveToAndSpawn(@NotNull LivingEntity entity, Entity summon) {
         summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
         spawnEffects(entity.level(), entity);

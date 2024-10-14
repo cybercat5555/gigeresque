@@ -67,7 +67,7 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof ImpregnationStatusEffect)) return;
         if (entity instanceof Mob mob && mob.isNoAi()) return;
         if (entity.hasEffect(GigStatusEffects.TRAUMA)) return;
-        LivingEntity burster = createBurster(entity);
+        var burster = GigEntityUtils.spawnBurster(entity);
         if (burster != null) {
             setBursterProperties(entity, burster);
             entity.level().addFreshEntity(burster);
@@ -77,26 +77,6 @@ public class ImpregnationStatusEffect extends MobEffect {
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Integer.MAX_VALUE);
         }
-    }
-
-    private static LivingEntity createBurster(LivingEntity entity) {
-        var defaultBurster = GigEntities.CHESTBURSTER.get().create(entity.level());
-        if (!entity.hasEffect(GigStatusEffects.SPORE) && !entity.hasEffect(GigStatusEffects.DNA)) {
-            if (entity.getType().is(GigTags.RUNNER_HOSTS)) {
-                var runnerBurster = GigEntities.RUNNERBURSTER.get().create(entity.level());
-                if (runnerBurster != null) {
-                    runnerBurster.setHostId("runner");
-                    return runnerBurster;
-                }
-            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
-                return GigEntities.AQUATIC_CHESTBURSTER.get().create(entity.level());
-        } else if (GigEntityUtils.convertToNeo(entity))
-            return GigEntities.NEOBURSTER.get().create(entity.level());
-        else if (GigEntityUtils.convertToSpitter(entity))
-            return GigEntities.SPITTER.get().create(entity.level());
-        else if (entity.getType().is(GigTags.HWG_ENTITIES))
-            return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
-        return defaultBurster;
     }
 
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
