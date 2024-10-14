@@ -14,7 +14,6 @@ import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
 import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -31,12 +30,12 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
@@ -49,7 +48,6 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
@@ -63,7 +61,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -192,11 +189,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 // Flee Fire
                 new FleeFireTask<>(3.5F),
                 // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching()),
+                new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()).startCondition(
+                        entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
                 // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
-                        entity -> this.isPassedOut()));
+                new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
     }
 
     @Override
@@ -216,15 +212,13 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 new FirstApplicableBehaviour<RunnerAlienEntity>(
                         // Targeting
                         new TargetOrRetaliate<>().stopIf(
-                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
+                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())),
                         // Look at players
                         new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
-                                entity -> this.isPassedOut() || this.isExecuting()),
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
                         // Look around randomly
                         new SetRandomLookTarget<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()),
+                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
@@ -232,17 +226,16 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
                         // Idle
-                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                                entity -> entity.getRandom().nextInt(30, 60))));
+                        new EnterStasisTask<>(6000)).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0));
     }
 
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
-                new JumpToTargetTask<>(20),
-                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
     }
 
     /*

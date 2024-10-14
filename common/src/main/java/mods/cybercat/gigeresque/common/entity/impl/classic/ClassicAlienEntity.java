@@ -211,21 +211,20 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return BrainActivityGroup.coreTasks(
                 // Flee Fire
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
-                        entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
+                        entity -> entity.setFleeingStatus(true)).whenStopping(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
                 new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle()).stopIf(entity -> !this.isVehicle()),
                 // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
+                new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
                 // Hisses
-                new HissingTask<>(800).startCondition(entity -> !this.isAggressive()).stopIf(entity -> this.isAggressive()),
+                new HissingTask<>(800).startCondition(entity -> !this.isAggressive()).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
                 // Searches
-                new SearchTask<>(6000).startCondition(entity -> !this.isAggressive()).stopIf(entity -> this.isAggressive()),
+                new SearchTask<>(6000).startCondition(entity -> !this.isAggressive()).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
                 // Headbite
                 new AlienHeadBiteTask<>(this.isBiting() ? 44 : 760),
                 // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(
-                        entity -> this.isExecuting()));
+                new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
     }
 
     @Override
@@ -248,12 +247,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                                 target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())),
                         // Look at players
                         new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
-                                entity -> this.isPassedOut() || this.isExecuting()),
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
                         // Look around randomly
                         new SetRandomLookTarget<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()),
+                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
@@ -266,10 +263,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) && !this.isPassedOut()),
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || !this.isPassedOut()),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
-                new JumpToTargetTask<>(20),
-                new ClassicXenoMeleeAttackTask<>(5));
+                new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
     }
 
     @Override
