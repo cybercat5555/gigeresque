@@ -46,13 +46,12 @@ public class FragileRoughBlock extends Block implements Fallable {
         super.stepOn(level, pos, state, entity);
         if (entity instanceof LivingEntity) {
             standingTick++;
-            if (standingTick >= 40) {
+            if (standingTick >= (entity.isSteppingCarefully() ? 80 :  40)) {
                 var areaEffectCloudEntity = new AreaEffectCloud(level, pos.getX(), pos.getY(), pos.getZ());
                 areaEffectCloudEntity.setRadius(1.0F);
                 areaEffectCloudEntity.setDuration(60);
                 areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
-                areaEffectCloudEntity.setRadiusPerTick(
-                        -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+                areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
                 level.addFreshEntity(areaEffectCloudEntity);
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 standingTick = 0;
