@@ -90,7 +90,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
         navigation = landNavigation;
     }
 
