@@ -56,8 +56,6 @@ public class FragileRoughBlock extends Block implements Fallable {
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 standingTick = 0;
             }
-        } else {
-            standingTick = 0;
         }
     }
 }
