@@ -64,7 +64,6 @@ import java.util.List;
 
 /**
  * TODO: Add animations once animated
- * TODO: Start on AI
  */
 public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrainOwner<DraconicTempleBeastEntity>  {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
