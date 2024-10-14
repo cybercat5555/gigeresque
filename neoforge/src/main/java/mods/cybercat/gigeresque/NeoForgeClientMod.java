@@ -39,6 +39,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
+//        event.registerEntityRenderer(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.CHESTBURSTER.get(), ChestbursterEntityRenderer::new);

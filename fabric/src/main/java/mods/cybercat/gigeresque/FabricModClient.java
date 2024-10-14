@@ -34,6 +34,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
+//        EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         EntityRenderers.register(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntityRenderer::new);
         EntityRenderers.register(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         EntityRenderers.register(GigEntities.CHESTBURSTER.get(), ChestbursterEntityRenderer::new);

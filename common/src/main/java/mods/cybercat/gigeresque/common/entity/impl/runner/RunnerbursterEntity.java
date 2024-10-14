@@ -95,6 +95,9 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         }
     }
 
+    /*
+    TODO: Remove classic alien when Rom stages ready ready
+     */
     @Override
     public LivingEntity growInto() {
         LivingEntity alien;

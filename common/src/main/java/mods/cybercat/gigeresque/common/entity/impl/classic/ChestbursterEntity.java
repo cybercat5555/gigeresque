@@ -70,6 +70,7 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ChestbursterEntity extends AlienEntity implements Growable, SmartBrainOwner<ChestbursterEntity> {
 
@@ -288,8 +289,14 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         return Constants.TPD / 2.0f;
     }
 
+    /*
+    TODO: replace runnerburster with rom Cocoon when not runner
+     */
     @Override
     public LivingEntity growInto() {
+//        LivingEntity entity;
+//        if (Objects.equals(hostId, "runner")) entity = GigEntities.RUNNER_ALIEN.get().create(level());
+//        else entity = GigEntities.ALIEN_COCOON.get().create(level());
         var entity = GigEntities.RUNNERBURSTER.get().create(level());
         entity.hostId = this.hostId;
         if (hasCustomName()) entity.setCustomName(this.getCustomName());

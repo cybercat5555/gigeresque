@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
@@ -16,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 public record GigMeleeAttackSelector() {
 
     /* ANIMATION SELECTORS */
-    public static final AnimationSelector<ClassicAlienEntity> CLASSIC_ANIM_SELECTOR = classicAlienEntity -> {
+    public static final AnimationSelector<AlienEntity> CLASSIC_ANIM_SELECTOR = classicAlienEntity -> {
         var basicCheck = classicAlienEntity.isCrawling() || classicAlienEntity.isTunnelCrawling() || classicAlienEntity.isInWater();
         var animKey = switch (classicAlienEntity.getRandom().nextInt(4)) {
             case 1 -> basicCheck ? Constants.RIGHT_CLAW_BASIC : Constants.RIGHT_CLAW;

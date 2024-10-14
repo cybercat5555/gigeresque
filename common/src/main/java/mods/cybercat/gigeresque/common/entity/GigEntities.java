@@ -39,6 +39,8 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
 
     public static final Supplier<EntityType<ClassicAlienEntity>> ALIEN = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, MobCategory.MONSTER, 0.9f, 1.95f);
+//    public static final Supplier<EntityType<ClassicAlienEntity>> ROM_ALIEN = CommonEntityRegistryInterface.registerEntity(
+//            CommonMod.MOD_ID, EntityIdentifiers.ROM_ALIEN.getPath(), ClassicAlienEntity::new, MobCategory.MONSTER, 0.9f, 1.95f);
     public static final Supplier<EntityType<AquaticAlienEntity>> AQUATIC_ALIEN = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, MobCategory.MONSTER, 2.0f, 2.0f);
     public static final Supplier<EntityType<AquaticChestbursterEntity>> AQUATIC_CHESTBURSTER = CommonEntityRegistryInterface.registerEntity(

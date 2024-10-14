@@ -12,6 +12,7 @@ public record EntityTextures() {
     private static final String BASE_BLOCK_URL = "%s/block".formatted(BASE_URL);
     public static final ResourceLocation ALIEN = Constants.modResource("%s/alien/alien.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation ALIEN_STATIS = Constants.modResource("%s/alien/alien_stasis.png".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation ROM_ALIEN_STATIS = Constants.modResource("%s/rom_alien/rom_alien_stasis.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation ALIEN_YOUNG = Constants.modResource("%s/alien/alien_young.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation CHESTBURSTER_BLOOD = Constants.modResource("%s/chestburster/burster_blood.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation EGG = Constants.modResource("%s/egg/egg.png".formatted(BASE_ENTITY_URL));

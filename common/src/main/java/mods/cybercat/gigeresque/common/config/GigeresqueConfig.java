@@ -175,6 +175,43 @@ public class GigeresqueConfig {
         public float classicXenoAttackSpeed = 3.9F;
     }
 
+//    @Configurable
+//    @Configurable.Synchronized
+//    public romConfigs romXenoConfigs = new romConfigs();
+//
+//    public static class romConfigs {
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public float romGrowthMultiplier = 1.0f;
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public double romXenoHealth = 200;
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public double romXenoArmor = 9;
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public double romXenoAttackDamage = 7;
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public float romXenoTailAttackDamage = 3;
+//
+//        @Configurable
+//        @Configurable.Synchronized
+//        @Configurable.DecimalRange(min = 1)
+//        public float romXenoAttackSpeed = 3.9F;
+//    }
+
     @Configurable
     @Configurable.Synchronized
     public AquaticAlienConfigs aquaticXenoConfigs = new AquaticAlienConfigs();

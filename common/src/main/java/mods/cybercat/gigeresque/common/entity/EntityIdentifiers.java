@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 public record EntityIdentifiers() {
 
     public static final ResourceLocation ALIEN = Constants.modResource("alien");
+    public static final ResourceLocation ROM_ALIEN = Constants.modResource("rom_alien");
     public static final ResourceLocation AQUATIC_ALIEN = Constants.modResource("aquatic_alien");
     public static final ResourceLocation AQUATIC_CHESTBURSTER = Constants.modResource("aquatic_chestburster");
     public static final ResourceLocation CHESTBURSTER = Constants.modResource("chestburster");
