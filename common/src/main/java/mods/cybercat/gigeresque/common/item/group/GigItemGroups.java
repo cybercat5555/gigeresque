@@ -92,6 +92,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                         entries.accept(GigBlocks.ROUGH_ALIEN_SLAB.get());
                         entries.accept(GigBlocks.ROUGH_ALIEN_STAIRS.get());
                         entries.accept(GigBlocks.ROUGH_ALIEN_WALL.get());
+                        entries.accept(GigBlocks.ROUGH_FRAGILE_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.SINOUS_ALIEN_BLOCK.get());
                         entries.accept(GigBlocks.SMOOTH_ALIEN_PILLAR.get());
                         entries.accept(GigBlocks.SINOUS_ALIEN_SLAB.get());
