@@ -16,7 +16,7 @@ public class DevDebugItem extends Item {
 
     @Override
     public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity interactionTarget, @NotNull InteractionHand usedHand) {
-        if (interactionTarget instanceof AlienEntity alienEntity){
+        if (interactionTarget instanceof AlienEntity alienEntity) {
             if (!alienEntity.isPassedOut()) {
                 alienEntity.setPassedOutStatus(true);
                 return InteractionResult.sidedSuccess(player.level().isClientSide);}

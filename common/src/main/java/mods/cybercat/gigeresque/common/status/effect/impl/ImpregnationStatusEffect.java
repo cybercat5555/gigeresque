@@ -57,8 +57,7 @@ public class ImpregnationStatusEffect extends MobEffect {
             var customX = livingEntity.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
             var customZ = livingEntity.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
             for (var i = 0; i < 1 + (int) (livingEntity.getMaxHealth() - livingEntity.getHealth()); i++)
-                livingEntity.level().addAlwaysVisibleParticle(GigParticles.BLOOD.get(), customX, yOffset, customZ, 0.0, -0.15,
-                        0.0);
+                livingEntity.level().addAlwaysVisibleParticle(GigParticles.BLOOD.get(), customX, yOffset, customZ, 0.0, -0.15, 0.0);
         }
     }
 
@@ -74,9 +73,8 @@ public class ImpregnationStatusEffect extends MobEffect {
             entity.level().addFreshEntity(burster);
             entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL, 2.0f,
                     1.0f);
-            if (Constants.isNotCreativeSpecPlayer.test(entity)) {
+            if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
-            }
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Integer.MAX_VALUE);
         }
     }
@@ -90,14 +88,13 @@ public class ImpregnationStatusEffect extends MobEffect {
                     runnerBurster.setHostId("runner");
                     return runnerBurster;
                 }
-            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS)) {
+            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
                 return GigEntities.AQUATIC_CHESTBURSTER.get().create(entity.level());
-            }
-        } else if (GigEntityUtils.convertToNeo(entity)) {
+        } else if (GigEntityUtils.convertToNeo(entity))
             return GigEntities.NEOBURSTER.get().create(entity.level());
-        } else if (GigEntityUtils.convertToSpitter(entity)) {
+        else if (GigEntityUtils.convertToSpitter(entity))
             return GigEntities.SPITTER.get().create(entity.level());
-        } else if (entity.getType().is(GigTags.HWG_ENTITIES))
+        else if (entity.getType().is(GigTags.HWG_ENTITIES))
             return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
         return defaultBurster;
     }

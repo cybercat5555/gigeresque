@@ -45,21 +45,19 @@ public class SporeStatusEffect extends MobEffect {
             neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(neoBurster);
-            if (Constants.isNotCreativeSpecPlayer.test(entity)) {
+            if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
-            }
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
         }
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {
-        if (!world.isClientSide()) {
+        if (!world.isClientSide())
             for (var i = 0; i < 2; i++)
                 ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),
                         entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
                         entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
                         0.15000000596046448);
-        }
     }
 
 }

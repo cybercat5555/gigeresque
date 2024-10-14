@@ -19,16 +19,13 @@ public class DamageSourceUtils {
     }
 
     public static void damageArmor(ItemStack itemStack, RandomSource randomSource, int minDamage, int maxDamage) {
-        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
+        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS))
             itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(minDamage, maxDamage));
-        }
     }
 
     public static boolean isDamageFromFront(DamageSource source, LivingEntity alien) {
-        if (source.getDirectEntity() != null) {
-            Vec3 directionToSource = source.getDirectEntity().position().subtract(alien.position()).normalize();
-            return alien.getLookAngle().dot(directionToSource) > 0.5;
-        }
+        if (source.getDirectEntity() != null)
+            return alien.getLookAngle().dot(source.getDirectEntity().position().subtract(alien.position()).normalize()) > 0.5;
         return false;
     }
 }

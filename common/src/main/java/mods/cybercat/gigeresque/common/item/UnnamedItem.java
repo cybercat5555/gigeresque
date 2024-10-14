@@ -39,13 +39,12 @@ public class UnnamedItem extends Item {
                 var horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
                 int distanceCategory;
-                if (horizontalDistance  <= 50) {
+                if (horizontalDistance  <= 50)
                     distanceCategory = 3; // Close (within 50 blocks)
-                } else if (horizontalDistance  <= 75) {
+                else if (horizontalDistance  <= 75)
                     distanceCategory = 2; // Mid-range (50 - 75 blocks)
-                } else {
+                else
                     distanceCategory = 1; // Far (greater than 75 blocks)
-                }
                 var viewVector = player.getViewVector(1.0F);
                 var spawnX = player.getX() + viewVector.x * 5;
                 var spawnZ = player.getZ() + viewVector.z * 5;
