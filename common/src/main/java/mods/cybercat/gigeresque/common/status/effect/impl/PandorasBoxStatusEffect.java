@@ -8,7 +8,9 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -149,13 +151,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                             for (var x = -1; x <= 1; x++) {
                                 for (var z = -1; z <= 1; z++) {
                                     var resinPos = spawnPos.offset(x, 0, z);
-                                    var resinBlockState = player.getRandom().nextBoolean()
-                                            ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
-                                            : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
-
-                                    if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(
-                                            resinPos) && player.level().isLoaded(resinPos)) {
-                                        player.level().setBlockAndUpdate(resinPos, resinBlockState);
+                                    if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
+                                        NestBuildingHelper.tryBuildNestAround(player.level(), resinPos);
                                     }
                                 }
                             }
@@ -189,12 +186,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                     for (var x = -1; x <= 1; x++) {
                         for (var z = -1; z <= 1; z++) {
                             var resinPos = spawnPos.offset(x, 0, z);
-                            var resinBlockState = player.getRandom().nextBoolean()
-                                    ? GigBlocks.NEST_RESIN_BLOCK.get().defaultBlockState()
-                                    : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
-
-                            if (player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
-                                player.level().setBlockAndUpdate(resinPos, resinBlockState);
+                            if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
+                                NestBuildingHelper.tryBuildNestAround(player.level(), resinPos);
                             }
                         }
                     }
