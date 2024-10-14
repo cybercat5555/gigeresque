@@ -59,6 +59,8 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                     .title(Component.translatable("itemGroup." + CommonMod.MOD_ID + ".blocks"))
                     .icon(() -> new ItemStack(GigBlocks.NEST_RESIN_WEB.get()))
                     .displayItems((enabledFeatures, entries) -> {
+                        entries.accept(GigBlocks.DUNGEON_VENT_BLOCK.get());
+                        entries.accept(GigBlocks.SURFACE_VENT_BLOCK.get());
                         entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_1.get());
                         entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER.get());
                         entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO.get());
