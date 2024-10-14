@@ -44,9 +44,9 @@ public class FragileRoughBlock extends Block implements Fallable {
         if (entity.getType().is(GigTags.GIG_ALIENS)) return;
         if (Constants.isCreativeSpecPlayer.test(entity)) return;
         super.stepOn(level, pos, state, entity);
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity livingEntity) {
             standingTick++;
-            if (standingTick >= (entity.isSteppingCarefully() ? 80 :  40)) {
+            if (standingTick >= (livingEntity.isSteppingCarefully() ? 80 :  40)) {
                 var areaEffectCloudEntity = new AreaEffectCloud(level, pos.getX(), pos.getY(), pos.getZ());
                 areaEffectCloudEntity.setRadius(1.0F);
                 areaEffectCloudEntity.setDuration(60);
