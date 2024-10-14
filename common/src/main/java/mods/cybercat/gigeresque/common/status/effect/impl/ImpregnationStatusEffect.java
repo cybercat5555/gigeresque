@@ -100,9 +100,9 @@ public class ImpregnationStatusEffect extends MobEffect {
             } else if (entity.getType().is(GigTags.AQUATIC_HOSTS)) {
                 return GigEntities.AQUATIC_CHESTBURSTER.get().create(entity.level());
             }
-        } else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE)) {
+        } else if (GigEntityUtils.convertToNeo(entity)) {
             return GigEntities.NEOBURSTER.get().create(entity.level());
-        } else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA)) {
+        } else if (GigEntityUtils.convertToSpitter(entity)) {
             return GigEntities.SPITTER.get().create(entity.level());
         } else if (entity.getType().is(GigTags.HWG_ENTITIES))
             return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
