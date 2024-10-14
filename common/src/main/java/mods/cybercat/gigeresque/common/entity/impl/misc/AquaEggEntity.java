@@ -53,7 +53,7 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
         } else {
             this.noPhysics = !this.level().noCollision(this, this.getBoundingBox().deflate(1.0E-7));
             if (this.noPhysics) {
-                this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
+                this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 1.5, this.getZ());
             }
         }
         if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > 9.999999747378752E-6 || (this.tickCount + this.getId()) % 4 == 0) {
@@ -63,11 +63,11 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
                 f = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getFriction() * 0.98F;
             }
 
-            this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.98, f));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.78, f));
             if (this.onGround()) {
                 Vec3 vec31 = this.getDeltaMovement();
                 if (vec31.y < 0.0) {
-                    this.setDeltaMovement(vec31.multiply(1.0, -0.5, 1.0));
+                    this.setDeltaMovement(vec31.multiply(1.0, -0.1, 1.0));
                 }
             }
         }
