@@ -163,10 +163,6 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     @Override
-    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
-    }
-
-    @Override
     protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
