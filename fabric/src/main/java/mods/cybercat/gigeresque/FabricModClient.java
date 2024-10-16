@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -26,6 +27,7 @@ public class FabricModClient implements ClientModInitializer {
         FluidRenderHandlers.initialize();
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB_CROSS.get(), RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.BEACON_BLOCK.get(), RenderType.translucent());
         registerParticle("acid", GigParticles.ACID.get(), AcidParticleFactory::new);
         registerParticle("goo", GigParticles.GOO.get(), GooParticleFactory::new);
         registerParticle("blood", GigParticles.BLOOD.get(), BloodParticleFactory::new);

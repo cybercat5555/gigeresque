@@ -31,6 +31,7 @@ public class NeoForgeClientMod {
     public static void onClientSetup(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(GigBlocks.NEST_RESIN_WEB.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(GigBlocks.NEST_RESIN_WEB_CROSS.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(GigBlocks.BEACON_BLOCK.get(), RenderType.translucent());
     }
 
     @SubscribeEvent
