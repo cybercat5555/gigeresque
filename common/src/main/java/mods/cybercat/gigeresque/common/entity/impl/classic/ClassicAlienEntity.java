@@ -91,6 +91,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
+    /*
+    TODO: Buff once Rom Alien is ready
+     */
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 CommonMod.config.classicXenoConfigs.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.classicXenoConfigs.classicXenoArmor).add(
