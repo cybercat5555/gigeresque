@@ -46,7 +46,7 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.DecimalRange(min = 1200)
+        @Configurable.DecimalRange(min = 1)
         public float facehuggerAttachTickTimer = 1200.0f;
 
         @Configurable

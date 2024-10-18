@@ -185,7 +185,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         entity.yBodyRot = 0;
         entity.setSpeed(0.0f);
         if (CommonMod.config.facehuggerConfigs.facehuggerGivesBlindness) entity.addEffect(
-                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.facehuggerConfigs.facehuggerAttachTickTimer, 0));
+                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.getFacehuggerAttachTickTimer(), 0));
         if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
             player.connection.send(new ClientboundSetPassengersPacket(entity));
     }

@@ -52,7 +52,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     private String generateTimerMessage() {
         var ticksAttached = ((FacehuggerEntity) Objects.requireNonNull(this.getFirstPassenger())).ticksAttachedToHost;
-        var tickTimer = CommonMod.config.facehuggerConfigs.facehuggerAttachTickTimer;
+        var tickTimer = CommonMod.config.getFacehuggerAttachTickTimer();
 
         // Calculate seconds if needed
         var secondsAttached = CommonMod.config.facehuggerConfigs.enableFacehuggerTimerTicks ? ticksAttached : Math.round(
