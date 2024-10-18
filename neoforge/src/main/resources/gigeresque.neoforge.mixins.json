@@ -11,6 +11,7 @@
     "FluidMixin",
     "common.PointOfInterestTypesInvoker",
     "common.RaidMixin",
+    "common.ServerLevelMixin",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.FoxMixin",

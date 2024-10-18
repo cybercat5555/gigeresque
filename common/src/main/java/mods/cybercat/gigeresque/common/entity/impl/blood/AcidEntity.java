@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,17 +74,10 @@ public class AcidEntity extends Entity {
                 doParticleSounds(this.random);
             }
             // Do things
+            var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
+            if (this.tickCount % 20 == 0 && canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT))
+                this.doBlockBreaking(this.random);
             if (this.tickCount % 40 == 0) {
-                var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
-                if (canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
-                    var hardness = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
-                    var currentTime = System.currentTimeMillis();
-                    // Check if enough time has elapsed since the last update
-                    if (currentTime - lastUpdateTime >= (1000L * Math.max(1, (int) (hardness * 20)))) {
-                        lastUpdateTime = currentTime;
-                        this.doBlockBreaking(this.random);
-                    }
-                }
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
@@ -104,7 +99,9 @@ public class AcidEntity extends Entity {
     }
 
     private void doBlockBreaking(RandomSource randomSource) {
-        this.level().setBlockAndUpdate(this.blockPosition().below(), Blocks.AIR.defaultBlockState());
+        BlockState stateBelow = this.level().getBlockState(this.blockPosition().below());
+        float hardness = stateBelow.getBlock().defaultBlockState().getDestroySpeed(level(), this.blockPosition());
+        BlockBreakProgressManager.damage(level(), this.blockPosition().below());
         this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
                 this.blockPosition().getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
                 0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
