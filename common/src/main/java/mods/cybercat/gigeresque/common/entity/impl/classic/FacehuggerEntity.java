@@ -347,7 +347,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     @Override
     public BrainActivityGroup<FacehuggerEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(new FleeFireTask<>(2.2F).whenStarting(
-                entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new LookAtTarget<>(), new MoveToWalkTarget<>().stopIf(entity -> this.isFleeing()));
+                entity -> entity.setFleeingStatus(true)).whenStopping(entity -> entity.setFleeingStatus(false)), new LookAtTarget<>(), new MoveToWalkTarget<>().stopIf(entity -> this.isFleeing()));
     }
 
     @Override
