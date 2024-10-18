@@ -138,7 +138,7 @@ public record GigEntityUtils() {
         else if (GigEntityUtils.convertToSpitter(entity))
             return GigEntities.SPITTER.get().create(entity.level());
         else if (entity.getType().is(GigTags.HWG_ENTITIES))
-            return GigEntities.HELLMORPH_RUNNER.get().create(entity.level());
+            return GigEntities.HELL_BURSTER.get().create(entity.level());
         return defaultBurster;
     }
 

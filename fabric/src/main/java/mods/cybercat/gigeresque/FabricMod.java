@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
@@ -74,6 +75,7 @@ public final class FabricMod implements ModInitializer {
         FabricDefaultAttributeRegistry.register(GigEntities.HELLMORPH_RUNNER.get(),
                 HellmorphRunnerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes());
         ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
     }
 

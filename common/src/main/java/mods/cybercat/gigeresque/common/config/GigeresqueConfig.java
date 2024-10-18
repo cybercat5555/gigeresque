@@ -609,6 +609,27 @@ public class GigeresqueConfig {
         public double hellmorph_runnerAttackDamage = 9;
     }
 
+    @Configurable
+    @Configurable.Synchronized
+    public HBursterConfigs hellbusterConfigs = new HBursterConfigs();
+
+    public static class HBursterConfigs {
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float hellbusterGrowthMultiplier = 1.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public double hellbusterHealth = 30;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public double hellbusterAttackDamage = 5;
+    }
+
     public float getAlienGrowthMultiplier() {
         return classicXenoConfigs.alienGrowthMultiplier;
     }

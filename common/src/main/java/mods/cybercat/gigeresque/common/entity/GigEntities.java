@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.blood.AcidEntity;
 import mods.cybercat.gigeresque.common.entity.impl.blood.GooEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.AquaEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
@@ -79,6 +80,8 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
             CommonMod.MOD_ID, EntityIdentifiers.HELLMORPH_RUNNER.getPath(), HellmorphRunnerEntity::new, MobCategory.MONSTER, 2.1f, 2.45f);
     public static final Supplier<EntityType<BaphomorphEntity>> BAPHOMORPH = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.BAPHOMORPH.getPath(), BaphomorphEntity::new, MobCategory.MONSTER, 2.1f, 3.95f);
+    public static final Supplier<EntityType<HellbursterEntity>> HELL_BURSTER = CommonEntityRegistryInterface.registerEntity(
+            CommonMod.MOD_ID, EntityIdentifiers.HELL_BURSTER.getPath(), HellbursterEntity::new, MobCategory.MONSTER, 0.5f, 0.5f);
     public static final Supplier<EntityType<Entity>> ACID = CommonEntityRegistryInterface.registerEntity(
             CommonMod.MOD_ID, EntityIdentifiers.ACID.getPath(), AcidEntity::new, MobCategory.MISC, 0.8f, 0.05f);
     public static final Supplier<EntityType<Entity>> GOO = CommonEntityRegistryInterface.registerEntity(
