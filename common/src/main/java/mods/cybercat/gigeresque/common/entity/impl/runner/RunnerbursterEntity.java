@@ -108,62 +108,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     }
 
     @Override
-    public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
-                new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(BlockTags.CROPS)),
-                new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new ItemEntitySensor<>(),
-                new UnreachableTargetSensor<>(), new HurtBySensor<>());
-    }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                // Flee Fire
-                new FleeFireTask<>(3.5F), new AlienPanic(4.0f),
-                // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching()),
-                // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
-                        entity -> this.isPassedOut()));
-    }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                // Build Nest
-                new EatFoodTask<>(40),
-                // Kill Lights
-                new KillLightsTask<>(), new KillCropsTask<>(),
-                // Do first
-                new FirstApplicableBehaviour<RunnerAlienEntity>(
-                        // Targeting
-                        new TargetOrRetaliate<>().stopIf(
-                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                        // Look at players
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
-                                entity -> this.isPassedOut() || this.isExecuting()),
-                        // Look around randomly
-                        new SetRandomLookTarget<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()),
-                // Random
-                new OneRandomBehaviour<>(
-                        // Randomly walk around
-                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f)),
-                // Idle
-                new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                        entity -> entity.getRandom().nextInt(30, 60)));
-    }
-
-    @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8),
