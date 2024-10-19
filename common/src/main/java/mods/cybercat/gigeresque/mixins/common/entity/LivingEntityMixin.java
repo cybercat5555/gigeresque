@@ -1,19 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.EggMorphingStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -31,6 +17,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.EggMorphingStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 /**
  * @author Boston Vanseghi/AzureDoom
@@ -66,29 +67,45 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract boolean removeEffect(Holder<MobEffect> effect);
 
-    @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getVehicle() != null && this.getVehicle().getType().is(
-                GigTags.GIG_ALIENS) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
+        if (
+            this.getVehicle() != null && this.getVehicle()
+                .getType()
+                .is(
+                    GigTags.GIG_ALIENS
+                ) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1
+        )
             callbackInfo.setReturnValue(false);
-        if (amount >= 2 && this.getFirstPassenger() != null && this.getPassengers().stream().anyMatch(
-                FacehuggerEntity.class::isInstance)) {
+        if (
+            amount >= 2 && this.getFirstPassenger() != null && this.getPassengers()
+                .stream()
+                .anyMatch(
+                    FacehuggerEntity.class::isInstance
+                )
+        ) {
             this.getFirstPassenger().hurt(source, amount / 2);
             ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
-                    new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer, 100,
-                            false, false));
+                new MobEffectInstance(
+                    MobEffects.MOVEMENT_SLOWDOWN,
+                    CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer,
+                    100,
+                    false,
+                    false
+                )
+            );
             ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
             ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost();
         }
     }
 
-    @Inject(method = {"doPush"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
     void pushAway(CallbackInfo callbackInfo) {
         if (this.hasEffect(GigStatusEffects.EGGMORPHING) && GigEntityUtils.isTargetHostable(this))
             callbackInfo.cancel();
     }
 
-    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    @Inject(method = { "tick" }, at = { @At("HEAD") })
     void tick(CallbackInfo callbackInfo) {
         if (this.level().isClientSide && (Constants.shouldApplyImpEffects.test(this))) {
             this.applyParticle();
@@ -96,15 +113,20 @@ public abstract class LivingEntityMixin extends Entity {
         if (!this.level().isClientSide) {
             if (Constants.hasCureEffects.test(this)) {
                 this.removeEffect(GigStatusEffects.DNA);
-                if (Constants.self(this) instanceof ServerPlayer serverPlayer){
+                if (Constants.self(this) instanceof ServerPlayer serverPlayer) {
                     var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dna_cure"));
                     if (advancement != null) {
                         serverPlayer.getAdvancements().award(advancement, "criteria_key");
                     }
                 }
             }
-            if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(
-                    GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+            if (
+                Constants.hasEggEffect.test(this) && !this.level()
+                    .getBlockState(this.blockPosition())
+                    .is(
+                        GigBlocks.NEST_RESIN_WEB_CROSS.get()
+                    )
+            ) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
             }
             if (Constants.isCreativeSpecPlayer.test(this)) {
@@ -128,10 +150,14 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(method = {"isUsingItem"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "isUsingItem" }, at = { @At("RETURN") }, cancellable = true)
     public void isUsingItem(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(false);
+        if (
+            this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
+                GigStatusEffects.EGGMORPHING
+            )
+        )
+            callbackInfo.setReturnValue(false);
     }
 
     private void applyParticle() {
@@ -144,8 +170,10 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     private void handleBlackGooLogic(Entity entity) {
-        if (!(entity instanceof LivingEntity livingEntity)) return;
-        if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity)) return;
+        if (!(entity instanceof LivingEntity livingEntity))
+            return;
+        if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity))
+            return;
         if (Constants.notPlayer.test(livingEntity) && !Constants.isCreeper.test(this))
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.getgooEffectTickTimer(), 0));
         if (Constants.isCreeper.test(this) && Constants.notPlayer.test(livingEntity))
@@ -154,22 +182,26 @@ public abstract class LivingEntityMixin extends Entity {
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.getgooEffectTickTimer(), 0));
     }
 
-    @Inject(method = {"isImmobile"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "isImmobile" }, at = { @At("RETURN") }, cancellable = true)
     protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.setReturnValue(true);
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+            callbackInfo.setReturnValue(true);
     }
 
-    @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "removeAllEffects" }, at = { @At("HEAD") }, cancellable = true)
     public void noMilkRemoval(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING) || this.hasEffect(GigStatusEffects.ACID) || this.hasEffect(GigStatusEffects.DNA) || this.hasEffect(GigStatusEffects.SPORE) || this.hasEffect(GigStatusEffects.IMPREGNATION))
+        if (
+            this.hasEffect(GigStatusEffects.EGGMORPHING) || this.hasEffect(GigStatusEffects.ACID) || this.hasEffect(GigStatusEffects.DNA)
+                || this.hasEffect(GigStatusEffects.SPORE) || this.hasEffect(GigStatusEffects.IMPREGNATION)
+        )
             callbackInfo.setReturnValue(false);
     }
 
     @Inject(method = "onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V", at = @At(value = "TAIL"))
     private void runAtEffectRemoval(MobEffectInstance mobEffectInstance, CallbackInfo ci) {
-            DNAStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
-            SporeStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
-            ImpregnationStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
-            EggMorphingStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+        DNAStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+        SporeStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+        ImpregnationStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+        EggMorphingStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
     }
 }

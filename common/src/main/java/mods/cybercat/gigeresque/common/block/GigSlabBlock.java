@@ -1,17 +1,17 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.phys.shapes.Shapes;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class GigSlabBlock extends SlabBlock {
+
     public GigSlabBlock(Properties properties) {
         super(properties);
     }
@@ -20,7 +20,10 @@ public class GigSlabBlock extends SlabBlock {
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, level, pos, random);
         var slabtype = state.getValue(TYPE);
-        if ((level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigTags.ALLOW_MIST_BLOCKS)) && pos.getY() <= -50)
+        if (
+            (level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(GigTags.ALLOW_MIST_BLOCKS)) && pos
+                .getY() <= -50
+        )
             for (var i = 0; i < 5; i++) {
                 var startingY = switch (slabtype) {
                     case DOUBLE, TOP -> 1.1D;
@@ -30,11 +33,15 @@ public class GigSlabBlock extends SlabBlock {
                 var offsetY = startingY + (random.nextDouble() * 1.3D);
                 var offsetZ = random.nextDouble() - 0.5D;
 
-                level.addParticle(GigParticles.MIST.get(),
-                        pos.getX() + 0.5D + offsetX,
-                        pos.getY() + offsetY,
-                        pos.getZ() + 0.5D + offsetZ,
-                        0.0D, 0.002D, 0.0D);
+                level.addParticle(
+                    GigParticles.MIST.get(),
+                    pos.getX() + 0.5D + offsetX,
+                    pos.getY() + offsetY,
+                    pos.getZ() + 0.5D + offsetZ,
+                    0.0D,
+                    0.002D,
+                    0.0D
+                );
             }
     }
 }

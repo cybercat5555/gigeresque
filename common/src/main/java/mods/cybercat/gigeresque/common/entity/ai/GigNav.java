@@ -19,6 +19,7 @@ import java.util.Objects;
 public class GigNav extends GroundPathNavigation {
 
     static final float EPSILON = 1.0E-8F;
+
     @Nullable
     protected BlockPos pathToPosition;
 
@@ -104,35 +105,35 @@ public class GigNav extends GroundPathNavigation {
         if (this.isDone()) {
             if (this.pathToPosition != null) {
                 if (
-                        this.pathToPosition.closerToCenterThan(this.mob.position(), this.mob.getBbWidth()) || this.mob
-                                .getY() > (double) this.pathToPosition.getY() && BlockPos.containing(
-                                this.pathToPosition.getX(),
-                                this.mob.getY(),
-                                this.pathToPosition.getZ()
+                    this.pathToPosition.closerToCenterThan(this.mob.position(), this.mob.getBbWidth()) || this.mob
+                        .getY() > (double) this.pathToPosition.getY() && BlockPos.containing(
+                            this.pathToPosition.getX(),
+                            this.mob.getY(),
+                            this.pathToPosition.getZ()
                         ).closerToCenterThan(this.mob.position(), this.mob.getBbWidth())
                 ) {
                     this.pathToPosition = null;
                 } else {
                     this.mob.getMoveControl()
-                            .setWantedPosition(
-                                    this.pathToPosition.getX(),
-                                    this.pathToPosition.getY(),
-                                    this.pathToPosition.getZ(),
-                                    this.speedModifier
-                            );
+                        .setWantedPosition(
+                            this.pathToPosition.getX(),
+                            this.pathToPosition.getY(),
+                            this.pathToPosition.getZ(),
+                            this.speedModifier
+                        );
                 }
             }
             return;
         }
         if (this.getTargetPos() != null)
             this.mob.getLookControl()
-                    .setLookAt(this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ());
+                .setLookAt(this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ());
     }
 
     private boolean isAt(Path path, float threshold) {
         final Vec3 pathPos = path.getNextEntityPos(this.mob);
         return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold && Mth.abs(
-                (float) (this.mob.getZ() - pathPos.z)
+            (float) (this.mob.getZ() - pathPos.z)
         ) < threshold && Math.abs(this.mob.getY() - pathPos.y) < 1.0D;
     }
 
@@ -149,7 +150,7 @@ public class GigNav extends GroundPathNavigation {
     }
 
     private boolean tryShortcut(Path path, Vec3 entityPos, int pathLength, Vec3 base, Vec3 max) {
-        for (int i = pathLength; --i > path.getNextNodeIndex(); ) {
+        for (int i = pathLength; --i > path.getNextNodeIndex();) {
             final Vec3 vec = path.getEntityPosAtNode(this.mob, i).subtract(entityPos);
             if (this.sweep(vec, base, max)) {
                 path.setNextNodeIndex(i);
@@ -164,7 +165,8 @@ public class GigNav extends GroundPathNavigation {
     private boolean sweep(Vec3 vec, Vec3 base, Vec3 max) {
         float t = 0.0F;
         float max_t = (float) vec.length();
-        if (max_t < EPSILON) return true;
+        if (max_t < EPSILON)
+            return true;
         final float[] tr = new float[3];
         final int[] ldi = new int[3];
         final int[] tri = new int[3];
@@ -188,9 +190,7 @@ public class GigNav extends GroundPathNavigation {
         final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         do {
             // stepForward
-            int axis = (tNext[0] < tNext[1]) ?
-                    ((tNext[0] < tNext[2]) ? 0 : 2) :
-                    ((tNext[1] < tNext[2]) ? 1 : 2);
+            int axis = (tNext[0] < tNext[1]) ? ((tNext[0] < tNext[2]) ? 0 : 2) : ((tNext[1] < tNext[2]) ? 1 : 2);
             float dt = tNext[axis] - t;
             t = tNext[axis];
             ldi[axis] += step[axis];
@@ -213,14 +213,18 @@ public class GigNav extends GroundPathNavigation {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
                         BlockState block = this.level.getBlockState(pos.set(x, y, z));
-                        if (!block.isPathfindable(PathComputationType.LAND)) return false;
+                        if (!block.isPathfindable(PathComputationType.LAND))
+                            return false;
                     }
                     PathType below = this.nodeEvaluator.getPathType(new PathfindingContext(mob.level(), mob), x, y0 - 1, z);
-                    if (below == PathType.WATER || below == PathType.LAVA || below == PathType.OPEN) return false;
+                    if (below == PathType.WATER || below == PathType.LAVA || below == PathType.OPEN)
+                        return false;
                     PathType in = this.nodeEvaluator.getPathType(new PathfindingContext(mob.level(), mob), x, y0, z);
                     float priority = this.mob.getPathfindingMalus(in);
-                    if (priority < 0.0F || priority >= 8.0F) return false;
-                    if (in == PathType.DAMAGE_FIRE || in == PathType.DANGER_FIRE || in == PathType.DAMAGE_OTHER) return false;
+                    if (priority < 0.0F || priority >= 8.0F)
+                        return false;
+                    if (in == PathType.DAMAGE_FIRE || in == PathType.DANGER_FIRE || in == PathType.DAMAGE_OTHER)
+                        return false;
                 }
             }
         } while (t <= max_t);
@@ -237,10 +241,14 @@ public class GigNav extends GroundPathNavigation {
 
     static float element(Vec3 v, int i) {
         switch (i) {
-            case 0: return (float) v.x;
-            case 1: return (float) v.y;
-            case 2: return (float) v.z;
-            default: return 0.0F;
+            case 0:
+                return (float) v.x;
+            case 1:
+                return (float) v.y;
+            case 2:
+                return (float) v.z;
+            default:
+                return 0.0F;
         }
     }
 }

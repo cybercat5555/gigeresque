@@ -1,13 +1,5 @@
 package mods.cybercat.gigeresque;
 
-import mods.cybercat.gigeresque.client.entity.render.*;
-import mods.cybercat.gigeresque.client.entity.render.blocks.*;
-import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
-import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
-import mods.cybercat.gigeresque.client.particle.*;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,6 +10,15 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+
+import mods.cybercat.gigeresque.client.entity.render.*;
+import mods.cybercat.gigeresque.client.entity.render.blocks.*;
+import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
+import mods.cybercat.gigeresque.client.particle.*;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 
 @EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class NeoForgeClientMod {
@@ -40,7 +41,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
-//        event.registerEntityRenderer(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
+        // event.registerEntityRenderer(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.CHESTBURSTER.get(), ChestbursterEntityRenderer::new);
@@ -62,19 +63,58 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.HELL_BURSTER.get(), HellbursterEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render());
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render());
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_3.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject3Render());
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_4.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject4Render());
-        event.registerBlockEntityRenderer(GigEntities.PETRIFIED_OBJECT_5.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render());
-        event.registerBlockEntityRenderer(GigEntities.SPORE_ENTITY.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
-        event.registerBlockEntityRenderer(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT_1.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT_2.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT_3.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject3Render()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT_4.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject4Render()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.PETRIFIED_OBJECT_5.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.SPORE_ENTITY.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender()
+        );
+        event.registerBlockEntityRenderer(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
+        );
     }
 
     @SubscribeEvent

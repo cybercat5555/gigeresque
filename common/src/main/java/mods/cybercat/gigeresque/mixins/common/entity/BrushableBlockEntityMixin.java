@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.item.GigItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -23,12 +21,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.item.GigItems;
+
 @Mixin(BrushableBlockEntity.class)
 public abstract class BrushableBlockEntityMixin extends BlockEntity {
 
     protected final RandomSource random = RandomSource.create();
+
     @Shadow
     private ItemStack item;
+
     @Shadow
     private Direction hitDirection;
 
@@ -36,7 +39,7 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
         super(type, pos, blockState);
     }
 
-    @Inject(method = "dropContent", at = {@At("HEAD")})
+    @Inject(method = "dropContent", at = { @At("HEAD") })
     private void dropEggTest(Player player, CallbackInfo ci) {
         if (this.level != null && this.level.getServer() != null && random.nextInt(0, 100) > 90) {
             var d = EntityType.ITEM.getWidth();

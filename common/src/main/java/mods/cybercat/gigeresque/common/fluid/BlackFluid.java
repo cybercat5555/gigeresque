@@ -1,10 +1,5 @@
 package mods.cybercat.gigeresque.common.fluid;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.SporeBlock;
-import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -14,8 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.TallGrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,7 +18,12 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public abstract class BlackFluid extends FlowingFluid {
+
     @Override
     public boolean isSame(@NotNull Fluid fluid) {
         return fluid == GigFluids.BLACK_FLUID_STILL.get() || fluid == GigFluids.BLACK_FLUID_FLOWING.get();
@@ -37,7 +35,13 @@ public abstract class BlackFluid extends FlowingFluid {
     }
 
     @Override
-    public boolean canBeReplacedWith(@NotNull FluidState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Fluid fluid, @NotNull Direction direction) {
+    public boolean canBeReplacedWith(
+        @NotNull FluidState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull Fluid fluid,
+        @NotNull Direction direction
+    ) {
         return false;
     }
 
@@ -90,10 +94,16 @@ public abstract class BlackFluid extends FlowingFluid {
                     for (var z = -5; z <= 5; z++) {
                         var targetPos = blockPos.offset(x, y, z);
                         // Ensure the position is within the loaded world chunk
-                        if (!level.isLoaded(targetPos)) continue;
+                        if (!level.isLoaded(targetPos))
+                            continue;
                         var targetBlockState = level.getBlockState(targetPos);
-                        if (targetBlockState.getBlock() instanceof TallGrassBlock) continue;
-                        if (targetBlockState.getFluidState().isEmpty() && targetBlockState.is(GigTags.SPORE_REPLACE) && !level.getBlockState(targetPos.below()).isAir()) {
+                        if (targetBlockState.getBlock() instanceof TallGrassBlock)
+                            continue;
+                        if (
+                            targetBlockState.getFluidState().isEmpty() && targetBlockState.is(GigTags.SPORE_REPLACE) && !level
+                                .getBlockState(targetPos.below())
+                                .isAir()
+                        ) {
                             level.setBlockAndUpdate(targetPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
                             break;
                         }
@@ -109,6 +119,7 @@ public abstract class BlackFluid extends FlowingFluid {
     }
 
     public static class Flowing extends BlackFluid {
+
         @Override
         public void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid, FluidState> builder) {
             super.createFluidStateDefinition(builder);

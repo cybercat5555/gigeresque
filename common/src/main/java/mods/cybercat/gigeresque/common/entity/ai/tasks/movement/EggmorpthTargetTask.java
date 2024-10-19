@@ -6,9 +6,6 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mod.azure.azurelib.sblforked.util.RandomUtil;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,9 +20,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+
 public class EggmorpthTargetTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -61,17 +64,24 @@ public class EggmorpthTargetTask<E extends PathfinderMob & AbstractAlien & GeoEn
                 // Check if the distance is within 3 blocks (3 blocks squared is 9.0)
                 if (distanceSquared <= 9.0)
                     for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-                        if (level.getBlockState(test).isAir() && level.getBlockState(
-                                test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
-                                new AABB(test)).stream().noneMatch(Objects::isNull)) {
+                        if (
+                            level.getBlockState(test).isAir() && level.getBlockState(
+                                test.below()
+                            ).isSolid() && level.getEntitiesOfClass(
+                                LivingEntity.class,
+                                new AABB(test)
+                            ).stream().noneMatch(Objects::isNull)
+                        ) {
                             BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
                             if (passenger != null) {
                                 passenger.setPos(Vec3.atBottomCenterOf(testPos));
                                 passenger.removeVehicle();
                                 entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                                 level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
-                                level.setBlockAndUpdate(testPos.above(),
-                                        GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                                level.setBlockAndUpdate(
+                                    testPos.above(),
+                                    GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState()
+                                );
                             }
                         }
             }

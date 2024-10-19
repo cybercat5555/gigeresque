@@ -6,7 +6,6 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.registry.SBLMemoryTypes;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -21,10 +20,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+
 public class KillCropsTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

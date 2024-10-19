@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class AlienSarcophagusGooBlock extends AlienSarcophagusBlock {
 
     public AlienSarcophagusGooBlock() {
@@ -21,7 +22,13 @@ public class AlienSarcophagusGooBlock extends AlienSarcophagusBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        @NotNull BlockState state,
+        Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof AlienStorageGooEntity alienStorageEntity)
             player.openMenu(alienStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);
@@ -33,7 +40,11 @@ public class AlienSarcophagusGooBlock extends AlienSarcophagusBlock {
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(), AlienStorageGooEntity::tick);
     }
 }

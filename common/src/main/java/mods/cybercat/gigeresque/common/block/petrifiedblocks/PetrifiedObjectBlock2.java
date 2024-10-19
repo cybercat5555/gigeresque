@@ -1,12 +1,6 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect2Entity;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
-import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
-import mods.cybercat.gigeresque.common.block.storage.StorageStates;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -33,9 +27,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect2Entity;
+import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
+import mods.cybercat.gigeresque.common.block.storage.StorageStates;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class PetrifiedObjectBlock2 extends BaseEntityBlock {
+
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+
     public static final MapCodec<PetrifiedObjectBlock2> CODEC = simpleCodec(PetrifiedObjectBlock2::new);
 
     public PetrifiedObjectBlock2(Properties properties) {
@@ -49,7 +52,14 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
     }
 
     @Override
-    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity, @NotNull ItemStack itemStack) {
+    public void playerDestroy(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        @Nullable BlockEntity blockEntity,
+        @NotNull ItemStack itemStack
+    ) {
         if (state.getValue(STORAGE_STATE) == StorageStates.OPENED) {
             player.awardStat(Stats.BLOCK_MINED.get(this));
             player.causeFoodExhaustion(0.005F);
@@ -77,8 +87,13 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
             var x = pos.getX() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
             var y = pos.getY() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25) - d;
             var z = pos.getZ() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
-            var itemEntity = new ItemEntity(level, x, y, z,
-                    GigBlocks.PETRIFIED_OBJECT_2_BLOCK.get().asItem().getDefaultInstance());
+            var itemEntity = new ItemEntity(
+                level,
+                x,
+                y,
+                z,
+                GigBlocks.PETRIFIED_OBJECT_2_BLOCK.get().asItem().getDefaultInstance()
+            );
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
             state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
@@ -97,12 +112,21 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return Block.box(4, 0, 5, 12, 2, 13);
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.PETRIFIED_OBJECT_2.get(), PetrifiedOjbect2Entity::tick);
     }
 }

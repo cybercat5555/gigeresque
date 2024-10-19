@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.platform;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
@@ -22,7 +21,11 @@ public interface CommonRegistry {
 
     boolean isModLoaded(String modId);
 
-    <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(String modID, String blockEntityName, Supplier<BlockEntityType<T>> blockEntityType);
+    <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(
+        String modID,
+        String blockEntityName,
+        Supplier<BlockEntityType<T>> blockEntityType
+    );
 
     <T extends Block> Supplier<T> registerBlock(String modID, String blockName, Supplier<T> block);
 
@@ -40,7 +43,12 @@ public interface CommonRegistry {
 
     <T extends Fluid> Supplier<T> registerFluid(String modID, String fluidName, Supplier<T> item);
 
-    <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(Supplier<EntityType<E>> entityType, int primaryEggColour, int secondaryEggColour, Item.Properties itemProperties);
+    <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
+        Supplier<EntityType<E>> entityType,
+        int primaryEggColour,
+        int secondaryEggColour,
+        Item.Properties itemProperties
+    );
 
     CreativeModeTab.Builder newCreativeTabBuilder();
 }

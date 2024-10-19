@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -29,21 +28,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -67,12 +51,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 /**
  * TODO: Update animations once done
  */
 public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
     public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
@@ -86,11 +87,27 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.aquaticXenoConfigs.aquaticXenoHealth).add(Attributes.ARMOR, CommonMod.config.aquaticXenoConfigs.aquaticXenoArmor).add(
-                Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
-                32.0).add(Attributes.MOVEMENT_SPEED, 0.5600000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+        return LivingEntity.createLivingAttributes()
+            .add(
+                Attributes.MAX_HEALTH,
+                CommonMod.config.aquaticXenoConfigs.aquaticXenoHealth
+            )
+            .add(Attributes.ARMOR, CommonMod.config.aquaticXenoConfigs.aquaticXenoArmor)
+            .add(
+                Attributes.ARMOR_TOUGHNESS,
+                9.0
+            )
+            .add(Attributes.KNOCKBACK_RESISTANCE, 9.0)
+            .add(
+                Attributes.FOLLOW_RANGE,
+                32.0
+            )
+            .add(Attributes.MOVEMENT_SPEED, 0.5600000417232513)
+            .add(
+                Attributes.ATTACK_DAMAGE,
+                CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -105,8 +122,14 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (spawnType != MobSpawnType.NATURAL)
+            setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -123,47 +146,81 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
 
     @Override
     public List<ExtendedSensor<AquaticAlienEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<AquaticAlienEntity>().setRadius(30).setPredicate(
-                        GigEntityUtils::entityTest), new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7),
-                new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<AquaticAlienEntity>().setRadius(30)
+                .setPredicate(
+                    GigEntityUtils::entityTest
+                ),
+            new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7),
+            new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
+                ),
+            new HurtBySensor<>(),
+            new UnreachableTargetSensor<>(),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(0.5F), new HissingTask<>(800),
-                new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(
+            new LookAtTarget<>(),
+            new FleeFireTask<>(0.5F),
+            new HissingTask<>(800),
+            new MoveToWalkTarget<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new KillLightsTask<>(),
-                new FirstApplicableBehaviour<AquaticAlienEntity>(new TargetOrRetaliate<>(),
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
-                        new SetRandomLookTarget<>()), new OneRandomBehaviour<>(
-                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(
-                                5f).stopIf(entity -> this.isPassedOut()),
-                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                                entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(
+            new KillLightsTask<>(),
+            new FirstApplicableBehaviour<AquaticAlienEntity>(
+                new TargetOrRetaliate<>(),
+                new SetPlayerLookTarget<>().predicate(
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                ),
+                new SetRandomLookTarget<>()
+            ),
+            new OneRandomBehaviour<>(
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(
+                        5f
+                    )
+                    .stopIf(entity -> this.isPassedOut()),
+                new Idle<>().startCondition(entity -> !this.isAggressive())
+                    .runFor(
+                        entity -> entity.getRandom().nextInt(30, 60)
+                    )
+            )
+        );
     }
 
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 5.5F),
-                new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR));
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 5.5F),
+            new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
+        );
     }
 
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
-                10) > 7) {
+        if (
+            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
+                .nextInt(
+                    0,
+                    10
+                ) > 7
+        ) {
             if (target instanceof Player playerEntity) {
                 playerEntity.drop(playerEntity.getInventory().getSelected(), false);
                 playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
@@ -174,12 +231,15 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                 mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-            livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f);
+            livingEntity.hurt(
+                damageSources().mobAttack(this),
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f
+            );
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper)
+            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
@@ -192,11 +252,23 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f) * (this.getBbWidth() * ((this.level().getFluidState(
-                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
+        return this.getBbWidth() * ((this.level()
+            .getFluidState(this.blockPosition())
+            .is(
+                Fluids.WATER
+            ) && this.level()
+                .getFluidState(
+                    this.blockPosition()
+                )
+                .getAmount() >= 8) ? 1.0f : 3.0f) * (this.getBbWidth() * ((this.level()
+                    .getFluidState(
+                        this.blockPosition()
+                    )
+                    .is(Fluids.WATER) && this.level()
+                        .getFluidState(
+                            this.blockPosition()
+                        )
+                        .getAmount() >= 8) ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
     }
 
     @Override
@@ -208,8 +280,8 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     @Override
     public void tick() {
         super.tick();
-//        if (!this.level().isClientSide())
-//            AzureLib.LOGGER.info(this.killCounter);
+        // if (!this.level().isClientSide())
+        // AzureLib.LOGGER.info(this.killCounter);
         if (this.killCounter >= 3) {
             var aquaEgg = GigEntities.AQUA_EGG.get().create(level());
             if (aquaEgg != null) {
@@ -226,74 +298,146 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (this.isUnderWater() && this.wasTouchingWater) {
-                        if (this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
-                            return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                        else if (!this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
-                            return event.setAndContinue(GigAnimationsDefault.SWIM);
-                        else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-                    } else {
-                        if (this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
-                            return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
-                        else if (!this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
-                            return event.setAndContinue(GigAnimationsDefault.CRAWL);
-                        else if (isSearching() && !this.isAggressive() && !isDead && !this.isPassedOut())
-                            return event.setAndContinue(GigAnimationsDefault.AMBIENT);
-                        else if (!this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
-                        return PlayState.CONTINUE;
+            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+            if (this.isUnderWater() && this.wasTouchingWater) {
+                if (this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+                else if (!this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.SWIM);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+            } else {
+                if (this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
+                else if (!this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.CRAWL);
+                else if (isSearching() && !this.isAggressive() && !isDead && !this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+                else if (!this.isPassedOut())
+                    return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
+                return PlayState.CONTINUE;
+            }
+        }).setSoundKeyframeHandler(event -> {
+            if (this.level().isClientSide) {
+                if (event.getKeyframeData().getSound().matches("stepSoundkey"))
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.AQUA_LANDMOVE.get(),
+                            SoundSource.HOSTILE,
+                            0.25F,
+                            1.0F,
+                            true
+                        );
+                if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.AQUA_LANDCLAW.get(),
+                            SoundSource.HOSTILE,
+                            0.25F,
+                            1.0F,
+                            true
+                        );
+                if (event.getKeyframeData().getSound().matches("idleSoundkey"))
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_AMBIENT.get(),
+                            SoundSource.HOSTILE,
+                            0.25F,
+                            1.0F,
+                            true
+                        );
+            }
+        })
+            .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+            .triggerableAnim(
+                "idle",
+                this.isUnderWater() && this.wasTouchingWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND2
+            )) // idle
+            .add(
+                new AnimationController<>(
+                    this,
+                    Constants.ATTACK_CONTROLLER,
+                    1,
+                    event -> PlayState.STOP
+                ).setSoundKeyframeHandler(event -> {
+                    if (this.level().isClientSide) {
+                        if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+                            this.level()
+                                .playLocalSound(
+                                    this.getX(),
+                                    this.getY(),
+                                    this.getZ(),
+                                    GigSounds.ALIEN_CLAW.get(),
+                                    SoundSource.HOSTILE,
+                                    0.25F,
+                                    1.0F,
+                                    true
+                                );
+                        if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+                            this.level()
+                                .playLocalSound(
+                                    this.getX(),
+                                    this.getY(),
+                                    this.getZ(),
+                                    GigSounds.ALIEN_TAIL.get(),
+                                    SoundSource.HOSTILE,
+                                    0.25F,
+                                    1.0F,
+                                    true
+                                );
                     }
-                }).setSoundKeyframeHandler(event -> {
-                            if (this.level().isClientSide) {
-                                if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDMOVE.get(),
-                                            SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                                if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDCLAW.get(),
-                                            SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                                if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT.get(),
-                                            SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                            }
-                        }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                        .triggerableAnim("idle",
-                                this.isUnderWater() && this.wasTouchingWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND2)) // idle
-                .add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
-                                event -> PlayState.STOP).setSoundKeyframeHandler(event -> {
-                                    if (this.level().isClientSide) {
-                                        if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW.get(),
-                                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                                        if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL.get(),
-                                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                                    }
-                                }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
-                                .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                                .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
-                                .triggerableAnim("idle",
-                                        RawAnimation.begin().then("idle_land", Animation.LoopType.PLAY_ONCE)) // reset hands
-                                .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
-                                .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
-                                .triggerableAnim("wakeup",
-                                        GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land",
-                                                Animation.LoopType.PLAY_ONCE)) // wake up
-                                .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
-                                .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
-                                .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
-                                .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                                .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
-                ).add(new AnimationController<>(this, "hissController", 0, event -> {
-                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
-                        return event.setAndContinue(GigAnimationsDefault.HISS);
+                })
+                    .triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+                    .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+                    .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+                    .triggerableAnim(
+                        "idle",
+                        RawAnimation.begin().then("idle_land", Animation.LoopType.PLAY_ONCE)
+                    ) // reset hands
+                    .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+                    .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+                    .triggerableAnim(
+                        "wakeup",
+                        GigAnimationsDefault.STATIS_LEAVE.then(
+                            this.isInWater() ? "idle_water" : "idle_land",
+                            Animation.LoopType.PLAY_ONCE
+                        )
+                    ) // wake up
+                    .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+                    .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+                    .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+                    .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+                    .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+            )
+            .add(new AnimationController<>(this, "hissController", 0, event -> {
+                var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+                if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
+                    return event.setAndContinue(GigAnimationsDefault.HISS);
 
-                    return PlayState.STOP;
-                }).setSoundKeyframeHandler(event -> {
-                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS.get(),
-                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
+                return PlayState.STOP;
+            }).setSoundKeyframeHandler(event -> {
+                if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_HISS.get(),
+                            SoundSource.HOSTILE,
+                            1.0F,
+                            1.0F,
+                            true
+                        );
+            }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
     }
 
     @Override

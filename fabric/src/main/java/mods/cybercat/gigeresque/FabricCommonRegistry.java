@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque;
 
-import mods.cybercat.gigeresque.platform.CommonRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
@@ -23,6 +22,8 @@ import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.platform.CommonRegistry;
+
 public class FabricCommonRegistry implements CommonRegistry {
 
     @Override
@@ -30,20 +31,35 @@ public class FabricCommonRegistry implements CommonRegistry {
         return FabricLoader.getInstance().isModLoaded(modId);
     }
 
-    private static <T, R extends Registry<? super T>> Supplier<T> registerSupplier(R registry, String modID, String id, Supplier<T> object) {
-        final T registeredObject = Registry.register((Registry<T>) registry,
-                ResourceLocation.fromNamespaceAndPath(modID, id), object.get());
+    private static <T, R extends Registry<? super T>> Supplier<T> registerSupplier(
+        R registry,
+        String modID,
+        String id,
+        Supplier<T> object
+    ) {
+        final T registeredObject = Registry.register(
+            (Registry<T>) registry,
+            ResourceLocation.fromNamespaceAndPath(modID, id),
+            object.get()
+        );
 
         return () -> registeredObject;
     }
 
     private static <T, R extends Registry<? super T>> Holder<T> registerHolder(R registry, String modID, String id, Supplier<T> object) {
-        return Registry.registerForHolder((Registry<T>) registry, ResourceLocation.fromNamespaceAndPath(modID, id),
-                object.get());
+        return Registry.registerForHolder(
+            (Registry<T>) registry,
+            ResourceLocation.fromNamespaceAndPath(modID, id),
+            object.get()
+        );
     }
 
     @Override
-    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(String modID, String blockEntityName, Supplier<BlockEntityType<T>> blockEntityType) {
+    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(
+        String modID,
+        String blockEntityName,
+        Supplier<BlockEntityType<T>> blockEntityType
+    ) {
         return registerSupplier(BuiltInRegistries.BLOCK_ENTITY_TYPE, modID, blockEntityName, blockEntityType);
     }
 
@@ -88,7 +104,12 @@ public class FabricCommonRegistry implements CommonRegistry {
     }
 
     @Override
-    public <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(Supplier<EntityType<E>> entityType, int primaryEggColour, int secondaryEggColour, Item.Properties itemProperties) {
+    public <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
+        Supplier<EntityType<E>> entityType,
+        int primaryEggColour,
+        int secondaryEggColour,
+        Item.Properties itemProperties
+    ) {
         return () -> new SpawnEggItem(entityType.get(), primaryEggColour, secondaryEggColour, itemProperties);
     }
 

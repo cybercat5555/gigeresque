@@ -5,9 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -22,10 +19,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+
 public class KillLightsTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -45,8 +47,10 @@ public class KillLightsTask<E extends PathfinderMob & AbstractAlien & GeoEntity>
     @Override
     protected boolean checkExtraStartConditions(@NotNull ServerLevel level, E entity) {
         var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
-        if (lightSourceLocation == null) return false;
-        if (lightSourceLocation.stream().findFirst().isEmpty()) return false;
+        if (lightSourceLocation == null)
+            return false;
+        if (lightSourceLocation.stream().findFirst().isEmpty())
+            return false;
         var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
         var canGrief = entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
         return !entity.isVehicle() && yDiff < 3 && !entity.isAggressive() && canGrief;
@@ -64,10 +68,17 @@ public class KillLightsTask<E extends PathfinderMob & AbstractAlien & GeoEntity>
                 entity.level().destroyBlock(blockPos, true, null, 512);
                 if (!entity.level().isClientSide()) {
                     for (var i = 0; i < 2; i++) {
-                        level.sendParticles(ParticleTypes.POOF,
-                                ((double) blockPos.getX()) + 0.5, blockPos.getY(), ((double) blockPos.getZ()) + 0.5, 1,
-                                entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
-                                entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
+                        level.sendParticles(
+                            ParticleTypes.POOF,
+                            ((double) blockPos.getX()) + 0.5,
+                            blockPos.getY(),
+                            ((double) blockPos.getZ()) + 0.5,
+                            1,
+                            entity.getRandom().nextGaussian() * 0.02,
+                            entity.getRandom().nextGaussian() * 0.02,
+                            entity.getRandom().nextGaussian() * 0.02,
+                            0.15000000596046448
+                        );
                     }
                 }
             } else {

@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -11,11 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public abstract class CustomDelayedRangedBehaviour<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+
     protected final int delayTime;
+
     protected long delayFinishedAt = 0;
-    protected Consumer<E> delayedCallback = entity -> {
-    };
+
+    protected Consumer<E> delayedCallback = entity -> {};
+
     private final AnimationSelector<? super E> animationSelector;
 
     public CustomDelayedRangedBehaviour(int delayTicks, AnimationSelector<? super E> animationSelector) {
@@ -65,6 +69,5 @@ public abstract class CustomDelayedRangedBehaviour<E extends PathfinderMob & Abs
         }
     }
 
-    protected void doDelayedAction(E entity) {
-    }
+    protected void doDelayedAction(E entity) {}
 }

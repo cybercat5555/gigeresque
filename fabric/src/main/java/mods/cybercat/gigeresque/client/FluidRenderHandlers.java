@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.client;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -21,6 +19,9 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+
 public record FluidRenderHandlers() {
 
     public static void initialize() {
@@ -29,14 +30,21 @@ public record FluidRenderHandlers() {
     }
 
     private static void setupFluidRendering(ResourceLocation textureFluidId) {
-        var stillSpriteId = ResourceLocation.fromNamespaceAndPath(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
-        var flowingSpriteId = ResourceLocation.fromNamespaceAndPath(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
+        var stillSpriteId = ResourceLocation.fromNamespaceAndPath(
+            textureFluidId.getNamespace(),
+            "block/" + textureFluidId.getPath() + "_still"
+        );
+        var flowingSpriteId = ResourceLocation.fromNamespaceAndPath(
+            textureFluidId.getNamespace(),
+            "block/" + textureFluidId.getPath() + "_flow"
+        );
 
         var fluidId = BuiltInRegistries.FLUID.getKey(GigFluids.BLACK_FLUID_STILL.get());
         var listenerId = ResourceLocation.fromNamespaceAndPath(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
         var fluidSprites = new TextureAtlasSprite[2];
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+
             @Override
             public void onResourceManagerReload(@NotNull ResourceManager manager) {
                 var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
@@ -51,6 +59,7 @@ public record FluidRenderHandlers() {
         });
 
         var renderHandler = new FluidRenderHandler() {
+
             @Override
             public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
                 return fluidSprites;

@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -33,16 +31,30 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class AlienJarBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
-    private static final VoxelShape OUTLINE_SHAPE = Stream.of(Block.box(5.5, 0, 5.5, 10.5, 3, 10.5), Block.box(5, 3, 5, 11, 9, 11), Block.box(4.5, 9, 4.5, 11.5, 16, 11.5), Block.box(4.5, 12, 4.5, 11.5, 16, 11.5), Block.box(5, 16, 5, 11, 18, 11)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape OUTLINE_SHAPE = Stream.of(
+        Block.box(5.5, 0, 5.5, 10.5, 3, 10.5),
+        Block.box(5, 3, 5, 11, 9, 11),
+        Block.box(4.5, 9, 4.5, 11.5, 16, 11.5),
+        Block.box(4.5, 12, 4.5, 11.5, 16, 11.5),
+        Block.box(5, 16, 5, 11, 18, 11)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
     public static final MapCodec<AlienJarBlock> CODEC = simpleCodec(AlienJarBlock::new);
 
     public AlienJarBlock(Properties properties) {
         super(Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
@@ -66,7 +78,13 @@ public class AlienJarBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        @NotNull BlockState state,
+        Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
             player.openMenu(jarStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);
@@ -88,18 +106,25 @@ public class AlienJarBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return OUTLINE_SHAPE;
     }
 
     @Override
     public void tick(@NotNull BlockState state, ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random) {
-        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity) jarStorageEntity.tick();
+        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
+            jarStorageEntity.tick();
     }
 
     @Override
     public void onRemove(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock())) return;
+        if (blockState.is(blockState2.getBlock()))
+            return;
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof Container container) {
             Containers.dropContents(level, blockPos, container);
@@ -109,7 +134,11 @@ public class AlienJarBlock extends BaseEntityBlock {
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(), JarStorageEntity::tick);
     }
 }

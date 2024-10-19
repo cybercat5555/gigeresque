@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common;
 
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.MobSpawnType;
@@ -12,8 +11,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 @Mixin(Raid.class)
 public class RaidMixin {
+
     @Shadow
     private ServerLevel level;
 

@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,9 +22,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 public class NestResinBlock extends AbstractNestBlock {
+
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
+
     protected static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false);
+
     protected static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true);
 
     public NestResinBlock(Properties settings) {
@@ -43,13 +47,25 @@ public class NestResinBlock extends AbstractNestBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return  ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+    public @NotNull VoxelShape getShape(
+        BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
+        return ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
-    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? Block.box(0, 0, 0, 0, 0, 0) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+    public @NotNull VoxelShape getCollisionShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
+        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity
+            ? Block.box(0, 0, 0, 0, 0, 0)
+            : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
@@ -58,7 +74,12 @@ public class NestResinBlock extends AbstractNestBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getVisualShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getVisualShape(
+        BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
@@ -78,32 +99,55 @@ public class NestResinBlock extends AbstractNestBlock {
         if (!isIce && !isPackedIce && !isBarrier) {
             if (!isHoney && !isSoulSand)
                 return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP) || blockState.is(
-                        this) && blockState.getValue(LAYERS) == 8;
-            else return true;
-        } else return false;
+                    this
+                ) && blockState.getValue(LAYERS) == 8;
+            else
+                return true;
+        } else
+            return false;
     }
 
     @Override
-    public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
-        return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction,
-                neighborState, world, pos, neighborPos);
+    public @NotNull BlockState updateShape(
+        BlockState state,
+        @NotNull Direction direction,
+        @NotNull BlockState neighborState,
+        @NotNull LevelAccessor world,
+        @NotNull BlockPos pos,
+        @NotNull BlockPos neighborPos
+    ) {
+        return !state.canSurvive(world, pos)
+            ? Blocks.AIR.defaultBlockState()
+            : super.updateShape(
+                state,
+                direction,
+                neighborState,
+                world,
+                pos,
+                neighborPos
+            );
     }
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
         int layers = state.getValue(LAYERS);
         if (context.getItemInHand().is(asItem()) && layers < 8)
-            if (context.replacingClickedOnBlock()) return context.getClickedFace() == Direction.UP;
-            else return true;
-        else return layers == 1;
+            if (context.replacingClickedOnBlock())
+                return context.getClickedFace() == Direction.UP;
+            else
+                return true;
+        else
+            return layers == 1;
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-        if (blockState.is(this)) return blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1));
-        else return super.getStateForPlacement(ctx);
+        if (blockState.is(this))
+            return blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1));
+        else
+            return super.getStateForPlacement(ctx);
     }
 
     @Override

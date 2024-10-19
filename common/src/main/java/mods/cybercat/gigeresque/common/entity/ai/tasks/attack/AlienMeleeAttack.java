@@ -4,10 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,8 +19,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntity> extends CustomDelayedMeleeBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
 
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
@@ -73,8 +78,12 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntit
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
         if (this.target == null)
             return;

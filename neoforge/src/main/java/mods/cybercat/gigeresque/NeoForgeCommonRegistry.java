@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque;
 
-import mods.cybercat.gigeresque.platform.CommonRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
@@ -20,6 +19,8 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.platform.CommonRegistry;
+
 public class NeoForgeCommonRegistry implements CommonRegistry {
 
     @Override
@@ -28,7 +29,11 @@ public class NeoForgeCommonRegistry implements CommonRegistry {
     }
 
     @Override
-    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(String modID, String blockEntityName, Supplier<BlockEntityType<T>> blockEntityType) {
+    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(
+        String modID,
+        String blockEntityName,
+        Supplier<BlockEntityType<T>> blockEntityType
+    ) {
         return NeoForgeMod.blockEntityTypeDeferredRegister.register(blockEntityName, blockEntityType);
     }
 
@@ -73,7 +78,12 @@ public class NeoForgeCommonRegistry implements CommonRegistry {
     }
 
     @Override
-    public <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(Supplier<EntityType<E>> entityType, int primaryEggColour, int secondaryEggColour, Item.Properties itemProperties) {
+    public <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
+        Supplier<EntityType<E>> entityType,
+        int primaryEggColour,
+        int secondaryEggColour,
+        Item.Properties itemProperties
+    ) {
         return () -> new DeferredSpawnEggItem(entityType, primaryEggColour, secondaryEggColour, itemProperties);
     }
 

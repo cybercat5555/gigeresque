@@ -3,30 +3,6 @@ package mods.cybercat.gigeresque;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.azure.azurelib.common.internal.common.AzureLib;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
-import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
-import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
-import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
-import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -77,47 +53,128 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
+import mods.cybercat.gigeresque.common.worlddata.PandoraData;
+
 @Mod(CommonMod.MOD_ID)
 public final class NeoForgeMod {
-    public static DeferredRegister<BlockEntityType<?>> blockEntityTypeDeferredRegister = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, CommonMod.MOD_ID);
+
+    public static DeferredRegister<BlockEntityType<?>> blockEntityTypeDeferredRegister = DeferredRegister.create(
+        Registries.BLOCK_ENTITY_TYPE,
+        CommonMod.MOD_ID
+    );
+
     public static DeferredRegister<Block> blockDeferredRegister = DeferredRegister.create(Registries.BLOCK, CommonMod.MOD_ID);
-    public static DeferredRegister<EntityType<?>> entityTypeDeferredRegister = DeferredRegister.create(Registries.ENTITY_TYPE, CommonMod.MOD_ID);
-    public static DeferredRegister<ArmorMaterial> armorMaterialDeferredRegister = DeferredRegister.create(Registries.ARMOR_MATERIAL, CommonMod.MOD_ID);
+
+    public static DeferredRegister<EntityType<?>> entityTypeDeferredRegister = DeferredRegister.create(
+        Registries.ENTITY_TYPE,
+        CommonMod.MOD_ID
+    );
+
+    public static DeferredRegister<ArmorMaterial> armorMaterialDeferredRegister = DeferredRegister.create(
+        Registries.ARMOR_MATERIAL,
+        CommonMod.MOD_ID
+    );
+
     public static DeferredRegister<Item> itemDeferredRegister = DeferredRegister.create(Registries.ITEM, CommonMod.MOD_ID);
-    public static DeferredRegister<SoundEvent> soundEventDeferredRegister= DeferredRegister.create(Registries.SOUND_EVENT, CommonMod.MOD_ID);
-    public static DeferredRegister<MenuType<?>> menuTypeDeferredRegister= DeferredRegister.create(Registries.MENU, CommonMod.MOD_ID);
-    public static DeferredRegister<StructureType<?>> structureTypeDeferredRegister = DeferredRegister.create(Registries.STRUCTURE_TYPE, CommonMod.MOD_ID);
-    public static DeferredRegister<ParticleType<?>> particleTypeDeferredRegister = DeferredRegister.create(Registries.PARTICLE_TYPE, CommonMod.MOD_ID);
-    public static DeferredRegister<CreativeModeTab> creativeModeTabDeferredRegister = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CommonMod.MOD_ID);
-    public static DeferredRegister<MobEffect> statusEffectDeferredRegister = DeferredRegister.create(Registries.MOB_EFFECT, CommonMod.MOD_ID);
+
+    public static DeferredRegister<SoundEvent> soundEventDeferredRegister = DeferredRegister.create(
+        Registries.SOUND_EVENT,
+        CommonMod.MOD_ID
+    );
+
+    public static DeferredRegister<MenuType<?>> menuTypeDeferredRegister = DeferredRegister.create(Registries.MENU, CommonMod.MOD_ID);
+
+    public static DeferredRegister<StructureType<?>> structureTypeDeferredRegister = DeferredRegister.create(
+        Registries.STRUCTURE_TYPE,
+        CommonMod.MOD_ID
+    );
+
+    public static DeferredRegister<ParticleType<?>> particleTypeDeferredRegister = DeferredRegister.create(
+        Registries.PARTICLE_TYPE,
+        CommonMod.MOD_ID
+    );
+
+    public static DeferredRegister<CreativeModeTab> creativeModeTabDeferredRegister = DeferredRegister.create(
+        Registries.CREATIVE_MODE_TAB,
+        CommonMod.MOD_ID
+    );
+
+    public static DeferredRegister<MobEffect> statusEffectDeferredRegister = DeferredRegister.create(
+        Registries.MOB_EFFECT,
+        CommonMod.MOD_ID
+    );
+
     public static DeferredRegister<Fluid> fluidDeferredRegister = DeferredRegister.create(Registries.FLUID, CommonMod.MOD_ID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CommonMod.MOD_ID);
-    public static final Supplier<FluidType> BLACKFLUID_TYPE = FLUID_TYPES.register("black_fluid_type", () -> new FluidType(FluidType.Properties.create()
-            .descriptionId("block.gigeresque.black_fuild_block").canSwim(false)
-            .canDrown(false).pathType(PathType.LAVA).adjacentPathType(null)
-            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_EMPTY)
-            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
-            .lightLevel(15).density(3000).viscosity(6000)) {
-        @Override
-        public boolean canConvertToSource(@NotNull FluidState state, @NotNull LevelReader reader, @NotNull BlockPos pos) {
-            if (reader instanceof Level level) {
-                return level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
-            } else {
-                return super.canConvertToSource(state, reader, pos);
+
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(
+        NeoForgeRegistries.Keys.FLUID_TYPES,
+        CommonMod.MOD_ID
+    );
+
+    public static final Supplier<FluidType> BLACKFLUID_TYPE = FLUID_TYPES.register(
+        "black_fluid_type",
+        () -> new FluidType(
+            FluidType.Properties.create()
+                .descriptionId("block.gigeresque.black_fuild_block")
+                .canSwim(false)
+                .canDrown(false)
+                .pathType(PathType.LAVA)
+                .adjacentPathType(null)
+                .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_EMPTY)
+                .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+                .lightLevel(15)
+                .density(3000)
+                .viscosity(6000)
+        ) {
+
+            @Override
+            public boolean canConvertToSource(@NotNull FluidState state, @NotNull LevelReader reader, @NotNull BlockPos pos) {
+                if (reader instanceof Level level) {
+                    return level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
+                } else {
+                    return super.canConvertToSource(state, reader, pos);
+                }
+            }
+
+            @Override
+            public double motionScale(@NotNull Entity entity) {
+                return 0.0023333333333333335;
+            }
+
+            @Override
+            public void setItemMovement(@NotNull ItemEntity entity) {
+                Vec3 vec3 = entity.getDeltaMovement();
+                entity.setDeltaMovement(
+                    vec3.x * 0.949999988079071,
+                    vec3.y + (vec3.y < 0.05999999865889549 ? 5.0E-4F : 0.0F),
+                    vec3.z * 0.949999988079071
+                );
             }
         }
-
-        @Override
-        public double motionScale(@NotNull Entity entity) {
-            return 0.0023333333333333335;
-        }
-
-        @Override
-        public void setItemMovement(@NotNull ItemEntity entity) {
-            Vec3 vec3 = entity.getDeltaMovement();
-            entity.setDeltaMovement(vec3.x * 0.949999988079071, vec3.y + (vec3.y < 0.05999999865889549 ? 5.0E-4F : 0.0F), vec3.z * 0.949999988079071);
-        }
-    });
+    );
 
     public NeoForgeMod(IEventBus modEventBus) {
         AzureLib.initialize();
@@ -145,14 +202,18 @@ public final class NeoForgeMod {
     }
 
     public void onRegisterEvent(RegisterSpawnPlacementsEvent event) {
-        event.register(GigEntities.EGG.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AlienEggEntity::checkMonsterSpawnRules,
-                RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(
+            GigEntities.EGG.get(),
+            SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            AlienEggEntity::checkMonsterSpawnRules,
+            RegisterSpawnPlacementsEvent.Operation.AND
+        );
     }
 
     public void createEntityAttributes(final EntityAttributeCreationEvent event) {
         event.put(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes().build());
-//        event.put(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes().build());
+        // event.put(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_CHESTBURSTER.get(), ChestbursterEntity.createAttributes().build());
         event.put(GigEntities.CHESTBURSTER.get(), ChestbursterEntity.createAttributes().build());
@@ -181,7 +242,8 @@ public final class NeoForgeMod {
 
     public void onWorldTick(final LevelTickEvent.Post event) {
         // Ensure we are on the server side
-        if (event.getLevel().isClientSide) return;
+        if (event.getLevel().isClientSide)
+            return;
 
         boolean hasAdvancement = false;
 
@@ -204,24 +266,35 @@ public final class NeoForgeMod {
         if (hasAdvancement) {
             for (var player : event.getLevel().players()) {
                 if (!player.hasEffect(GigStatusEffects.DUNGEON_EFFECT)) {
-                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, false, false,false, null));
+                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, false, false, false, null));
                 }
                 PandoraData.setIsTriggered(true);
             }
         }
     }
 
-    record ModEntitySpawn(HolderSet<Biome> biomes, MobSpawnSettings.SpawnerData spawn) implements BiomeModifier {
+    record ModEntitySpawn(
+        HolderSet<Biome> biomes,
+        MobSpawnSettings.SpawnerData spawn
+    ) implements BiomeModifier {
 
         public static DeferredRegister<MapCodec<? extends BiomeModifier>> SERIALIZER = DeferredRegister.create(
-                NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, CommonMod.MOD_ID);
+            NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS,
+            CommonMod.MOD_ID
+        );
 
-        static Supplier<MapCodec<ModEntitySpawn>> JARJAR_SPAWN_CODEC = SERIALIZER.register("mobspawns",
-                () -> RecordCodecBuilder.mapCodec(
-                        builder -> builder.group(Biome.LIST_CODEC.fieldOf("biomes").forGetter(ModEntitySpawn::biomes),
-                                MobSpawnSettings.SpawnerData.CODEC.fieldOf("spawn").forGetter(
-                                        ModEntitySpawn::spawn)).apply(builder, ModEntitySpawn::new)));
-
+        static Supplier<MapCodec<ModEntitySpawn>> JARJAR_SPAWN_CODEC = SERIALIZER.register(
+            "mobspawns",
+            () -> RecordCodecBuilder.mapCodec(
+                builder -> builder.group(
+                    Biome.LIST_CODEC.fieldOf("biomes").forGetter(ModEntitySpawn::biomes),
+                    MobSpawnSettings.SpawnerData.CODEC.fieldOf("spawn")
+                        .forGetter(
+                            ModEntitySpawn::spawn
+                        )
+                ).apply(builder, ModEntitySpawn::new)
+            )
+        );
 
         @Override
         public void modify(@NotNull Holder<Biome> biome, @NotNull Phase phase, ModifiableBiomeInfo.BiomeInfo.@NotNull Builder builder) {

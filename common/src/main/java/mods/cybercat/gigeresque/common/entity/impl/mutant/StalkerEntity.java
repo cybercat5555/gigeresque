@@ -27,22 +27,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -61,6 +45,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 /**
  * TODO: Ensure crawling works good
  */
@@ -75,11 +76,27 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.stalkerConfigs.stalkerXenoHealth).add(Attributes.ARMOR, CommonMod.config.stalkerConfigs.stalkerXenoArmor).add(
-                Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE,
-                16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.stalkerConfigs.stalkerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+        return LivingEntity.createLivingAttributes()
+            .add(
+                Attributes.MAX_HEALTH,
+                CommonMod.config.stalkerConfigs.stalkerXenoHealth
+            )
+            .add(Attributes.ARMOR, CommonMod.config.stalkerConfigs.stalkerXenoArmor)
+            .add(
+                Attributes.ARMOR_TOUGHNESS,
+                0.0
+            )
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+            .add(
+                Attributes.FOLLOW_RANGE,
+                16.0
+            )
+            .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
+            .add(
+                Attributes.ATTACK_DAMAGE,
+                CommonMod.config.stalkerConfigs.stalkerAttackDamage
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
@@ -90,21 +107,22 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-                    var velocityLength = this.getDeltaMovement().horizontalDistance();
-                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && !this.isInWater())
-                        if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
-                            return event.setAndContinue(GigAnimationsDefault.RUNNING);
-                        else return event.setAndContinue(GigAnimationsDefault.MOVING);
-                    if (event.isMoving() && !isDead && this.isInWater())
-                        return event.setAndContinue(GigAnimationsDefault.SWIM);
-                    if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging && !this.isInWater())
-                        return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
-                    return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
-                }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
-                        .triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack
-                        .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                        .triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
+            var velocityLength = this.getDeltaMovement().horizontalDistance();
+            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+            if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && !this.isInWater())
+                if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
+                    return event.setAndContinue(GigAnimationsDefault.RUNNING);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.MOVING);
+            if (event.isMoving() && !isDead && this.isInWater())
+                return event.setAndContinue(GigAnimationsDefault.SWIM);
+            if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging && !this.isInWater())
+                return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
+            return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
+        }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
+            .triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack
+            .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+            .triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
         );
     }
 
@@ -126,14 +144,21 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
 
     @Override
     public List<ExtendedSensor<StalkerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<StalkerEntity>().setPredicate(GigEntityUtils::entityTest),
-                new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
-                new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(),
-                new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<StalkerEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
+            new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
+                ),
+            new UnreachableTargetSensor<>(),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
@@ -144,31 +169,41 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     @Override
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
-                        new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.9f),
-                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                                entity -> entity.getRandom().nextInt(30, 60))));
+            new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
+            new FirstApplicableBehaviour<StalkerEntity>(
+                new TargetOrRetaliate<>(),
+                new SetPlayerLookTarget<>().predicate(
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                ),
+                new SetRandomLookTarget<>()
+            ),
+            new OneRandomBehaviour<>(
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.9f),
+                new Idle<>().startCondition(entity -> !this.isAggressive())
+                    .runFor(
+                        entity -> entity.getRandom().nextInt(30, 60)
+                    )
+            )
+        );
     }
 
     @Override
     public BrainActivityGroup<StalkerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new LeapAtTargetTask<>(0),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.stalkerConfigs.stalkerAttackSpeed),
-                // move to
-                new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR));// attack
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new LeapAtTargetTask<>(0),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.stalkerConfigs.stalkerAttackSpeed),
+            // move to
+            new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR)
+        );// attack
     }
 
     @Override
     public void tick() {
         super.tick();
         GigEntityUtils.breakBlocks(this);
-        if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN))
+            this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
     }
 
     @Override
@@ -183,7 +218,8 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
             return super.hurt(source, amount);
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
-            if (getAcidDiameter() == 1) GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1)
+                GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
@@ -200,24 +236,40 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
 
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
-                10) > 7) {
-            livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerConfigs.stalkerTailAttackDamage : 0.0f);
+        if (
+            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
+                .nextInt(
+                    0,
+                    10
+                ) > 7
+        ) {
+            livingEntity.hurt(
+                damageSources().mobAttack(this),
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerConfigs.stalkerTailAttackDamage : 0.0f
+            );
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper)
+            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
 
     @Override
     public boolean onClimbable() {
-        setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(
-                this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-        return !this.level().getBlockState(this.blockPosition().above()).is(
-                BlockTags.STAIRS) && !this.isAggressive() && this.fallDistance <= 0.1;
+        setIsCrawling(
+            this.horizontalCollision && !this.isNoGravity() && !this.level()
+                .getBlockState(
+                    this.blockPosition().above()
+                )
+                .is(BlockTags.STAIRS) || this.isAggressive()
+        );
+        return !this.level()
+            .getBlockState(this.blockPosition().above())
+            .is(
+                BlockTags.STAIRS
+            ) && !this.isAggressive() && this.fallDistance <= 0.1;
     }
 
     @Override

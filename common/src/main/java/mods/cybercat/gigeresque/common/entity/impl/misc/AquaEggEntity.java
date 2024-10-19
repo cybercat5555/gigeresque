@@ -4,9 +4,6 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,9 +19,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.Growable;
+
 public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
 
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AquaEggEntity.class, EntityDataSerializers.FLOAT);
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public AquaEggEntity(EntityType<?> entityType, Level level) {
@@ -38,16 +40,21 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
         if (!level().isClientSide && this.isAlive())
             grow(this, 1 * getGrowthMultiplier());
         /*
-          JFC floating is a bitch
+         * JFC floating is a bitch
          */
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
         var vec3 = this.getDeltaMovement();
         var y = vec3.y + (vec3.y < 0.05999999865889549 ? 5.0E-4F : 0.0F);
-        if ((this.isInWater() && this.getFluidHeight(FluidTags.WATER) > 0.10000000149011612) || (this.isInLava() && this.getFluidHeight(FluidTags.LAVA) > 0.10000000149011612)) {
+        if (
+            (this.isInWater() && this.getFluidHeight(FluidTags.WATER) > 0.10000000149011612) || (this.isInLava() && this.getFluidHeight(
+                FluidTags.LAVA
+            ) > 0.10000000149011612)
+        ) {
             this.setDeltaMovement(vec3.x * 0.9900000095367432, y, vec3.z * 0.9900000095367432);
-        } else this.applyGravity();
+        } else
+            this.applyGravity();
         if (this.level().isClientSide) {
             this.noPhysics = false;
         } else {
@@ -56,7 +63,10 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
                 this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 1.5, this.getZ());
             }
         }
-        if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > 9.999999747378752E-6 || (this.tickCount + this.getId()) % 4 == 0) {
+        if (
+            !this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > 9.999999747378752E-6 || (this.tickCount + this.getId())
+                % 4 == 0
+        ) {
             this.move(MoverType.SELF, this.getDeltaMovement());
             var f = 0.98F;
             if (this.onGround()) {
@@ -138,8 +148,7 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-    }
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

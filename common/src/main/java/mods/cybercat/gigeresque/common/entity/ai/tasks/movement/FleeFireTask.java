@@ -4,9 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -17,12 +14,17 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
+
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
 public class FleeFireTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
+
     protected final float speed;
 
     public FleeFireTask(float speed) {
@@ -60,7 +62,9 @@ public class FleeFireTask<E extends PathfinderMob & AbstractAlien & GeoEntity> e
         var runAwayDirection = new Vec3(0, 0, 0);
 
         // Iterate through blocks around the mob to detect lava
-        for (var pos : BlockPos.betweenClosed(mobPos.offset(-searchRadius, -1, -searchRadius), mobPos.offset(searchRadius, 1, searchRadius))) {
+        for (
+            var pos : BlockPos.betweenClosed(mobPos.offset(-searchRadius, -1, -searchRadius), mobPos.offset(searchRadius, 1, searchRadius))
+        ) {
             if (level.getBlockState(pos).is(GigTags.ALIEN_REPELLENTS)) {
                 isLavaNearby = true;
                 // Calculate a direction away from the lava block

@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -10,13 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class BlockBreakProgressManager {
 
     private static final Map<BlockPos, Map.Entry<Long, Float>> BLOCK_BREAK_PROGRESS_MAP = new HashMap<>();
 
     public static void tick(Level level) {
         var gameTime = level.getGameTime();
-        if (gameTime % Tick.PER_MINUTE != 0) return;
+        if (gameTime % Tick.PER_MINUTE != 0)
+            return;
 
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.entrySet().removeIf(entry -> {
             var lastUpdateTimeMillis = entry.getValue().getKey();

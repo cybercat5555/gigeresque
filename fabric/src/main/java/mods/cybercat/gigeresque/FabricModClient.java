@@ -1,5 +1,16 @@
 package mods.cybercat.gigeresque;
 
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
@@ -8,17 +19,6 @@ import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRend
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.core.Registry;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public class FabricModClient implements ClientModInitializer {
 
@@ -36,7 +36,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
-//        EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
+        // EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         EntityRenderers.register(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntityRenderer::new);
         EntityRenderers.register(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         EntityRenderers.register(GigEntities.CHESTBURSTER.get(), ChestbursterEntityRenderer::new);
@@ -58,22 +58,65 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
         EntityRenderers.register(GigEntities.HELL_BURSTER.get(), HellbursterEntityRenderer::new);
         EntityRenderers.register(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render());
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render());
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_3.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject3Render());
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_4.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject4Render());
-        BlockEntityRenderers.register(GigEntities.PETRIFIED_OBJECT_5.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render());
-        BlockEntityRenderers.register(GigEntities.SPORE_ENTITY.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
-        BlockEntityRenderers.register(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(), (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT_1.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject1Render()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT_2.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject2Render()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT_3.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject3Render()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT_4.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject4Render()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.PETRIFIED_OBJECT_5.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.SPORE_ENTITY.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender()
+        );
+        BlockEntityRenderers.register(
+            GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
+        );
     }
 
-    private void registerParticle(String path, SimpleParticleType type, ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory) {
+    private void registerParticle(
+        String path,
+        SimpleParticleType type,
+        ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory
+    ) {
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, Constants.modResource(path), type);
         ParticleFactoryRegistry.getInstance().register(type, factory);
     }

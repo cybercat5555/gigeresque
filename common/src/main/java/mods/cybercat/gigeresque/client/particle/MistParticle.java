@@ -16,9 +16,13 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class MistParticle extends TextureSheetParticle {
+
     private final SpriteSet spriteProvider;
+
     private boolean reachedGround;
+
     ParticleRenderType PARTICLE_SHEET_TRANSLUCENT_LIT = new ParticleRenderType() {
+
         @Override
         public BufferBuilder begin(Tesselator tesselator, @NotNull TextureManager textureManager) {
             RenderSystem.depthMask(true);
@@ -41,7 +45,7 @@ public class MistParticle extends TextureSheetParticle {
         xd = g;
         yd = h;
         zd = i;
-        //setColor(0.3f, 0.4f, 0.8f); blue
+        // setColor(0.3f, 0.4f, 0.8f); blue
         setColor(0.682f, 0.678f, 0.6f);
         setAlpha(0.18f);
         quadSize *= 1.5f;
@@ -84,7 +88,7 @@ public class MistParticle extends TextureSheetParticle {
     @Override
     public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-        //return PARTICLE_SHEET_TRANSLUCENT_LIT;
+        // return PARTICLE_SHEET_TRANSLUCENT_LIT;
     }
 
     @Override

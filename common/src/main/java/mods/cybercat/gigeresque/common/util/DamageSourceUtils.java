@@ -1,18 +1,18 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class DamageSourceUtils {
-    private DamageSourceUtils() {
-    }
+
+    private DamageSourceUtils() {}
 
     public static boolean isDamageSourceNotPuncturing(DamageSource source, DamageSources sources) {
         return source == sources.onFire() || source == sources.magic() || source == sources.fall();

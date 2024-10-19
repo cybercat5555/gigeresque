@@ -7,12 +7,13 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
-import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Consumer;
+
+import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 
 public class GigBlockItem extends BlockItem implements GeoItem {
 
@@ -35,11 +36,13 @@ public class GigBlockItem extends BlockItem implements GeoItem {
     @Override
     public void createRenderer(Consumer<RenderProvider> consumer) {
         consumer.accept(new RenderProvider() {
+
             private SporeItemBlockRender renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null) renderer = new SporeItemBlockRender();
+                if (renderer == null)
+                    renderer = new SporeItemBlockRender();
 
                 return renderer;
             }

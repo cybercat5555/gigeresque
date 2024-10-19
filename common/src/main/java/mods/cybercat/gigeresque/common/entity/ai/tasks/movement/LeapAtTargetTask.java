@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,10 +16,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+
 public class LeapAtTargetTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
+        Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)
+    );
+
     private static final double MAX_LEAP_DISTANCE = 3.0;
 
     @Nullable
@@ -41,7 +45,8 @@ public class LeapAtTargetTask<E extends PathfinderMob & AbstractAlien & GeoEntit
         assert target != null;
         var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
         return !entity.isVehicle() && this.target != null && entity.onGround() && entity.distanceTo(
-                target) > MAX_LEAP_DISTANCE && yDiff > 3 && entity.getBlockY() <= target.getBlockY();
+            target
+        ) > MAX_LEAP_DISTANCE && yDiff > 3 && entity.getBlockY() <= target.getBlockY();
     }
 
     @Override

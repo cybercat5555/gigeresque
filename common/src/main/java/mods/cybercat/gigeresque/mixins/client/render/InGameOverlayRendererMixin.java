@@ -2,12 +2,6 @@ package mods.cybercat.gigeresque.mixins.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -20,6 +14,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 /**
  * @author Boston Vanseghi
  */
@@ -27,9 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class InGameOverlayRendererMixin {
 
     private static int fovEggticker = 0;
+
     private static int fovGooticker = 0;
 
-    @Inject(method = {"renderScreenEffect"}, at = {@At("RETURN")})
+    @Inject(method = { "renderScreenEffect" }, at = { @At("RETURN") })
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
         assert client.player != null;
         if (!client.player.isSpectator()) {
@@ -39,18 +40,26 @@ public class InGameOverlayRendererMixin {
             if (fluidState.is(GigFluids.BLACK_FLUID_STILL.get()) || fluidState.is(GigFluids.BLACK_FLUID_FLOWING.get()))
                 renderOverlay(client, matrices, 1, EntityTextures.BLACK_FLUID_TEXTURE);
 
-            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
-                    GigStatusEffects.DNA)) {
+            if (
+                Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
+                    GigStatusEffects.DNA
+                )
+            ) {
                 fovGooticker++;
                 var dnaDuration = Math.max(0, Math.min(fovGooticker / CommonMod.config.getgooEffectTickTimer(), 1));
                 renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
-            if (Constants.isNotCreativeSpecPlayer.test(
-                    client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            if (
+                Constants.isNotCreativeSpecPlayer.test(
+                    client.player
+                ) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)
+            ) {
                 fovEggticker++;
-                var eggmorphingProgress = Math.max(0,
-                        Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1));
+                var eggmorphingProgress = Math.max(
+                    0,
+                    Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1)
+                );
                 renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
@@ -63,7 +72,10 @@ public class InGameOverlayRendererMixin {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
         BlockPos blockpos = BlockPos.containing(client.player.getX(), client.player.getEyeY(), client.player.getZ());
-        float f = LightTexture.getBrightness(client.player.level().dimensionType(), client.player.level().getMaxLocalRawBrightness(blockpos));
+        float f = LightTexture.getBrightness(
+            client.player.level().dimensionType(),
+            client.player.level().getMaxLocalRawBrightness(blockpos)
+        );
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(f, f, f, progress);
         float f7 = -client.player.getYRot() / 64.0F;

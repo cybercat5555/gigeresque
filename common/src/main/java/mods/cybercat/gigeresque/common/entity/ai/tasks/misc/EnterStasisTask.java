@@ -3,14 +3,15 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 import java.util.List;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
 public class EnterStasisTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
 
@@ -25,7 +26,8 @@ public class EnterStasisTask<E extends PathfinderMob & AbstractAlien & GeoEntity
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isVehicle() && entity.isAlive() && !entity.isSearching() && !entity.isHissing() && !entity.isPassedOut();
+        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isVehicle() && entity.isAlive() && !entity.isSearching()
+            && !entity.isHissing() && !entity.isPassedOut();
     }
 
     @Override

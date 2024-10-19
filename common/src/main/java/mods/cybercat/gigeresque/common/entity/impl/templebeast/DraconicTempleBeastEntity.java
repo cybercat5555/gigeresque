@@ -28,23 +28,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -62,10 +45,27 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 /**
  * TODO: Add animations once animated
  */
-public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrainOwner<DraconicTempleBeastEntity>  {
+public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrainOwner<DraconicTempleBeastEntity> {
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public DraconicTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
@@ -79,47 +79,86 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth)
-                .add(Attributes.ARMOR, CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor)
-                .add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-                .add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 5.0);
+        return LivingEntity.createLivingAttributes()
+            .add(
+                Attributes.MAX_HEALTH,
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth
+            )
+            .add(Attributes.ARMOR, CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+            .add(Attributes.FOLLOW_RANGE, 16.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
+            .add(
+                Attributes.ATTACK_DAMAGE,
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 5.0);
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
-                    this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
+            if (isDead)
+                return event.setAndContinue(GigAnimationsDefault.DEATH);
+            if (
+                event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut()
+                    && !this.swinging && !(this.level()
+                        .getFluidState(
+                            this.blockPosition()
+                        )
+                        .is(Fluids.WATER) && this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .getAmount() >= 8)
+            )
                 if (walkAnimation.speedOld >= 0.45F && this.getFirstPassenger() == null)
                     return event.setAndContinue(GigAnimationsDefault.RUN);
                 else if (!this.isExecuting() && walkAnimation.speedOld < 0.45F)
                     return event.setAndContinue(GigAnimationsDefault.WALK);
             return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : GigAnimationsDefault.IDLE);
         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                .triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
-                .setSoundKeyframeHandler(event -> {
-                    if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP.get(),
-                                SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                    if (event.getKeyframeData().getSound().matches("idleSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT.get(),
-                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1, event -> {
-            if (event.getAnimatable().isPassedOut())
-                return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
-            return PlayState.STOP;
-        }).triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+            .triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
+            .setSoundKeyframeHandler(event -> {
+                if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_FOOTSTEP.get(),
+                            SoundSource.HOSTILE,
+                            0.5F,
+                            1.0F,
+                            true
+                        );
+                if (event.getKeyframeData().getSound().matches("idleSoundkey") && this.level().isClientSide)
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_AMBIENT.get(),
+                            SoundSource.HOSTILE,
+                            1.0F,
+                            1.0F,
+                            true
+                        );
+            })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1, event -> {
+                if (event.getAnimatable().isPassedOut())
+                    return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+                return PlayState.STOP;
+            }).triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("alert", GigAnimationsDefault.HISS) // reset hands
                 .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
                 .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
-                .triggerableAnim("wakeup",
-                        GigAnimationsDefault.STATIS_LEAVE.then("idle_land", Animation.LoopType.PLAY_ONCE)) // wake up
+                .triggerableAnim(
+                    "wakeup",
+                    GigAnimationsDefault.STATIS_LEAVE.then("idle_land", Animation.LoopType.PLAY_ONCE)
+                ) // wake up
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
                 .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
@@ -127,23 +166,58 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                 .triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
                 .setSoundKeyframeHandler(event -> {
                     if (event.getKeyframeData().getSound().matches("clawSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW.get(),
-                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_CLAW.get(),
+                                SoundSource.HOSTILE,
+                                0.25F,
+                                1.0F,
+                                true
+                            );
                     if (event.getKeyframeData().getSound().matches("tailSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL.get(),
-                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_TAIL.get(),
+                                SoundSource.HOSTILE,
+                                0.25F,
+                                1.0F,
+                                true
+                            );
                 })).add(new AnimationController<>(this, "hissController", 0, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level().getFluidState(
-                    this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
-                return event.setAndContinue(GigAnimationsDefault.HISS);
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS.get(),
-                        SoundSource.HOSTILE, 1.0F, 1.0F, true);
-        }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
+                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+                    if (
+                        this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .is(Fluids.WATER) && this.level()
+                                .getFluidState(
+                                    this.blockPosition()
+                                )
+                                .getAmount() >= 8)
+                    )
+                        return event.setAndContinue(GigAnimationsDefault.HISS);
+                    return PlayState.STOP;
+                }).setSoundKeyframeHandler(event -> {
+                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_HISS.get(),
+                                SoundSource.HOSTILE,
+                                1.0F,
+                                1.0F,
+                                true
+                            );
+                }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
     }
 
     @Override
@@ -152,8 +226,14 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (spawnType != MobSpawnType.NATURAL)
+            setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -170,73 +250,109 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
 
     @Override
     public List<ExtendedSensor<DraconicTempleBeastEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<DraconicTempleBeastEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
-                new NearbyBlocksSensor<DraconicTempleBeastEntity>().setRadius(7),
-                new NearbyRepellentsSensor<DraconicTempleBeastEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<DraconicTempleBeastEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<DraconicTempleBeastEntity>().setPredicate(
+                GigEntityUtils::entityTest
+            ),
+            new NearbyBlocksSensor<DraconicTempleBeastEntity>().setRadius(7),
+            new NearbyRepellentsSensor<DraconicTempleBeastEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new NearbyLightsBlocksSensor<DraconicTempleBeastEntity>().setRadius(7)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
+                ),
+            new HurtBySensor<>(),
+            new UnreachableTargetSensor<>(),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
-                // Flee Fire
-                new FleeFireTask<>(3.5F),
-                // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching()),
-                // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(
-                        entity -> this.isPassedOut()));
+            // Flee Fire
+            new FleeFireTask<>(3.5F),
+            // Looks at target
+            new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
+                .startCondition(
+                    entity -> !this.isPassedOut() || !this.isSearching()
+                ),
+            // Move to target
+            new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut())
+                .stopIf(
+                    entity -> this.isPassedOut()
+                )
+        );
     }
 
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                // Kill Lights
-                new KillLightsTask<>().startCondition(
-                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
-                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
-                // Do first
-                new FirstApplicableBehaviour<DraconicTempleBeastEntity>(
-                        // Targeting
-                        new TargetOrRetaliate<>().stopIf(
-                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                        // Look at players
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
-                                entity -> this.isPassedOut() || this.isExecuting()),
-                        // Look around randomly
-                        new SetRandomLookTarget<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()),
-                // Random
-                new OneRandomBehaviour<>(
-                        // Randomly walk around
-                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
-                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
-                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
-                        // Idle
-                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
-                                entity -> entity.getRandom().nextInt(30, 60))));
+            // Kill Lights
+            new KillLightsTask<>().startCondition(
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+            )
+                .stopIf(
+                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                ),
+            // Do first
+            new FirstApplicableBehaviour<DraconicTempleBeastEntity>(
+                // Targeting
+                new TargetOrRetaliate<>().stopIf(
+                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())
+                ),
+                // Look at players
+                new SetPlayerLookTarget<>().predicate(
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                )
+                    .stopIf(
+                        entity -> this.isPassedOut() || this.isExecuting()
+                    ),
+                // Look around randomly
+                new SetRandomLookTarget<>().startCondition(
+                    entity -> !this.isPassedOut() || !this.isSearching()
+                )
+            ).stopIf(
+                entity -> this.isPassedOut() || this.isExecuting()
+            ),
+            // Random
+            new OneRandomBehaviour<>(
+                // Randomly walk around
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(1.2f)
+                    .startCondition(
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                    )
+                    .stopIf(
+                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                    ),
+                // Idle
+                new Idle<>().startCondition(entity -> !this.isAggressive())
+                    .runFor(
+                        entity -> entity.getRandom().nextInt(30, 60)
+                    )
+            )
+        );
     }
 
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
-                new JumpToTargetTask<>(20),
-                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR));
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
+            new JumpToTargetTask<>(20),
+            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR)
+        );
     }
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (DamageSourceUtils.isDamageFromFront(source, this)) return false;
+        if (DamageSourceUtils.isDamageFromFront(source, this))
+            return false;
         return super.hurt(source, amount);
     }
 }

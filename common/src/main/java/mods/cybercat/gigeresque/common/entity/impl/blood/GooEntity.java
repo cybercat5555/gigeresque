@@ -1,11 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.blood;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +19,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class GooEntity extends Entity {
 
     public GooEntity(EntityType<? extends Entity> entityType, Level level) {
@@ -43,9 +44,16 @@ public class GooEntity extends Entity {
         this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
         if (this.level().isClientSide()) {
             for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                this.level().addAlwaysVisibleParticle(GigParticles.GOO.get(),
-                        this.blockPosition().getX() + this.random.nextDouble(), this.blockPosition().getY() + 0.01,
-                        this.blockPosition().getZ() + this.random.nextDouble(), 0.0, 0.0, 0.0);
+                this.level()
+                    .addAlwaysVisibleParticle(
+                        GigParticles.GOO.get(),
+                        this.blockPosition().getX() + this.random.nextDouble(),
+                        this.blockPosition().getY() + 0.01,
+                        this.blockPosition().getZ() + this.random.nextDouble(),
+                        0.0,
+                        0.0,
+                        0.0
+                    );
             }
         }
         if (!this.level().isClientSide()) {
@@ -70,22 +78,33 @@ public class GooEntity extends Entity {
             if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
                 this.remove(RemovalReason.KILLED);
             level().getEntities(this, this.getBoundingBox().inflate(1)).forEach(e -> {
-                if (e instanceof GooEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
+                if (e instanceof GooEntity && e.tickCount < this.tickCount)
+                    e.remove(RemovalReason.KILLED);
             });
         }
     }
 
     private void doParticleSounds(RandomSource randomSource) {
-        this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
-                this.blockPosition().getZ(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS,
-                0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
+        this.level()
+            .playSound(
+                null,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ(),
+                SoundEvents.SCULK_BLOCK_SPREAD,
+                SoundSource.BLOCKS,
+                0.2f + randomSource.nextFloat() * 0.2f,
+                0.9f + randomSource.nextFloat() * 0.15f
+            );
     }
 
     private void damageLivingEntities(LivingEntity livingEntity, RandomSource randomSource) {
-        if (livingEntity.hasEffect(GigStatusEffects.DNA) || livingEntity.getType().is(GigTags.DNAIMMUNE)) return;
+        if (livingEntity.hasEffect(GigStatusEffects.DNA) || livingEntity.getType().is(GigTags.DNAIMMUNE))
+            return;
         if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
-                    new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.gooEffectTickTimer / 2, 0));
+                new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.gooEffectTickTimer / 2, 0)
+            );
         }
     }
 

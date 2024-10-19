@@ -4,10 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
-import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,10 +16,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
+import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public class AlienProjectileAttack<E extends PathfinderMob & AbstractAlien & GeoEntity> extends CustomDelayedRangedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
 
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 90;
 
@@ -70,12 +73,18 @@ public class AlienProjectileAttack<E extends PathfinderMob & AbstractAlien & Geo
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
-        if (this.target == null) return;
+        if (this.target == null)
+            return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target)) return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target))
+            return;
 
         if (entity instanceof SpitterEntity spitterEntity) {
             entity.swing(InteractionHand.MAIN_HAND);

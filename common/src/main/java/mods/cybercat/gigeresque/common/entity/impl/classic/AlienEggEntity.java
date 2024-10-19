@@ -4,16 +4,6 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -38,38 +28,82 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 public class AlienEggEntity extends AlienEntity {
 
-    private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(AlienEggEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(AlienEggEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> NEST_TICKS = SynchedEntityData.defineId(AlienEggEntity.class,
-            EntityDataSerializers.FLOAT);
-    private static final long MAX_HATCH_PROGRESS = 50L;
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public float ticksUntilNest = -1.0f;
-    private long hatchProgress = 0L;
-    private long ticksOpen = 0L;
-    private int hatchCheckTimer = 0;
+    private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(
+        AlienEggEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
+    private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(
+        AlienEggEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(
+        AlienEggEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    private static final EntityDataAccessor<Float> NEST_TICKS = SynchedEntityData.defineId(
+        AlienEggEntity.class,
+        EntityDataSerializers.FLOAT
+    );
+
+    private static final long MAX_HATCH_PROGRESS = 50L;
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
+    public float ticksUntilNest = -1.0f;
+
+    private long hatchProgress = 0L;
+
+    private long ticksOpen = 0L;
+
+    private int hatchCheckTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
     }
 
-    public static boolean canSpawn(EntityType<? extends AlienEntity> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        if (world.getDifficulty() == Difficulty.PEACEFUL) return false;
+    public static boolean canSpawn(
+        EntityType<? extends AlienEntity> type,
+        ServerLevelAccessor world,
+        MobSpawnType reason,
+        BlockPos pos,
+        RandomSource random
+    ) {
+        if (world.getDifficulty() == Difficulty.PEACEFUL)
+            return false;
         return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.eggConfigs.alieneggHealth).add(
-                Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE,
-                0.0).add(Attributes.FOLLOW_RANGE, 0.0).add(Attributes.MOVEMENT_SPEED, 0.0);
+        return LivingEntity.createLivingAttributes()
+            .add(Attributes.MAX_HEALTH, CommonMod.config.eggConfigs.alieneggHealth)
+            .add(
+                Attributes.ARMOR,
+                1.0
+            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
+            .add(
+                Attributes.KNOCKBACK_RESISTANCE,
+                0.0
+            )
+            .add(Attributes.FOLLOW_RANGE, 0.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.0);
     }
 
     @Override
@@ -142,8 +176,10 @@ public class AlienEggEntity extends AlienEntity {
 
     @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
-        if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
+        if (this.isHatched() && !this.isDeadOrDying())
+            return EntityDimensions.scalable(0.7f, 1.0f);
+        if (this.isDeadOrDying())
+            return EntityDimensions.scalable(0.7f, 0.6f);
         return super.getDefaultDimensions(pose);
     }
 
@@ -169,27 +205,39 @@ public class AlienEggEntity extends AlienEntity {
 
     @Override
     public void travel(@NotNull Vec3 vec3) {
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
+        if (this.tickCount % 10 == 0)
+            this.refreshDimensions();
         super.travel(vec3);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.isNoAi()) return;
+        if (this.isNoAi())
+            return;
 
-        if (this.isHatched() && this.isAlive() && !this.level().isClientSide) this.setTicksUntilNest(ticksUntilNest++);
+        if (this.isHatched() && this.isAlive() && !this.level().isClientSide)
+            this.setTicksUntilNest(ticksUntilNest++);
         if (this.getTicksUntilNest() == 6000f) {
             if (this.level().isClientSide) {
                 for (var i = 0; i < 2; i++)
-                    this.level().addAlwaysVisibleParticle(GigParticles.GOO.get(), this.getRandomX(1.0), this.getRandomY(),
-                            this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+                    this.level()
+                        .addAlwaysVisibleParticle(
+                            GigParticles.GOO.get(),
+                            this.getRandomX(1.0),
+                            this.getRandomY(),
+                            this.getRandomZ(1.0),
+                            0.0,
+                            0.0,
+                            0.0
+                        );
             }
             this.level().setBlockAndUpdate(this.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
             this.kill();
         }
 
-        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) hatchProgress++;
+        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
+            hatchProgress++;
 
         if (hatchProgress == 40L && !level().isClientSide)
             this.level().playSound(this, blockPosition(), GigSounds.EGG_OPEN.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
@@ -200,14 +248,18 @@ public class AlienEggEntity extends AlienEntity {
             ticksOpen++;
         }
 
-        if (isHatched() && hasFacehugger()) ticksOpen++;
+        if (isHatched() && hasFacehugger())
+            ticksOpen++;
 
         if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
             var facehugger = GigEntities.FACEHUGGER.get().create(level());
             assert facehugger != null;
             facehugger.setPos(this.position().x, this.position().y + 1, this.position().z);
-            facehugger.setDeltaMovement(Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f), 0.7,
-                    Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f));
+            facehugger.setDeltaMovement(
+                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
+                0.7,
+                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
+            );
             facehugger.setEggSpawnState(true);
             facehugger.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 400, 30, false, false));
             level().addFreshEntity(facehugger);
@@ -253,8 +305,7 @@ public class AlienEggEntity extends AlienEntity {
      * Prevents the egg moving when hit.
      */
     @Override
-    public void knockback(double strength, double x, double z) {
-    }
+    public void knockback(double strength, double x, double z) {}
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
@@ -278,18 +329,22 @@ public class AlienEggEntity extends AlienEntity {
             hatchCheckTimer = 0; // Reset the timer
 
             // Get nearby entities within normal hatch range
-            this.level().getEntitiesOfClass(LivingEntity.class,
-                    this.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)).forEach(target -> {
-                // If the entity is alive and can be facehugged
-                if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                    // Apply random chance to hatch
-                    if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
-                        if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
-                            setIsHatching(true);
+            this.level()
+                .getEntitiesOfClass(
+                    LivingEntity.class,
+                    this.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)
+                )
+                .forEach(target -> {
+                    // If the entity is alive and can be facehugged
+                    if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
+                        // Apply random chance to hatch
+                        if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
+                            if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
+                                setIsHatching(true);
+                            }
                         }
                     }
-                }
-            });
+                });
 
             // Smaller range for closer entities
             this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
@@ -297,8 +352,7 @@ public class AlienEggEntity extends AlienEntity {
                     if (this.level().random.nextFloat() < 0.8f) { // 20% chance to hatch
                         if (target instanceof Player player && !(player.isCreative() || player.isSpectator())) {
                             setIsHatching(true);
-                        }
-                        else if (!(target instanceof Player)) {
+                        } else if (!(target instanceof Player)) {
                             setIsHatching(true);
                         }
                     }
@@ -316,19 +370,21 @@ public class AlienEggEntity extends AlienEntity {
                                 for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1), this.blockPosition().north(1))) {
                                     // Check if any nearby blocks are not air
                                     boolean isAnyBlockNotAir = !this.level().getBlockState(testPos).isAir() &&
-                                            !this.level().getBlockState(testPos1).isAir() &&
-                                            !this.level().getBlockState(testPos2).isAir() &&
-                                            !this.level().getBlockState(testPos3).isAir() &&
-                                            !this.level().getBlockState(testPos4).isAir() &&
-                                            !this.level().getBlockState(testPos5).isAir();
+                                        !this.level().getBlockState(testPos1).isAir() &&
+                                        !this.level().getBlockState(testPos2).isAir() &&
+                                        !this.level().getBlockState(testPos3).isAir() &&
+                                        !this.level().getBlockState(testPos4).isAir() &&
+                                        !this.level().getBlockState(testPos5).isAir();
 
                                     // Check if any nearby blocks are solid
-                                    boolean isAnyBlockSolid = !this.level().getBlockState(testPos).isCollisionShapeFullBlock(level(), testPos) &&
-                                            !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
-                                            !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
-                                            !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
-                                            !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
-                                            !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
+                                    boolean isAnyBlockSolid = !this.level()
+                                        .getBlockState(testPos)
+                                        .isCollisionShapeFullBlock(level(), testPos) &&
+                                        !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
+                                        !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
+                                        !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
+                                        !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
+                                        !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
 
                                     // Set isHatching to false if conditions are met
                                     if (isAnyBlockSolid || isAnyBlockNotAir) {
@@ -349,7 +405,8 @@ public class AlienEggEntity extends AlienEntity {
 
     @Override
     public void checkDespawn() {
-        if (this.isHatched() && !this.hasFacehugger()) super.checkDespawn();
+        if (this.isHatched() && !this.hasFacehugger())
+            super.checkDespawn();
     }
 
     /*
@@ -359,17 +416,28 @@ public class AlienEggEntity extends AlienEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             if (isHatched() && !this.isDeadOrDying()) {
-                if (!hasFacehugger()) return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
+                if (!hasFacehugger())
+                    return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
                 return event.setAndContinue(GigAnimationsDefault.HATCHED);
             }
-            if (this.isDeadOrDying()) return event.setAndContinue(GigAnimationsDefault.DEATH);
+            if (this.isDeadOrDying())
+                return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (isHatching() && !this.isDeadOrDying())
                 event.getController().setAnimation(GigAnimationsDefault.HATCHING);
             return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("hatching") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN.get(),
-                        SoundSource.HOSTILE, 0.75F, 0.1F, true);
+                this.level()
+                    .playLocalSound(
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        GigSounds.EGG_OPEN.get(),
+                        SoundSource.HOSTILE,
+                        0.75F,
+                        0.1F,
+                        true
+                    );
         }));
     }
 

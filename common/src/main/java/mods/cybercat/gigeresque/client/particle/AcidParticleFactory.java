@@ -8,6 +8,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
 
 public class AcidParticleFactory implements ParticleProvider<SimpleParticleType> {
+
     private final SpriteSet spriteProvider;
 
     public AcidParticleFactory(SpriteSet spriteProvider) {
@@ -15,7 +16,16 @@ public class AcidParticleFactory implements ParticleProvider<SimpleParticleType>
     }
 
     @Override
-    public Particle createParticle(@NotNull SimpleParticleType defaultParticleType, @NotNull ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+    public Particle createParticle(
+        @NotNull SimpleParticleType defaultParticleType,
+        @NotNull ClientLevel clientWorld,
+        double d,
+        double e,
+        double f,
+        double g,
+        double h,
+        double i
+    ) {
         return new AcidParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
     }
 }

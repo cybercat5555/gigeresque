@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -33,17 +30,27 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class SittingIdolBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+
     BlockPos[] blockPoss;
+
     public static final MapCodec<SittingIdolBlock> CODEC = simpleCodec(SittingIdolBlock::new);
 
     public SittingIdolBlock(Properties properties) {
         super(Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
@@ -67,7 +74,13 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        @NotNull BlockState state,
+        Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof IdolStorageEntity idolStorageEntity)
             player.openMenu(idolStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);
@@ -89,7 +102,12 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return OUTLINE_SHAPE;
     }
 
@@ -104,7 +122,13 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, BlockState state, LivingEntity placer, @NotNull ItemStack itemStack) {
+    public void setPlacedBy(
+        @NotNull Level world,
+        @NotNull BlockPos pos,
+        BlockState state,
+        LivingEntity placer,
+        @NotNull ItemStack itemStack
+    ) {
         BlockPos.betweenClosed(pos, pos.relative(state.getValue(FACING), 2).above(2)).forEach(testPos -> {
             if (!testPos.equals(pos))
                 world.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -138,7 +162,11 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(), IdolStorageEntity::tick);
     }
 }

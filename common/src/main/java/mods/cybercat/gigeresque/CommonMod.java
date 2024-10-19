@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.common.internal.common.AzureLibMod;
 import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
+
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
@@ -15,7 +16,9 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public record CommonMod() {
+
     public static final String MOD_ID = "gigeresque";
+
     public static GigeresqueConfig config;
 
     public static void initRegistries() {

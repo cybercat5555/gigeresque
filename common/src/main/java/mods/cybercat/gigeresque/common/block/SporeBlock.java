@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,8 +23,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class SporeBlock extends BaseEntityBlock implements EntityBlock {
+
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
     public static final MapCodec<SporeBlock> CODEC = simpleCodec(SporeBlock::new);
 
     protected SporeBlock(Properties properties) {
@@ -40,7 +43,11 @@ public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.SPORE_ENTITY.get(), SporeBlockEntity::tick);
     }
 
@@ -60,26 +67,42 @@ public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return Block.box(3, 0, 4, 13, 4, 11);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING,
-                context.getHorizontalDirection().getClockWise().getClockWise());
+        return this.defaultBlockState()
+            .setValue(
+                FACING,
+                context.getHorizontalDirection().getClockWise().getClockWise()
+            );
     }
 
     @Override
-    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
+    public void playerDestroy(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        BlockEntity blockEntity,
+        @NotNull ItemStack stack
+    ) {
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             var areaEffectCloudEntity = new AreaEffectCloud(serverLevel, pos.getX(), pos.getY(), pos.getZ());
             areaEffectCloudEntity.setRadius(1.0F);
             areaEffectCloudEntity.setDuration(60);
             areaEffectCloudEntity.setRadiusPerTick(
-                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+                -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+            );
             areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.SPORE, 600, 0));
             serverLevel.addFreshEntity(areaEffectCloudEntity);
         }

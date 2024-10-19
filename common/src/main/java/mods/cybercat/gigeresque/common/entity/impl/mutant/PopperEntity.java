@@ -24,6 +24,22 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -39,22 +55,6 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperEntity> {
 
@@ -73,11 +73,27 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.popperConfigs.popperHealth).add(
-                Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE,
-                0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.popperConfigs.popperAttackDamage).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
-                0.3300000041723251);
+        return LivingEntity.createLivingAttributes()
+            .add(Attributes.MAX_HEALTH, CommonMod.config.popperConfigs.popperHealth)
+            .add(
+                Attributes.ARMOR,
+                1.0
+            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
+            .add(
+                Attributes.KNOCKBACK_RESISTANCE,
+                0.0
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+            .add(
+                Attributes.ATTACK_DAMAGE,
+                CommonMod.config.popperConfigs.popperAttackDamage
+            )
+            .add(Attributes.FOLLOW_RANGE, 16.0)
+            .add(
+                Attributes.MOVEMENT_SPEED,
+                0.3300000041723251
+            );
     }
 
     @Override
@@ -85,14 +101,18 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround() && !this.isInWater())
-                if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
-                else return event.setAndContinue(GigAnimationsDefault.WALK);
+                if (walkAnimation.speedOld >= 0.35F)
+                    return event.setAndContinue(GigAnimationsDefault.RUN);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.WALK);
             else if (this.isAggressive() && !this.onGround() && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CHARGE);
             if (event.isMoving() && !isDead && this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.SWIM);
-            if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            else return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
+            if (isDead)
+                return event.setAndContinue(GigAnimationsDefault.DEATH);
+            else
+                return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
         }).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
@@ -114,34 +134,52 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
 
     @Override
     public List<ExtendedSensor<PopperEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<PopperEntity>().setPredicate(GigEntityUtils::entityTest),
-                new NearbyBlocksSensor<PopperEntity>().setRadius(7),
-                new NearbyRepellentsSensor<PopperEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<PopperEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyBlocksSensor<PopperEntity>().setRadius(7),
+            new NearbyRepellentsSensor<PopperEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<PopperEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f),
-                new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(
+            new LookAtTarget<>(),
+            new FleeFireTask<>(1.2F),
+            new AlienPanic(2.0f),
+            new MoveToWalkTarget<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<PopperEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PopperEntity>(new TargetOrRetaliate<>(),
+        return BrainActivityGroup.idleTasks(
+            new FirstApplicableBehaviour<PopperEntity>(
+                new TargetOrRetaliate<>(),
                 new SetPlayerLookTarget<>().predicate(
-                        target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
-                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
-                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                ),
+                new SetRandomLookTarget<>()
+            ),
+            new OneRandomBehaviour<>(
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
+                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))
+            )
+        );
     }
 
     @Override
     public BrainActivityGroup<PopperEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AttackExplodeTask<>(17));
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F),
+            new AttackExplodeTask<>(17)
+        );
     }
 
     @Override
@@ -160,7 +198,8 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(30);
         areaEffectCloudEntity.setRadiusPerTick(
-                -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+            -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+        );
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
         this.level().addFreshEntity(areaEffectCloudEntity);
     }
@@ -177,7 +216,8 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
             return super.hurt(source, amount);
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
-            if (getAcidDiameter() == 1) GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1)
+                GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {

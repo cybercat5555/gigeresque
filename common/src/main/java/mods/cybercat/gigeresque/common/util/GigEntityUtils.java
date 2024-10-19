@@ -1,13 +1,5 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -20,8 +12,16 @@ import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public record GigEntityUtils() {
 
@@ -30,8 +30,10 @@ public record GigEntityUtils() {
     }
 
     public static boolean isTargetHostable(Entity target) {
-        return target.getType().is(GigTags.CLASSIC_HOSTS) || target.getType().is(
-                GigTags.AQUATIC_HOSTS) || target.getType().is(GigTags.RUNNER_HOSTS);
+        return target.getType().is(GigTags.CLASSIC_HOSTS) || target.getType()
+            .is(
+                GigTags.AQUATIC_HOSTS
+            ) || target.getType().is(GigTags.RUNNER_HOSTS);
     }
 
     public static boolean isTargetGooable(Entity target) {
@@ -59,29 +61,43 @@ public record GigEntityUtils() {
     }
 
     public static boolean faceHuggerTest(LivingEntity target) {
-        return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType().is(
-                GigTags.FACEHUGGER_BLACKLIST) && !target.hasEffect(GigStatusEffects.IMPREGNATION) && !target.hasEffect(
-                GigStatusEffects.EGGMORPHING) && !GigEntityUtils.passengerCheck(
-                target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
+        return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType()
+            .is(
+                GigTags.FACEHUGGER_BLACKLIST
+            ) && !target.hasEffect(GigStatusEffects.IMPREGNATION) && !target.hasEffect(
+                GigStatusEffects.EGGMORPHING
+            ) && !GigEntityUtils.passengerCheck(
+                target
+            ) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
     public static boolean entityTest(LivingEntity target, LivingEntity self) {
-        return !((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
-                GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(
-                target) || self.isVehicle() && target.isAlive());
+        return !((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
+            .is(
+                GigTags.XENO_ATTACK_BLACKLIST
+            )) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(
+                target
+            ) || self.isVehicle() && target.isAlive());
     }
 
     public static boolean removeTarget(LivingEntity target) {
-        return (((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
-                GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
-                target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(
-                target) && !target.isAlive()) || target.hasEffect(GigStatusEffects.IMPREGNATION));
+        return (((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
+            .is(
+                GigTags.XENO_ATTACK_BLACKLIST
+            )) || GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
+                target
+            ) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(
+                target
+            ) && !target.isAlive()) || target.hasEffect(GigStatusEffects.IMPREGNATION));
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
-        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
-                GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) || GigEntityUtils.mainCheck2(
-                target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
+        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
+            .is(
+                GigTags.SMALL_XENO_ATTACK_BLACKLIST
+            )) || GigEntityUtils.mainCheck(target) || GigEntityUtils.mainCheck2(
+                target
+            ) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
     }
 
     public static boolean mainCheck(LivingEntity target) {
@@ -93,8 +109,11 @@ public record GigEntityUtils() {
     }
 
     public static boolean passengerCheck(LivingEntity target) {
-        return target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(
-                AlienEntity.class::isInstance);
+        return target.getVehicle() != null && target.getVehicle()
+            .getSelfAndPassengers()
+            .anyMatch(
+                AlienEntity.class::isInstance
+            );
     }
 
     public static boolean feetCheck(LivingEntity target) {
@@ -151,24 +170,38 @@ public record GigEntityUtils() {
     private static void spawnEffects(Level world, LivingEntity entity) {
         if (!world.isClientSide())
             for (var i = 0; i < 2; i++)
-                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),
-                        entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
-                        entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
-                        0.15000000596046448);
+                ((ServerLevel) world).sendParticles(
+                    ParticleTypes.POOF,
+                    entity.getX() + 0.5,
+                    entity.getY(),
+                    entity.getZ() + 0.5,
+                    1,
+                    entity.getRandom().nextGaussian() * 0.02,
+                    entity.getRandom().nextGaussian() * 0.02,
+                    entity.getRandom().nextGaussian() * 0.02,
+                    0.15000000596046448
+                );
     }
 
     public static void breakBlocks(AlienEntity alienEntity) {
-        if (alienEntity.isCrawling()) return;
-        if (alienEntity.isDeadOrDying()) return;
-        if (alienEntity.isPassedOut()) return;
-        if (alienEntity.isInWater()) return;
+        if (alienEntity.isCrawling())
+            return;
+        if (alienEntity.isDeadOrDying())
+            return;
+        if (alienEntity.isPassedOut())
+            return;
+        if (alienEntity.isInWater())
+            return;
         if (alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             if (!alienEntity.level().isClientSide)
                 alienEntity.breakingCounter++;
             if (alienEntity.breakingCounter > 10) {
-                for (var testPos : BlockPos.betweenClosed(
+                for (
+                    var testPos : BlockPos.betweenClosed(
                         alienEntity.blockPosition().relative(alienEntity.getDirection()),
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2))) {
+                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2)
+                    )
+                ) {
                     var state = alienEntity.level().getBlockState(testPos);
                     if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(BlockTags.FLOWERS))
                         continue;
@@ -182,18 +215,35 @@ public record GigEntityUtils() {
                         alienEntity.breakingCounter = -90;
                         if (alienEntity.level().isClientSide()) {
                             for (var i = 2; i < 10; i++) {
-                                alienEntity.level().addAlwaysVisibleParticle(GigParticles.ACID.get(),
-                                        alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
+                                alienEntity.level()
+                                    .addAlwaysVisibleParticle(
+                                        GigParticles.ACID.get(),
+                                        alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
+                                            .nextBoolean() ? -1 : 1),
                                         alienEntity.getEyeY() - ((alienEntity.getEyeY() - alienEntity.blockPosition().getY()) / 2.0),
-                                        alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom().nextBoolean() ? -1 : 1),
-                                        0.0, -0.15, 0.0);
+                                        alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
+                                            .nextBoolean() ? -1 : 1),
+                                        0.0,
+                                        -0.15,
+                                        0.0
+                                    );
                             }
-                            alienEntity.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-                                    SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
+                            alienEntity.level()
+                                .playLocalSound(
+                                    testPos.getX(),
+                                    testPos.getY(),
+                                    testPos.getZ(),
+                                    SoundEvents.LAVA_EXTINGUISH,
+                                    SoundSource.BLOCKS,
                                     0.2f + alienEntity.getRandom().nextFloat() * 0.2f,
-                                    0.9f + alienEntity.getRandom().nextFloat() * 0.15f, false);
+                                    0.9f + alienEntity.getRandom().nextFloat() * 0.15f,
+                                    false
+                                );
                         }
-                    } else if (!state.is(GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth() * 0.50))) {
+                    } else if (
+                        !state.is(GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth()
+                            * 0.50))
+                    ) {
                         if (!alienEntity.level().isClientSide) {
                             var acid = GigEntities.ACID.get().create(alienEntity.level());
                             if (acid != null) {

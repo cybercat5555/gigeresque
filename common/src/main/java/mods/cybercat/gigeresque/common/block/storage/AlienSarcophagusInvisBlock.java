@@ -1,10 +1,5 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.InteractionResult;
@@ -21,6 +16,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
+
 public class AlienSarcophagusInvisBlock extends Block {
 
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
@@ -30,7 +31,13 @@ public class AlienSarcophagusInvisBlock extends Block {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        @NotNull BlockState state,
+        Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (!level.isClientSide) {
             var radius = new Vec3i(2, 2, 2);
             for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
@@ -66,23 +73,32 @@ public class AlienSarcophagusInvisBlock extends Block {
 
     @Override
     public @NotNull BlockState playerWillDestroy(Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
-        if (world.isClientSide) return state;
+        if (world.isClientSide)
+            return state;
         var radius = new Vec3i(2, 2, 2);
         for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
             BlockState testState;
-            if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1.get()) ||
+            if (
+                (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1.get()) ||
                     (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO.get()) ||
                     (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE.get()) ||
-                    (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER.get())) {
+                    (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER.get())
+            ) {
                 world.destroyBlock(testPos, true);
                 Block.dropResources(testState, world, testPos);
-            } else if (testState.is(this)) world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            } else if (testState.is(this))
+                world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
         return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return OUTLINE_SHAPE;
     }
 

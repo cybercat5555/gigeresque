@@ -5,24 +5,24 @@ import com.mojang.math.Axis;
 import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
 import mod.azure.azurelib.common.api.client.renderer.layer.BlockAndItemGeoLayer;
 import mod.azure.azurelib.common.internal.common.cache.object.GeoBone;
-import mods.cybercat.gigeresque.client.entity.model.blocks.SittingIdolModel;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import mods.cybercat.gigeresque.client.entity.model.blocks.SittingIdolModel;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 
 public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
 
     public SittingIdolRender() {
         super(new SittingIdolModel());
         this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+
             @Nullable
             @Override
             protected ItemStack getStackForBone(GeoBone bone, IdolStorageEntity animatable) {
@@ -35,18 +35,42 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
             }
 
             @Override
-            protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, IdolStorageEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
+            protected void renderStackForBone(
+                PoseStack poseStack,
+                GeoBone bone,
+                ItemStack stack,
+                IdolStorageEntity animatable,
+                MultiBufferSource bufferSource,
+                float partialTick,
+                int packedLight,
+                int packedOverlay
+            ) {
                 poseStack.mulPose(Axis.XP.rotationDegrees(0));
                 poseStack.mulPose(Axis.YP.rotationDegrees(0));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-                        packedOverlay);
+                super.renderStackForBone(
+                    poseStack,
+                    bone,
+                    stack,
+                    animatable,
+                    bufferSource,
+                    partialTick,
+                    packedLight,
+                    packedOverlay
+                );
             }
         });
     }
 
     @Override
-    public void render(IdolStorageEntity animatable, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(
+        IdolStorageEntity animatable,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight,
+        int packedOverlay
+    ) {
         BlockPos entityPos = animatable.getBlockPos();
         int searchRadius = 2;
 
@@ -61,9 +85,11 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
                         break;
                     }
                 }
-                if (targetBlockPos != null) break;
+                if (targetBlockPos != null)
+                    break;
             }
-            if (targetBlockPos != null) break;
+            if (targetBlockPos != null)
+                break;
         }
         if (targetBlockPos != null) {
             double dx = targetBlockPos.getX() - entityPos.getX();

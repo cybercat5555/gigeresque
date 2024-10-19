@@ -5,8 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -14,17 +12,19 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.Predicate;
+
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
 public class FindDarknessTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
-            Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
+        Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -45,8 +45,13 @@ public class FindDarknessTask<E extends PathfinderMob & AbstractAlien & GeoEntit
     }
 
     private boolean isInDarkness(ServerLevel level, E entity) {
-        return level.getMaxLocalRawBrightness(new BlockPos((int) entity.getX(), (int) entity.getEyeY(),
-                (int) entity.getZ())) < 8;
+        return level.getMaxLocalRawBrightness(
+            new BlockPos(
+                (int) entity.getX(),
+                (int) entity.getEyeY(),
+                (int) entity.getZ()
+            )
+        ) < 8;
     }
 
     private BlockPos findDarkArea(ServerLevel level, E entity) {

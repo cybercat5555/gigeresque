@@ -1,15 +1,5 @@
 package mods.cybercat.gigeresque.common.item;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +14,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 public class SurgeryKitItem extends Item {
 
     public SurgeryKitItem() {
@@ -31,8 +29,17 @@ public class SurgeryKitItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack, @NotNull Player player, LivingEntity livingEntity, @NotNull InteractionHand interactionHand) {
-        if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+    public @NotNull InteractionResult interactLivingEntity(
+        @NotNull ItemStack itemStack,
+        @NotNull Player player,
+        LivingEntity livingEntity,
+        @NotNull InteractionHand interactionHand
+    ) {
+        if (
+            livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && livingEntity.hasEffect(
+                GigStatusEffects.IMPREGNATION
+            )
+        ) {
             // Calculate kill chance based on durability
             var currentDurability = itemStack.getDamageValue();
             var maxDurability = itemStack.getMaxDamage();
@@ -42,7 +49,9 @@ public class SurgeryKitItem extends Item {
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             livingEntity.getActiveEffects().clear();
             if (livingEntity.getRandom().nextDouble() < killChance)
-                livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+                livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE); // Kill
+                                                                                                                                // the
+                                                                                                                                // player
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone())
@@ -55,7 +64,7 @@ public class SurgeryKitItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand) {
-        if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)){
+        if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)) {
             ItemStack itemStack = user.getItemInHand(hand);
             var currentDurability = itemStack.getDamageValue();
             var maxDurability = itemStack.getMaxDamage();
@@ -63,7 +72,9 @@ public class SurgeryKitItem extends Item {
             tryRemoveParasite(user.getItemInHand(hand), user);
             user.getActiveEffects().clear();
             if (user.getRandom().nextDouble() < killChance)
-                user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+                user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE); // Kill
+                                                                                                                // the
+                                                                                                                // player
             if (user instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone())
@@ -76,7 +87,7 @@ public class SurgeryKitItem extends Item {
 
     private double calculateKillChance(int currentDurability, int maxDurability) {
         int durabilityLost = maxDurability - currentDurability;
-        return (durabilityLost / (double) maxDurability) * 0.40;  // Scale chance from 0% to 40%
+        return (durabilityLost / (double) maxDurability) * 0.40; // Scale chance from 0% to 40%
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {

@@ -27,24 +27,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -67,6 +49,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 /**
  * TODO: Update animations once reanimated
  */
@@ -81,11 +82,24 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.classicXenoConfigs.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoHealth).add(
-                Attributes.ARMOR_TOUGHNESS, CommonMod.config.runnerConfigs.runnerXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
-                .add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.runnerConfigs.runnerXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+        return LivingEntity.createLivingAttributes()
+            .add(
+                Attributes.MAX_HEALTH,
+                CommonMod.config.classicXenoConfigs.classicXenoHealth
+            )
+            .add(Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoHealth)
+            .add(
+                Attributes.ARMOR_TOUGHNESS,
+                CommonMod.config.runnerConfigs.runnerXenoArmor
+            )
+            .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
+            .add(Attributes.FOLLOW_RANGE, 32.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
+            .add(
+                Attributes.ATTACK_DAMAGE,
+                CommonMod.config.runnerConfigs.runnerXenoAttackDamage
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -95,15 +109,22 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
 
     @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.95f);
+        if (this.wasEyeInWater)
+            return EntityDimensions.scalable(3.0f, 1.0f);
+        if (this.isTunnelCrawling() || this.isCrawling())
+            return EntityDimensions.scalable(0.95f, 0.95f);
         return EntityDimensions.scalable(1.25f, 1.75f);
     }
 
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
-                10) > 7) {
+        if (
+            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
+                .nextInt(
+                    0,
+                    10
+                ) > 7
+        ) {
             if (target instanceof Player playerEntity) {
                 playerEntity.drop(playerEntity.getInventory().getSelected(), false);
                 playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
@@ -114,12 +135,15 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-            livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerConfigs.runnerXenoTailAttackDamage : 0.0f);
+            livingEntity.hurt(
+                damageSources().mobAttack(this),
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerConfigs.runnerXenoTailAttackDamage : 0.0f
+            );
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper)
+            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
@@ -130,8 +154,14 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (spawnType != MobSpawnType.NATURAL)
+            setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
@@ -139,7 +169,8 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public void tick() {
         super.tick();
         GigEntityUtils.breakBlocks(this);
-        if (this.isPassedOut() && this.getNavigation() != null) this.getNavigation().stop();
+        if (this.isPassedOut() && this.getNavigation() != null)
+            this.getNavigation().stop();
     }
 
     @Override
@@ -172,70 +203,106 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
 
     @Override
     public List<ExtendedSensor<RunnerAlienEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
-                new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7),
-                new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(7).setPredicate(
-                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate(
+                GigEntityUtils::entityTest
+            ),
+            new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7),
+            new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(7)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
+                ),
+            new HurtBySensor<>(),
+            new UnreachableTargetSensor<>(),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
-                // Flee Fire
-                new FleeFireTask<>(3.5F),
-                // Looks at target
-                new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()).startCondition(
-                        entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
-                // Move to target
-                new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
+            // Flee Fire
+            new FleeFireTask<>(3.5F),
+            // Looks at target
+            new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive())
+                .startCondition(
+                    entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()
+                ),
+            // Move to target
+            new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
+                .stopIf(entity -> this.isPassedOut() || this.isExecuting())
+        );
     }
 
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                // Build Nest
-                new BuildNestTask<>(90).startCondition(
-                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()).stopIf(
-                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
-                // Kill Lights
-                new KillLightsTask<>().startCondition(
-                        entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
-                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
-                // Find Darkness
-                new FindDarknessTask<>(),
-                // Do first
-                new FirstApplicableBehaviour<RunnerAlienEntity>(
-                        // Targeting
-                        new TargetOrRetaliate<>().stopIf(
-                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())),
-                        // Look at players
-                        new SetPlayerLookTarget<>().predicate(
-                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
-                        // Look around randomly
-                        new SetRandomLookTarget<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
-                // Random
-                new OneRandomBehaviour<>(
-                        // Randomly walk around
-                        new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f).startCondition(
-                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
-                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
-                        // Idle
-                        new EnterStasisTask<>(6000)).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0));
+            // Build Nest
+            new BuildNestTask<>(90).startCondition(
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
+                    || !this.isTunnelCrawling()
+            )
+                .stopIf(
+                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                ),
+            // Kill Lights
+            new KillLightsTask<>().startCondition(
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+            )
+                .stopIf(
+                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                ),
+            // Find Darkness
+            new FindDarknessTask<>(),
+            // Do first
+            new FirstApplicableBehaviour<RunnerAlienEntity>(
+                // Targeting
+                new TargetOrRetaliate<>().stopIf(
+                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())
+                ),
+                // Look at players
+                new SetPlayerLookTarget<>().predicate(
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                ).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                // Look around randomly
+                new SetRandomLookTarget<>().startCondition(
+                    entity -> !this.isPassedOut() || !this.isSearching()
+                )
+            ).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+            // Random
+            new OneRandomBehaviour<>(
+                // Randomly walk around
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(1.2f)
+                    .startCondition(
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                    )
+                    .stopIf(
+                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                    ),
+                // Idle
+                new EnterStasisTask<>(6000)
+            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0)
+        );
     }
 
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
-                new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
-                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR).stopIf(entity -> this.isPassedOut() || this.isExecuting()));
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f)
+                .stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+            new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR).stopIf(
+                entity -> this.isPassedOut() || this.isExecuting()
+            )
+        );
     }
 
     /*
@@ -245,43 +312,92 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
-                    this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
+            if (isDead)
+                return event.setAndContinue(GigAnimationsDefault.DEATH);
+            if (
+                event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut()
+                    && !this.swinging && !(this.level()
+                        .getFluidState(
+                            this.blockPosition()
+                        )
+                        .is(Fluids.WATER) && this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .getAmount() >= 8)
+            )
                 if (walkAnimation.speedOld >= 0.45F && this.getFirstPassenger() == null)
                     return event.setAndContinue(GigAnimationsDefault.RUN);
                 else if (!this.isExecuting() && walkAnimation.speedOld < 0.45F)
                     return event.setAndContinue(GigAnimationsDefault.WALK);
-                else if ((this.level().getFluidState(this.blockPosition()).is(
-                        Fluids.WATER) && this.level().getFluidState(
-                        this.blockPosition()).getAmount() >= 8) && !this.isExecuting() && !this.isVehicle())
+                else if (
+                    (this.level()
+                        .getFluidState(this.blockPosition())
+                        .is(
+                            Fluids.WATER
+                        ) && this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .getAmount() >= 8) && !this.isExecuting() && !this.isVehicle()
+                )
                     if (this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    else return event.setAndContinue(GigAnimationsDefault.SWIM);
-            return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : (this.level().getFluidState(
-                    this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+                    else
+                        return event.setAndContinue(GigAnimationsDefault.SWIM);
+            return event.setAndContinue(
+                this.isNoAi()
+                    ? GigAnimationsDefault.STATIS_ENTER
+                    : (this.level()
+                        .getFluidState(
+                            this.blockPosition()
+                        )
+                        .is(Fluids.WATER) && this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND
+            );
         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND) // idle
-                .setSoundKeyframeHandler(event -> {
-                    if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP.get(),
-                                SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                    if (event.getKeyframeData().getSound().matches("idleSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT.get(),
-                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1, event -> {
-            if (event.getAnimatable().isPassedOut())
-                return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
-            return PlayState.STOP;
-        }).triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+            .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND) // idle
+            .setSoundKeyframeHandler(event -> {
+                if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_FOOTSTEP.get(),
+                            SoundSource.HOSTILE,
+                            0.5F,
+                            1.0F,
+                            true
+                        );
+                if (event.getKeyframeData().getSound().matches("idleSoundkey") && this.level().isClientSide)
+                    this.level()
+                        .playLocalSound(
+                            this.getX(),
+                            this.getY(),
+                            this.getZ(),
+                            GigSounds.ALIEN_AMBIENT.get(),
+                            SoundSource.HOSTILE,
+                            1.0F,
+                            1.0F,
+                            true
+                        );
+            })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1, event -> {
+                if (event.getAnimatable().isPassedOut())
+                    return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+                return PlayState.STOP;
+            }).triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("alert", GigAnimationsDefault.HISS) // reset hands
                 .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
                 .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
-                .triggerableAnim("wakeup",
-                        GigAnimationsDefault.STATIS_LEAVE.then("idle_land", Animation.LoopType.PLAY_ONCE)) // wake up
+                .triggerableAnim(
+                    "wakeup",
+                    GigAnimationsDefault.STATIS_LEAVE.then("idle_land", Animation.LoopType.PLAY_ONCE)
+                ) // wake up
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
                 .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
@@ -289,23 +405,58 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 .triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
                 .setSoundKeyframeHandler(event -> {
                     if (event.getKeyframeData().getSound().matches("clawSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW.get(),
-                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_CLAW.get(),
+                                SoundSource.HOSTILE,
+                                0.25F,
+                                1.0F,
+                                true
+                            );
                     if (event.getKeyframeData().getSound().matches("tailSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL.get(),
-                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_TAIL.get(),
+                                SoundSource.HOSTILE,
+                                0.25F,
+                                1.0F,
+                                true
+                            );
                 })).add(new AnimationController<>(this, "hissController", 0, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level().getFluidState(
-                    this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
-                return event.setAndContinue(GigAnimationsDefault.HISS);
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS.get(),
-                        SoundSource.HOSTILE, 1.0F, 1.0F, true);
-        }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
+                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+                    if (
+                        this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level()
+                            .getFluidState(
+                                this.blockPosition()
+                            )
+                            .is(Fluids.WATER) && this.level()
+                                .getFluidState(
+                                    this.blockPosition()
+                                )
+                                .getAmount() >= 8)
+                    )
+                        return event.setAndContinue(GigAnimationsDefault.HISS);
+                    return PlayState.STOP;
+                }).setSoundKeyframeHandler(event -> {
+                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                        this.level()
+                            .playLocalSound(
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                GigSounds.ALIEN_HISS.get(),
+                                SoundSource.HOSTILE,
+                                1.0F,
+                                1.0F,
+                                true
+                            );
+                }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
     }
 
     @Override

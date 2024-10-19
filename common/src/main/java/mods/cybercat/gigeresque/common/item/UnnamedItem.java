@@ -2,9 +2,6 @@ package mods.cybercat.gigeresque.common.item;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.platform.Services;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,10 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 /**
- * TODO: Get name
- * TODO: Get Model
- * TODO: Animate Model to time with Hologram
+ * TODO: Get name TODO: Get Model TODO: Animate Model to time with Hologram
  */
 public class UnnamedItem extends Item {
 
@@ -39,9 +38,9 @@ public class UnnamedItem extends Item {
                 var horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
                 int distanceCategory;
-                if (horizontalDistance  <= 50)
+                if (horizontalDistance <= 50)
                     distanceCategory = 3; // Close (within 50 blocks)
-                else if (horizontalDistance  <= 75)
+                else if (horizontalDistance <= 75)
                     distanceCategory = 2; // Mid-range (50 - 75 blocks)
                 else
                     distanceCategory = 1; // Far (greater than 75 blocks)
@@ -59,11 +58,29 @@ public class UnnamedItem extends Item {
                     hologramEntity.setOnGround(true);
                     level.addFreshEntity(hologramEntity);
                 }
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), GigSounds.TRACKER_SUMMON.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+                level.playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    GigSounds.TRACKER_SUMMON.get(),
+                    SoundSource.NEUTRAL,
+                    1.0F,
+                    1.0F
+                );
                 player.getCooldowns().addCooldown(this, 50);
                 return InteractionResultHolder.success(itemstack);
             } else {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CRAFTER_FAIL, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                level.playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    SoundEvents.CRAFTER_FAIL,
+                    SoundSource.NEUTRAL,
+                    1.0F,
+                    1.0F
+                );
             }
             return InteractionResultHolder.consume(itemstack);
         }

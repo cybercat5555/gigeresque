@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -36,17 +33,27 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class AlienSarcophagusBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+
     BlockPos[] blockPoss;
+
     public static final MapCodec<AlienSarcophagusBlock> CODEC = simpleCodec(AlienSarcophagusBlock::new);
 
     public AlienSarcophagusBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
@@ -70,7 +77,13 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        @NotNull BlockState state,
+        Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
             player.openMenu(alienStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);
@@ -92,20 +105,37 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return OUTLINE_SHAPE;
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+    public @NotNull BlockState playerWillDestroy(
+        @NotNull Level world,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        @NotNull Player player
+    ) {
         BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
-            if (!testPos.equals(pos)) world.destroyBlock(testPos, true);
+            if (!testPos.equals(pos))
+                world.destroyBlock(testPos, true);
         });
         return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
-    public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity placer, @NotNull ItemStack itemStack) {
+    public void setPlacedBy(
+        @NotNull Level world,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        LivingEntity placer,
+        @NotNull ItemStack itemStack
+    ) {
         BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
             if (!testPos.equals(pos))
                 world.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -115,18 +145,21 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     @Override
     public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
         for (var testPos : BlockPos.betweenClosed(pos, pos.above(2)))
-            if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir()) return false;
+            if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
+                return false;
         return true;
     }
 
     @Override
     public void tick(@NotNull BlockState state, ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random) {
-        if (world.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity) alienStorageEntity.tick();
+        if (world.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
+            alienStorageEntity.tick();
     }
 
     @Override
     public void onRemove(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock())) return;
+        if (blockState.is(blockState2.getBlock()))
+            return;
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof Container container) {
             Containers.dropContents(level, blockPos, container);
@@ -136,7 +169,11 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(), AlienStorageEntity::tick);
     }
 }

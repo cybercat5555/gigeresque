@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.sensing.NearestVisibleLivingEntitySensor;
 import net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor;
@@ -8,6 +7,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 /**
  * Thanks to Boston for this fix!
@@ -17,7 +18,8 @@ public abstract class VillagerHostilesSensorMixin extends NearestVisibleLivingEn
 
     @Inject(at = @At("HEAD"), method = "isClose", cancellable = true)
     void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        if (!livingEntity2.getType().is(GigTags.GIG_ALIENS)) return;
+        if (!livingEntity2.getType().is(GigTags.GIG_ALIENS))
+            return;
 
         var distance = 12F;
         var returnValue = livingEntity2.distanceToSqr(livingEntity) <= (distance * distance);

@@ -6,19 +6,18 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
 public class PandoraData extends SavedData {
+
     private static boolean triggered = false;
 
-    private PandoraData() {
-    }
+    private PandoraData() {}
 
-    private PandoraData(CompoundTag tag, HolderLookup.Provider registryLookup) {
-    }
+    private PandoraData(CompoundTag tag, HolderLookup.Provider registryLookup) {}
 
     public static SavedData.Factory<PandoraData> factory() {
         return new SavedData.Factory<>(PandoraData::new, PandoraData::new, null);
     }
 
-    public static boolean isTriggered(){
+    public static boolean isTriggered() {
         return triggered;
     }
 

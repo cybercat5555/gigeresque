@@ -1,11 +1,12 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
 import mod.azure.azurelib.common.api.client.model.DefaultedEntityGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 
 public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity> {
 
@@ -15,8 +16,8 @@ public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity
 
     @Override
     public ResourceLocation getTextureResource(ClassicAlienEntity object) {
-        var progress = Math.max(0, Math.min(1- (object.getGrowth() / object.getMaxGrowth()), 1));
-        return object.isPassedOut() ? EntityTextures.ALIEN_STATIS : progress > 0 ? EntityTextures.ALIEN_YOUNG :EntityTextures.ALIEN;
+        var progress = Math.max(0, Math.min(1 - (object.getGrowth() / object.getMaxGrowth()), 1));
+        return object.isPassedOut() ? EntityTextures.ALIEN_STATIS : progress > 0 ? EntityTextures.ALIEN_YOUNG : EntityTextures.ALIEN;
     }
 
     @Override

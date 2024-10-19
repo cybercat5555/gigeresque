@@ -3,20 +3,6 @@ package mods.cybercat.gigeresque.common.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -72,46 +58,109 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
 public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, GeoEntity, Growable, AbstractAlien {
 
-    public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.INT
+    );
+
+    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
-    public static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
+
+    public static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     public static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
-            AlienEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
-            AlienEntity.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
+        AlienEntity.class,
+        EntityDataSerializers.INT
+    );
+
+    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.FLOAT
+    );
+
+    protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     private static final Logger LOGGER = LogUtils.getLogger();
+
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
+
     public int wakeupCounter = 0;
+
     public boolean inTwoBlockSpace = false;
+
     public int breakingCounter = 0;
+
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
+
     protected User vibrationUser;
+
     protected int slowticks = 0;
+
     private Data vibrationData;
 
     protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
@@ -126,13 +175,18 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     @Override
-    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
-    }
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
-    public static boolean checkMonsterSpawnRules(EntityType<? extends WaterAnimal> type, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkMonsterSpawnRules(
+        EntityType<? extends WaterAnimal> type,
+        ServerLevelAccessor level,
+        MobSpawnType spawnType,
+        BlockPos pos,
+        RandomSource random
+    ) {
         return level.getDifficulty() != Difficulty.PEACEFUL
-                && (MobSpawnType.ignoresLightRequirements(spawnType) || isDarkEnoughToSpawn(level, pos, random))
-                && checkMobSpawnRules(type, level, spawnType, pos, random);
+            && (MobSpawnType.ignoresLightRequirements(spawnType) || isDarkEnoughToSpawn(level, pos, random))
+            && checkMobSpawnRules(type, level, spawnType, pos, random);
     }
 
     public static boolean isDarkEnoughToSpawn(ServerLevelAccessor level, BlockPos pos, RandomSource random) {
@@ -144,8 +198,12 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             if (i < 15 && level.getBrightness(LightLayer.BLOCK, pos) > i) {
                 return false;
             } else {
-                int j = level.getLevel().isThundering() ? level.getMaxLocalRawBrightness(pos,
-                        10) : level.getMaxLocalRawBrightness(pos);
+                int j = level.getLevel().isThundering()
+                    ? level.getMaxLocalRawBrightness(
+                        pos,
+                        10
+                    )
+                    : level.getMaxLocalRawBrightness(pos);
                 return j <= dimensiontype.monsterSpawnLightTest().sample(random);
             }
         }
@@ -169,8 +227,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     @Override
-    protected void handleAirSupply(int airSupply) {
-    }
+    protected void handleAirSupply(int airSupply) {}
 
     @Override
     public int getMaxAirSupply() {
@@ -312,10 +369,17 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         super.addAdditionalSaveData(compound);
         compound.putBoolean("isCrawling", this.isCrawling());
         compound.putBoolean("isTunnelCrawling", this.isTunnelCrawling());
-        Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(
-                LOGGER::error).ifPresent(tag -> compound.put("listener", tag));
-        AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(
-                LOGGER::error).ifPresent(tag -> compound.put("anger", tag));
+        Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData)
+            .resultOrPartial(
+                LOGGER::error
+            )
+            .ifPresent(tag -> compound.put("listener", tag));
+        AngerManagement.codec(this::canTargetEntity)
+            .encodeStart(NbtOps.INSTANCE, this.angerManagement)
+            .resultOrPartial(
+                LOGGER::error
+            )
+            .ifPresent(tag -> compound.put("anger", tag));
         compound.putFloat("growth", this.getGrowth());
         compound.putBoolean("isStasis", this.isPassedOut());
         compound.putBoolean("wakingup", this.isWakingUp());
@@ -328,16 +392,27 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("isCrawling")) this.setIsCrawling(compound.getBoolean("isCrawling"));
+        if (compound.contains("isCrawling"))
+            this.setIsCrawling(compound.getBoolean("isCrawling"));
         if (compound.contains("anger")) {
-            AngerManagement.codec(this::canTargetEntity).parse(
-                    new Dynamic<>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(
-                    angerM -> this.angerManagement = angerM);
+            AngerManagement.codec(this::canTargetEntity)
+                .parse(
+                    new Dynamic<>(NbtOps.INSTANCE, compound.get("anger"))
+                )
+                .resultOrPartial(LOGGER::error)
+                .ifPresent(
+                    angerM -> this.angerManagement = angerM
+                );
             this.syncClientAngerLevel();
         }
-        if (compound.contains("listener", 10)) Data.CODEC.parse(
-                new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(
-                LOGGER::error).ifPresent(data -> this.vibrationData = data);
+        if (compound.contains("listener", 10))
+            Data.CODEC.parse(
+                new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))
+            )
+                .resultOrPartial(
+                    LOGGER::error
+                )
+                .ifPresent(data -> this.vibrationData = data);
         this.setGrowth(compound.getFloat("getStatisTimer"));
         this.setGrowth(compound.getFloat("growth"));
         this.setIsTunnelCrawling(compound.getBoolean("isTunnelCrawling"));
@@ -362,7 +437,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     @Override
     public int calculateFallDamage(float fallDistance, float damageMultiplier) {
-        if (fallDistance <= 15) return 0;
+        if (fallDistance <= 15)
+            return 0;
         return super.calculateFallDamage(fallDistance, damageMultiplier);
     }
 
@@ -411,51 +487,75 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             }
         }
         if (level() instanceof ServerLevel serverLevel) {
-            if (this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
-            if (this.isVehicle()) this.setAggressive(false);
+            if (this.isAlive())
+                this.grow(this, 1 * getGrowthMultiplier());
+            if (this.isVehicle())
+                this.setAggressive(false);
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
                 this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
-                    if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
+                    if (e.is(GigTags.NEST_BLOCKS))
+                        this.heal(0.5833f);
                 });
             if (this.isAggressive() || this.getSpeed() > 0.1) {
-                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isCollisionShapeFullBlock(
-                        level(), blockPosition().above());
-                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isCollisionShapeFullBlock(
-                        level(), blockPosition().above(2));
+                var isAboveSolid = this.level()
+                    .getBlockState(blockPosition().above())
+                    .isCollisionShapeFullBlock(
+                        level(),
+                        blockPosition().above()
+                    );
+                var isTwoAboveSolid = this.level()
+                    .getBlockState(blockPosition().above(2))
+                    .isCollisionShapeFullBlock(
+                        level(),
+                        blockPosition().above(2)
+                    );
                 var offset = getDirectionVector();
-                var isFacingSolid = this.level().getBlockState(
-                        blockPosition().relative(getDirection())).isCollisionShapeFullBlock(level(),
-                        blockPosition().relative(getDirection()));
+                var isFacingSolid = this.level()
+                    .getBlockState(
+                        blockPosition().relative(getDirection())
+                    )
+                    .isCollisionShapeFullBlock(
+                        level(),
+                        blockPosition().relative(getDirection())
+                    );
 
-                /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
-                 *  -----o                  -----o
-                 *       o                       o <- offset
-                 *  -----o <- current       -----o
+                /**
+                 * Offset is set to the block above the block position (which is at feet level) (since direction is used
+                 * it's the block in front of both cases) -----o -----o o o <- offset -----o <- current -----o
                  **/
                 if (isFacingSolid) {
                     offset = offset.offset(0, 1, 0);
                 }
 
-                var isOffsetFacingSolid = this.level().getBlockState(
-                        blockPosition().offset(offset)).isCollisionShapeFullBlock(level(),
-                        blockPosition().offset(offset));
-                var isOffsetFacingAboveSolid = this.level().getBlockState(
-                        blockPosition().offset(offset).above()).isCollisionShapeFullBlock(level(),
-                        blockPosition().offset(offset).above());
+                var isOffsetFacingSolid = this.level()
+                    .getBlockState(
+                        blockPosition().offset(offset)
+                    )
+                    .isCollisionShapeFullBlock(
+                        level(),
+                        blockPosition().offset(offset)
+                    );
+                var isOffsetFacingAboveSolid = this.level()
+                    .getBlockState(
+                        blockPosition().offset(offset).above()
+                    )
+                    .isCollisionShapeFullBlock(
+                        level(),
+                        blockPosition().offset(offset).above()
+                    );
 
-                /** [- : blocks | o : alien | + : alien in solid block]
-                 *   To handle these variants among other things:
-                 *       o           o
-                 *   ----+       ----o       ----+
-                 *       o           o           o
-                 *   -----       -----       ----o
+                /**
+                 * [- : blocks | o : alien | + : alien in solid block] To handle these variants among other things: o o
+                 * ----+ ----o ----+ o o o ----- ----- ----o
                  **/
-                var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
+                var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid
+                    && isTwoAboveSolid;
                 this.setIsTunnelCrawling(shouldTunnelCrawl);
             }
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
+        if (this.tickCount % 10 == 0)
+            this.refreshDimensions();
     }
 
     @Override
@@ -464,20 +564,24 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     @Override
-    public void checkDespawn() {
-    }
+    public void checkDespawn() {}
 
     @Override
     public void die(@NotNull DamageSource source) {
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source,
-                this.damageSources()) || source == damageSources().genericKill()) {
+        if (
+            DamageSourceUtils.isDamageSourceNotPuncturing(
+                source,
+                this.damageSources()
+            ) || source == damageSources().genericKill()
+        ) {
             super.die(source);
             return;
         }
 
         var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
         if (damageCheck && !this.getType().is(GigTags.NO_ACID_BLOOD)) {
-            if (getAcidDiameter() == 1) GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1)
+                GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
@@ -541,8 +645,11 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     public void grabTarget(Entity entity) {
-        if (entity == this.getTarget() && !entity.hasPassenger(
-                this) && entity.getInBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
+        if (
+            entity == this.getTarget() && !entity.hasPassenger(
+                this
+            ) && entity.getInBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS
+        ) {
             entity.startRiding(this, true);
             this.setAggressive(false);
             if (entity instanceof ServerPlayer player)
@@ -553,8 +660,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         var multiplier = 1.0f;
-        if (source == this.damageSources().onFire()) multiplier = 2.0f;
-        if (source == damageSources().inWall()) return false;
+        if (source == this.damageSources().onFire())
+            multiplier = 2.0f;
+        if (source == damageSources().inWall())
+            return false;
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
@@ -563,9 +672,14 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 
-        if (!this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType().is(
-                GigTags.NO_ACID_BLOOD) && this.isAlive()) {
-            if (getAcidDiameter() == 1) GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
+        if (
+            !this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType()
+                .is(
+                    GigTags.NO_ACID_BLOOD
+                ) && this.isAlive()
+        ) {
+            if (getAcidDiameter() == 1)
+                GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
@@ -616,34 +730,64 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
      */
     @Contract(value = "null->false")
     public boolean canTargetEntity(@Nullable Entity entity) {
-        if (!(entity instanceof LivingEntity livingEntity)) return false;
-        if (this.level() != entity.level()) return false;
-        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity)) return false;
-        if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) return false;
-        if (this.isVehicle()) return false;
-        if (this.isAlliedTo(entity)) return false;
-        if (!livingEntity.getType().is(GigTags.ALL_HOSTS)) return false;
-        if (livingEntity.getType().is(EntityTypeTags.UNDEAD)) return false;
-        if (livingEntity.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) return false;
-        if (livingEntity.getType() == EntityType.ARMOR_STAND) return false;
-        if (livingEntity.getType() == EntityType.WARDEN) return false;
-        if (livingEntity instanceof Bat) return false;
-        if (GigEntityUtils.isFacehuggerAttached(livingEntity)) return false;
-        if (livingEntity.isInvulnerable()) return false;
-        if (livingEntity.isDeadOrDying()) return false;
-        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox())) return false;
+        if (!(entity instanceof LivingEntity livingEntity))
+            return false;
+        if (this.level() != entity.level())
+            return false;
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
+            return false;
+        if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION))
+            return false;
+        if (this.isVehicle())
+            return false;
+        if (this.isAlliedTo(entity))
+            return false;
+        if (!livingEntity.getType().is(GigTags.ALL_HOSTS))
+            return false;
+        if (livingEntity.getType().is(EntityTypeTags.UNDEAD))
+            return false;
+        if (livingEntity.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
+            return false;
+        if (livingEntity.getType() == EntityType.ARMOR_STAND)
+            return false;
+        if (livingEntity.getType() == EntityType.WARDEN)
+            return false;
+        if (livingEntity instanceof Bat)
+            return false;
+        if (GigEntityUtils.isFacehuggerAttached(livingEntity))
+            return false;
+        if (livingEntity.isInvulnerable())
+            return false;
+        if (livingEntity.isDeadOrDying())
+            return false;
+        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
+            return false;
         var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
-        if (list2.anyMatch(NEST)) return false;
-        if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(
-                AlienEntity.class::isInstance)) return false;
-        if (livingEntity.getType().is(GigTags.GIG_ALIENS)) return false;
-        if (this.isAggressive()) return false;
-        return this.level().getBlockState(this.blockPosition().below()).isCollisionShapeFullBlock(level(),
-                this.blockPosition().below());
+        if (list2.anyMatch(NEST))
+            return false;
+        if (
+            livingEntity.getVehicle() != null && livingEntity.getVehicle()
+                .getSelfAndPassengers()
+                .anyMatch(
+                    AlienEntity.class::isInstance
+                )
+        )
+            return false;
+        if (livingEntity.getType().is(GigTags.GIG_ALIENS))
+            return false;
+        if (this.isAggressive())
+            return false;
+        return this.level()
+            .getBlockState(this.blockPosition().below())
+            .isCollisionShapeFullBlock(
+                level(),
+                this.blockPosition().below()
+            );
     }
 
     public void drop(LivingEntity target, ItemStack itemStack) {
-        if (itemStack.isEmpty()) return;
+        if (itemStack.isEmpty())
+            return;
 
         var d = target.getEyeY() - 0.3f;
         var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);
@@ -654,8 +798,11 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         float j = Mth.cos(this.getYRot() * ((float) Math.PI / 180));
         float k = this.random.nextFloat() * ((float) Math.PI * 2);
         float l = 0.02f * this.random.nextFloat();
-        itemEntity.setDeltaMovement((-i * h * 0.3f) + Math.cos(k) * l, -g * 0.3f + 0.1f * 0.1f,
-                (j * h * 0.3f) + Math.sin(k) * l);
+        itemEntity.setDeltaMovement(
+            (-i * h * 0.3f) + Math.cos(k) * l,
+            -g * 0.3f + 0.1f * 0.1f,
+            (j * h * 0.3f) + Math.sin(k) * l
+        );
         target.level().addFreshEntity(itemEntity);
     }
 
@@ -671,8 +818,13 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontdothat"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(
-                            advancement).getRemainingCriteria()) {
+                    for (
+                        var s : serverPlayer.getAdvancements()
+                            .getOrStartProgress(
+                                advancement
+                            )
+                            .getRemainingCriteria()
+                    ) {
                         serverPlayer.getAdvancements().award(advancement, s);
                     }
                 }
@@ -686,8 +838,13 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontacidbottle"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                    for (var s : serverPlayer.getAdvancements().getOrStartProgress(
-                            advancement).getRemainingCriteria()) {
+                    for (
+                        var s : serverPlayer.getAdvancements()
+                            .getOrStartProgress(
+                                advancement
+                            )
+                            .getRemainingCriteria()
+                    ) {
                         serverPlayer.getAdvancements().award(advancement, s);
                     }
                 }
@@ -699,10 +856,12 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     @Override
     public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
-        for (var testPos : BlockPos.betweenClosed(
+        for (
+            var testPos : BlockPos.betweenClosed(
                 this.blockPosition().relative(this.getDirection(), 1),
                 this.blockPosition().relative(this.getDirection(), 2).above(2)
-        )) {
+            )
+        ) {
             if (entity.blockPosition().equals(testPos)) {
                 return true;
             }

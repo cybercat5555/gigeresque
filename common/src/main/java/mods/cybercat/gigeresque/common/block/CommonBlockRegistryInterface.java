@@ -1,16 +1,19 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.platform.GigServices;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
+
+import mods.cybercat.gigeresque.platform.GigServices;
 
 /**
  * Example of using this Interface to create a new Block:
  * <p>
  * The following code demonstrates how to register a new block in the game:
  * </p>
+ *
  * <pre>{@code
+ *
  * public static final Supplier<TestBlock> TEST_BLOCK = CommonBlockRegistryInterface.registerBlock("modid", "blockname", TestBlock::new);
  * }</pre>
  * <p>

@@ -5,8 +5,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.PredicateSensor;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mod.azure.azurelib.sblforked.util.EntityRetrievalUtil;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,14 +17,20 @@ import net.minecraft.world.item.Items;
 import java.util.Comparator;
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
+
 public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<ItemEntity, E> {
+
     private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(GigMemoryTypes.FOOD_ITEMS.get());
 
     public ItemEntitySensor() {
         setScanRate(entity -> 15);
         setPredicate((item, entity) -> {
             ItemStack itemStack = item.getItem();
-            return (itemStack.is(ItemTags.MEAT) || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(Items.BEETROOT_SEEDS) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
+            return (itemStack.is(ItemTags.MEAT) || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(
+                Items.BEETROOT_SEEDS
+            ) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
         });
     }
 
@@ -42,7 +46,11 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
 
     @Override
     protected void doTick(ServerLevel level, E entity) {
-        List<ItemEntity> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof ItemEntity projectile && predicate().test(projectile, entity));
+        List<ItemEntity> projectiles = EntityRetrievalUtil.getEntities(
+            level,
+            entity.getBoundingBox().inflate(7),
+            target -> target instanceof ItemEntity projectile && predicate().test(projectile, entity)
+        );
 
         if (!projectiles.isEmpty()) {
             projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));

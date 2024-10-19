@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.config;
 
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.Configurable;
+
 import mods.cybercat.gigeresque.CommonMod;
 
 @Config(id = CommonMod.MOD_ID)
@@ -32,6 +33,7 @@ public class GigeresqueConfig {
     public FacehuggerConfigs facehuggerConfigs = new FacehuggerConfigs();
 
     public static class FacehuggerConfigs {
+
         @Configurable
         @Configurable.Synchronized
         public boolean facehuggerGivesBlindness = false;
@@ -82,6 +84,7 @@ public class GigeresqueConfig {
     public BursterConfigs bursterConfigs = new BursterConfigs();
 
     public static class BursterConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -175,42 +178,42 @@ public class GigeresqueConfig {
         public float classicXenoAttackSpeed = 3.9F;
     }
 
-//    @Configurable
-//    @Configurable.Synchronized
-//    public romConfigs romXenoConfigs = new romConfigs();
-//
-//    public static class romConfigs {
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public float romGrowthMultiplier = 1.0f;
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public double romXenoHealth = 200;
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public double romXenoArmor = 9;
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public double romXenoAttackDamage = 7;
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public float romXenoTailAttackDamage = 3;
-//
-//        @Configurable
-//        @Configurable.Synchronized
-//        @Configurable.DecimalRange(min = 1)
-//        public float romXenoAttackSpeed = 3.9F;
-//    }
+    // @Configurable
+    // @Configurable.Synchronized
+    // public romConfigs romXenoConfigs = new romConfigs();
+    //
+    // public static class romConfigs {
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public float romGrowthMultiplier = 1.0f;
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public double romXenoHealth = 200;
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public double romXenoArmor = 9;
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public double romXenoAttackDamage = 7;
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public float romXenoTailAttackDamage = 3;
+    //
+    // @Configurable
+    // @Configurable.Synchronized
+    // @Configurable.DecimalRange(min = 1)
+    // public float romXenoAttackSpeed = 3.9F;
+    // }
 
     @Configurable
     @Configurable.Synchronized
@@ -283,6 +286,7 @@ public class GigeresqueConfig {
     public RBusterConfigs runnerbusterConfigs = new RBusterConfigs();
 
     public static class RBusterConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -304,6 +308,7 @@ public class GigeresqueConfig {
     public StalkerConfigs stalkerConfigs = new StalkerConfigs();
 
     public static class StalkerConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -335,6 +340,7 @@ public class GigeresqueConfig {
     public RunnerConfigs runnerConfigs = new RunnerConfigs();
 
     public static class RunnerConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -366,6 +372,7 @@ public class GigeresqueConfig {
     public EggConfigs eggConfigs = new EggConfigs();
 
     public static class EggConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -407,6 +414,7 @@ public class GigeresqueConfig {
     public SpitterConfigs spitterConfigs = new SpitterConfigs();
 
     public static class SpitterConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
@@ -614,6 +622,7 @@ public class GigeresqueConfig {
     public HBursterConfigs hellbusterConfigs = new HBursterConfigs();
 
     public static class HBursterConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
