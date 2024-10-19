@@ -30,6 +30,8 @@ public class NeobursterRenderer extends GeoEntityRenderer<NeobursterEntity> {
         int packedOverlay,
         int color
     ) {
+        var scaleFactor = 1.0f + ((animatable.getGrowth() / animatable.getMaxGrowth()) / 5f);
+        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.preRender(
             poseStack,
             animatable,
@@ -42,7 +44,6 @@ public class NeobursterRenderer extends GeoEntityRenderer<NeobursterEntity> {
             packedOverlay,
             color
         );
-        poseStack.scale(0.6F, 0.6F, 0.6F);
     }
 
     @Override
