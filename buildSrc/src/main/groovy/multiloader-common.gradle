@@ -110,13 +110,28 @@ processResources {
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
         def jsonBytesSaved = 0
-        fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
-            File file = it
-            jsonMinified++
-            def oldLength = file.length()
-            file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-            jsonBytesSaved += oldLength - file.length()
+
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each { File file ->
+            if (file.length() > 0) { // Check for empty files
+                try {
+                    jsonMinified++
+                    def oldLength = file.length()
+
+                    // Parse and minify the JSON content
+                    def jsonContent = file.text
+                    def jsonSlurper = new JsonSlurper()
+                    def parsedJson = jsonSlurper.parseText(jsonContent) // Use parseText for strings
+                    file.text = JsonOutput.toJson(parsedJson)
+
+                    jsonBytesSaved += oldLength - file.length()
+                } catch (Exception e) {
+                    println("Error processing file ${file.absolutePath}: ${e.message}") // Print the file location
+                }
+            } else {
+                println("Skipping empty file: ${file.absolutePath}") // Print the file location
+            }
         }
+
         println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
     }
 }
