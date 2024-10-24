@@ -250,7 +250,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
                 0.36,
                 calcStandardOffsetY(facehugger) + 0.82
             )
-        );// camal
+        );
     }
 
     @Override

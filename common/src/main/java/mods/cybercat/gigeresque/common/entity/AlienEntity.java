@@ -813,7 +813,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (player.getItemInHand(hand).is(Items.BUCKET) && !player.level().isClientSide()) {
-            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             player.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 100, 0), this);
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontdothat"));
@@ -832,7 +832,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             return InteractionResult.sidedSuccess(this.level().isClientSide);
         }
         if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
-            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
 
             if (player instanceof ServerPlayer serverPlayer) {

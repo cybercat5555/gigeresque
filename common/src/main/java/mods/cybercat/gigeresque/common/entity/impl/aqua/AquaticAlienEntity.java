@@ -272,7 +272,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     @Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+    public boolean isWithinMeleeAttackRange(@NotNull LivingEntity livingEntity) {
         double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
         return d <= this.getMeleeAttackRangeSqr(livingEntity);
     }
