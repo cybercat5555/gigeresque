@@ -65,6 +65,8 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
         var entity = context.sourceEntity();
         if (entity != null) {
+            if (this.mob.isAggressive())
+                return false;
             if (entity.isSpectator())
                 return false;
             if (entity.dampensVibrations())

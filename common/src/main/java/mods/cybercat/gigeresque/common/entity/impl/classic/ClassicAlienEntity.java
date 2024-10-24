@@ -69,7 +69,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -229,9 +228,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             // Player Sensor
             new NearbyPlayersSensor<>(),
             // Living Sensor
-            new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate(
-                (target, self) -> GigEntityUtils.entityTest(target, self) && !target.getType().is(GigTags.GIG_ALIENS) && !this.isPassedOut()
-            ),
+            new NearbyLivingEntitySensor<ClassicAlienEntity>().setRadius(32),
             // Block Sensor
             new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
             // Fire Sensor
@@ -301,12 +298,12 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
                 ),
             // Find Darkness
-            new FindDarknessTask<>(),
+            new FindDarknessTask<ClassicAlienEntity>().stopIf(entity -> entity.isAggressive()),
             // Do first
             new FirstApplicableBehaviour<ClassicAlienEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())
+                    target -> (this.isVehicle() || this.isFleeing() || this.isPassedOut())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(
@@ -329,7 +326,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     .stopIf(
                         entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
                     ),
-                new EnterStasisTask<>(6000)
+                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive())
             ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0)
         );
     }
@@ -337,9 +334,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || !this.isPassedOut()),
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
             new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting())
         );
     }
