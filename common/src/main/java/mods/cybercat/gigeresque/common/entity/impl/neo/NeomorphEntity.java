@@ -332,6 +332,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
         return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new MoveToWalkTarget<>());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

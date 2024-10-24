@@ -34,7 +34,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
     public LivingEntity growInto() {
         var entity = GigEntities.AQUATIC_ALIEN.get().create(level());
 
-        if (hasCustomName())
+        if (hasCustomName() && entity != null)
             entity.setCustomName(this.getCustomName());
 
         return entity;

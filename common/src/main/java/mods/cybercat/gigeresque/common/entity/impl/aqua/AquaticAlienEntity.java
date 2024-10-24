@@ -177,6 +177,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

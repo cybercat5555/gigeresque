@@ -166,6 +166,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new MoveToWalkTarget<>());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

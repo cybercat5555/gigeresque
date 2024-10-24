@@ -150,6 +150,7 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity implements Sma
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<MoonlightHorrorTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

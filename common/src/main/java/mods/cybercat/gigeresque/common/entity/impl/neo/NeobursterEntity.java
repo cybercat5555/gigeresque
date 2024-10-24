@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -9,45 +8,28 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -55,7 +37,6 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 /**
@@ -108,45 +89,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
         return GigEntities.NEOMORPH_ADOLESCENT.get().create(level());
     }
 
-    @Override
-    public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(
-            new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate(
-                GigEntityUtils::entityTest
-            ),
-            new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(BlockTags.CROPS)
-                ),
-            new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
-                ),
-            new NearbyLightsBlocksSensor<ChestbursterEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
-                ),
-            new HurtBySensor<>(),
-            new ItemEntitySensor<>(),
-            new UnreachableTargetSensor<>(),
-            new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-            // Flee Fire
-            new FleeFireTask<>(3.5F),
-            new AlienPanic(4.0f),
-            // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(entity -> !this.isPassedOut() || !this.isSearching()),
-            // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut()).stopIf(entity -> this.isPassedOut())
-        );
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

@@ -428,6 +428,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

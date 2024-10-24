@@ -93,6 +93,7 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
         return alien;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -105,7 +106,7 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
             new FirstApplicableBehaviour<HellbursterEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())
+                    target -> (this.isVehicle() || this.isFleeing())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(

@@ -288,6 +288,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

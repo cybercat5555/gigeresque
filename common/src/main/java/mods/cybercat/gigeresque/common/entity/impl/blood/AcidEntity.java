@@ -16,7 +16,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +29,6 @@ import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 
 public class AcidEntity extends Entity {
-
-    private long lastUpdateTime = 0L;
 
     public AcidEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
@@ -107,8 +104,6 @@ public class AcidEntity extends Entity {
     }
 
     private void doBlockBreaking(RandomSource randomSource) {
-        BlockState stateBelow = this.level().getBlockState(this.blockPosition().below());
-        float hardness = stateBelow.getBlock().defaultBlockState().getDestroySpeed(level(), this.blockPosition());
         BlockBreakProgressManager.damage(level(), this.blockPosition().below());
         this.level()
             .playSound(
@@ -180,7 +175,7 @@ public class AcidEntity extends Entity {
     @Override
     public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
-            player.getItemInHand(hand).hurtAndBreak(1, player, Player.getSlotForHand(hand));
+            player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
 
             if (player instanceof ServerPlayer serverPlayer) {

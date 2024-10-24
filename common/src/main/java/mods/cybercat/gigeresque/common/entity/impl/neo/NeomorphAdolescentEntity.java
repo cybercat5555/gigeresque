@@ -168,6 +168,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
         return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new MoveToWalkTarget<>());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<NeomorphAdolescentEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

@@ -150,6 +150,7 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<HellmorphRunnerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -166,7 +167,7 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
             new FirstApplicableBehaviour<HellmorphRunnerEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())
+                    target -> (this.isVehicle() || this.isFleeing())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(

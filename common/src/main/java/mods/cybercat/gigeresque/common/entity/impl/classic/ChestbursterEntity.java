@@ -49,7 +49,6 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -88,8 +87,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         EntityDataSerializers.FLOAT
     );
 
-    private final GigNav landNavigation = new GigNav(this, level());
-
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public int bloodRendering = 0;
@@ -102,7 +99,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
-        navigation = landNavigation;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -288,6 +284,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -359,9 +356,11 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         // if (Objects.equals(hostId, "runner")) entity = GigEntities.RUNNER_ALIEN.get().create(level());
         // else entity = GigEntities.ALIEN_COCOON.get().create(level());
         var entity = GigEntities.RUNNERBURSTER.get().create(level());
-        entity.hostId = this.hostId;
-        if (hasCustomName())
-            entity.setCustomName(this.getCustomName());
+        if (entity != null) {
+            entity.hostId = this.hostId;
+            if (hasCustomName())
+                entity.setCustomName(this.getCustomName());
+        }
         return entity;
     }
 

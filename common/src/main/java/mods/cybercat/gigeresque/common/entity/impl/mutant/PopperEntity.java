@@ -156,6 +156,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<PopperEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

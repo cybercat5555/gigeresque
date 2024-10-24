@@ -128,6 +128,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         this.doVibrationAction(blockPos, entity2);
     }
 
+    @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;

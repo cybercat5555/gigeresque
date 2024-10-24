@@ -169,6 +169,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<HammerpedeEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

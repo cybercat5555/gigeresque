@@ -348,14 +348,12 @@ public class AlienEggEntity extends AlienEntity {
 
             // Smaller range for closer entities
             this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
-                if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                    if (this.level().random.nextFloat() < 0.8f) { // 20% chance to hatch
-                        if (target instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                            setIsHatching(true);
-                        } else if (!(target instanceof Player)) {
-                            setIsHatching(true);
-                        }
-                    }
+                if (
+                    target.isAlive() && GigEntityUtils.faceHuggerTest(target) && this.level().random.nextFloat() < 0.8f
+                        && (target instanceof Player player && !(player.isCreative() || player.isSpectator())
+                            || !(target instanceof Player))
+                ) {
+                    setIsHatching(true);
                 }
             });
         }

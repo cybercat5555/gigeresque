@@ -138,10 +138,11 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             this.setIsExecuting(false);
         if (this.isExecuting())
             this.setPassedOutStatus(false);
-        if (this.isPassedOut() && this.getNavigation() != null && this.getNavigation() instanceof GigNav gigNav)
+        if (this.isPassedOut() && this.getNavigation() instanceof GigNav gigNav)
             gigNav.hardStop();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onClimbable() {
         var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
@@ -279,6 +280,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -298,7 +300,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
                 ),
             // Find Darkness
-            new FindDarknessTask<ClassicAlienEntity>().stopIf(entity -> entity.isAggressive()),
+            new FindDarknessTask<ClassicAlienEntity>().stopIf(Mob::isAggressive),
             // Do first
             new FirstApplicableBehaviour<ClassicAlienEntity>(
                 // Targeting

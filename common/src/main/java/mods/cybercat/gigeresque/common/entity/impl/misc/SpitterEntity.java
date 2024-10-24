@@ -304,6 +304,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<SpitterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -356,6 +357,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         );
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void tick() {
         super.tick();

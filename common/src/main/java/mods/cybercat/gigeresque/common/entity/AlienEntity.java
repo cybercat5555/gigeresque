@@ -160,8 +160,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     protected User vibrationUser;
 
-    protected int slowticks = 0;
-
     private Data vibrationData;
 
     protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
@@ -520,10 +518,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                         blockPosition().relative(getDirection())
                     );
 
-                /**
+                /*
                  * Offset is set to the block above the block position (which is at feet level) (since direction is used
                  * it's the block in front of both cases) -----o -----o o o <- offset -----o <- current -----o
-                 **/
+                 */
                 if (isFacingSolid) {
                     offset = offset.offset(0, 1, 0);
                 }
@@ -545,10 +543,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                         blockPosition().offset(offset).above()
                     );
 
-                /**
+                /*
                  * [- : blocks | o : alien | + : alien in solid block] To handle these variants among other things: o o
                  * ----+ ----o ----+ o o o ----- ----- ----o
-                 **/
+                 */
                 var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid
                     && isTwoAboveSolid;
                 this.setIsTunnelCrawling(shouldTunnelCrawl);

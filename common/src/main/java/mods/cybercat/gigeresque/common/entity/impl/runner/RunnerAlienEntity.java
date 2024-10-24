@@ -169,10 +169,11 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public void tick() {
         super.tick();
         GigEntityUtils.breakBlocks(this);
-        if (this.isPassedOut() && this.getNavigation() != null)
+        if (this.isPassedOut())
             this.getNavigation().stop();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onClimbable() {
         var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
@@ -239,6 +240,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(

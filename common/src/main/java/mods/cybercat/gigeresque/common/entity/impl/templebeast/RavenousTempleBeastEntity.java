@@ -150,6 +150,7 @@ public class RavenousTempleBeastEntity extends AlienEntity implements SmartBrain
         );
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<RavenousTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
