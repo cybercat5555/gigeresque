@@ -33,6 +33,10 @@
     "minecraft:wither",
     "minecraft:breeze",
     "minecraft:armadillo",
-    "minecraft:bogged"
+    "minecraft:bogged",
+    {
+      "id": "#avpr:aliens",
+      "required": false
+    }
   ]
 }

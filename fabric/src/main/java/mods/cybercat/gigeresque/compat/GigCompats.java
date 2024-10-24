@@ -258,19 +258,6 @@ public record GigCompats() {
                     ))
                 );
 
-        if (FabricLoader.getInstance().isModLoaded("avpr"))
-            FabricLoader.getInstance()
-                .getModContainer(CommonMod.MOD_ID)
-                .ifPresent(
-                    (modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(
-                        // Mod Compat datapack found in resources/resourcepacks
-                        Constants.modResource("avprcompat"),
-                        modContainer,
-                        Component.literal("avprcompat"),
-                        ResourcePackActivationType.DEFAULT_ENABLED
-                    ))
-                );
-
         if (FabricLoader.getInstance().isModLoaded("stellaris"))
             FabricLoader.getInstance()
                 .getModContainer(CommonMod.MOD_ID)

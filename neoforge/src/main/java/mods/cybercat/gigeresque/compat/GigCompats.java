@@ -204,16 +204,6 @@ public record GigCompats() {
                 Pack.Position.TOP
             );
 
-        if (ModList.get().isLoaded("avpr"))
-            event.addPackFinders(
-                Constants.modResource("resourcepacks/avpcompat"),
-                PackType.SERVER_DATA,
-                Component.literal("avprcompat"),
-                PackSource.FEATURE,
-                true,
-                Pack.Position.TOP
-            );
-
         if (ModList.get().isLoaded("stellaris"))
             event.addPackFinders(
                 Constants.modResource("resourcepacks/stellariscompat"),

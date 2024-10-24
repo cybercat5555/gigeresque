@@ -2,6 +2,10 @@
   "replace": false,
   "values": [
     "#gigeresque:gigeresquealiens",
-    "minecraft:wither"
+    "minecraft:wither",
+    {
+      "id": "#avpr:aliens",
+      "required": false
+    }
   ]
 }
