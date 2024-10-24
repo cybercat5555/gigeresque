@@ -258,15 +258,15 @@ public record GigCompats() {
                     ))
                 );
 
-        if (FabricLoader.getInstance().isModLoaded("avp"))
+        if (FabricLoader.getInstance().isModLoaded("avpr"))
             FabricLoader.getInstance()
                 .getModContainer(CommonMod.MOD_ID)
                 .ifPresent(
                     (modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(
                         // Mod Compat datapack found in resources/resourcepacks
-                        Constants.modResource("avpcompat"),
+                        Constants.modResource("avprcompat"),
                         modContainer,
-                        Component.literal("avpcompat"),
+                        Component.literal("avprcompat"),
                         ResourcePackActivationType.DEFAULT_ENABLED
                     ))
                 );
