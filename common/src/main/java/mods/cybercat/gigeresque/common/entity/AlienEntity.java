@@ -859,8 +859,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
         for (
             var testPos : BlockPos.betweenClosed(
-                this.blockPosition().relative(this.getDirection(), 1),
-                this.blockPosition().relative(this.getDirection(), 2).above(2)
+                this.blockPosition().relative(this.getDirection(), 1).above(-1).relative(this.getDirection().getClockWise(), -1),
+                this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
             )
         ) {
             if (entity.blockPosition().equals(testPos)) {
