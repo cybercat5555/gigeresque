@@ -29,6 +29,14 @@
     "minecraft:polar_bear",
     "minecraft:ravager",
     "minecraft:sheep",
-    "minecraft:wolf"
+    "minecraft:wolf",
+    {
+      "id": "hwg:merc",
+      "required": false
+    },
+    {
+      "id": "hwg:spy",
+      "required": false
+    }
   ]
 }

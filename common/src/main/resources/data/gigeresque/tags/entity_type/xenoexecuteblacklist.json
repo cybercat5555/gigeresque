@@ -9,6 +9,22 @@
     {
       "id": "#avpr:aliens",
       "required": false
+    },
+    {
+      "id": "hwg:technodemon_lesser_1",
+      "required": false
+    },
+    {
+      "id": "hwg:technodemon_greater_1",
+      "required": false
+    },
+    {
+      "id": "stellaris:cheese_boss",
+      "required": false
+    },
+    {
+      "id": "stellaris:star_crawler",
+      "required": false
     }
   ]
 }

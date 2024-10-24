@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:breeze",
+    {
+      "id": "hwg:technodemon_lesser_1",
+      "required": false
+    },
+    {
+      "id": "hwg:technodemon_greater_1",
+      "required": false
+    }
+  ]
+}

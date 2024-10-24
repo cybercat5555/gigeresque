@@ -1,5 +1,17 @@
 {
   "values": [
-    "#minecraft:is_mountain"
+    "#minecraft:is_mountain",
+    {
+      "id": "stellaris:mars_ice_spikes",
+      "required": false
+    },
+    {
+      "id": "stellaris:mercury",
+      "required": false
+    },
+    {
+      "id": "stellaris:venus_desert",
+      "required": false
+    }
   ]
 }

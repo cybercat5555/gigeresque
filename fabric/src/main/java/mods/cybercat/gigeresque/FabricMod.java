@@ -35,7 +35,6 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
-import mods.cybercat.gigeresque.compat.GigCompats;
 
 public final class FabricMod implements ModInitializer {
 
@@ -46,7 +45,6 @@ public final class FabricMod implements ModInitializer {
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
         MobSpawn.initialize();
-        GigCompats.initialize();
         FabricDefaultAttributeRegistry.register(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes());
         // FabricDefaultAttributeRegistry.register(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes());

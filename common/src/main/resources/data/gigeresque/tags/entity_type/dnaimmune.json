@@ -18,6 +18,46 @@
     "minecraft:breeze",
     "minecraft:armadillo",
     "minecraft:bogged",
-    "#gigeresque:gigeresquealiens"
+    "#gigeresque:gigeresquealiens",
+    {
+      "id": "hwg:technodemon_lesser_1",
+      "required": false
+    },
+    {
+      "id": "hwg:technodemon_greater_1",
+      "required": false
+    },
+    {
+      "id": "stellaris:alien",
+      "required": false
+    },
+    {
+      "id": "stellaris:alien_zombie",
+      "required": false
+    },
+    {
+      "id": "stellaris:star_crawler",
+      "required": false
+    },
+    {
+      "id": "stellaris:pygro",
+      "required": false
+    },
+    {
+      "id": "stellaris:pygro_brute",
+      "required": false
+    },
+    {
+      "id": "stellaris:mogler",
+      "required": false
+    },
+    {
+      "id": "stellaris:martian_raptor",
+      "required": false
+    },
+    {
+      "id": "stellaris:cheese_boss",
+      "required": false
+    }
   ]
 }

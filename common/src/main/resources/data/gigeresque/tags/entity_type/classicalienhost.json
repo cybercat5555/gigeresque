@@ -10,6 +10,14 @@
     "minecraft:wandering_trader",
     "minecraft:witch",
     "minecraft:villager",
-    "minecraft:vindicator"
+    "minecraft:vindicator",
+    {
+      "id": "hwg:merc",
+      "required": false
+    },
+    {
+      "id": "hwg:spy",
+      "required": false
+    }
   ]
 }
