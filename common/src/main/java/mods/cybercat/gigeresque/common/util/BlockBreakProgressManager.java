@@ -32,11 +32,11 @@ public class BlockBreakProgressManager {
                 var blockState = level.getBlockState(blockPos.below());
                 var block = blockState.getBlock();
                 var cachedValue = entry == null ? 0 : entry.getValue();
-                var hardness = block.defaultDestroyTime();
+                var hardness = blockState.getDestroySpeed(level, blockPos);
                 if (blockState.is(GigTags.WEAK_BLOCKS))
                     hardness *= 6.0f;
                 else
-                    hardness *= 0.19f;
+                    hardness *= 0.4f;
                 var newValue = cachedValue + hardness;
                 var progress = (int) Mth.clamp(newValue, 0F, 9F);
 
