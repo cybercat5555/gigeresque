@@ -29,7 +29,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -49,11 +48,8 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -81,25 +77,22 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                 Attributes.MAX_HEALTH,
                 CommonMod.config.baphomorphConfigs.baphomorphXenoHealth
             )
+            .add(Attributes.ARMOR, CommonMod.config.baphomorphConfigs.baphomorphXenoArmor)
             .add(
-                Attributes.ARMOR,
+                Attributes.ARMOR_TOUGHNESS,
                 CommonMod.config.baphomorphConfigs.baphomorphXenoArmor
             )
-            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(
-                Attributes.KNOCKBACK_RESISTANCE,
-                0.0
+                Attributes.FOLLOW_RANGE,
+                32.0
             )
-            .add(Attributes.FOLLOW_RANGE, 16.0)
-            .add(
-                Attributes.MOVEMENT_SPEED,
-                0.3300000041723251
-            )
+            .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
                 CommonMod.config.baphomorphConfigs.baphomorphAttackDamage
             )
-            .add(Attributes.ATTACK_KNOCKBACK, 0.3);
+            .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -135,10 +128,6 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     @Override
     public BrainActivityGroup<BaphomorphEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
-            // Flee Fire
-            new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
-                entity -> entity.setFleeingStatus(true)
-            ).whenStopping(entity -> entity.setFleeingStatus(false)),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
                 .startCondition(
@@ -164,8 +153,6 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
                 ),
-            // Find Darkness
-            new FindDarknessTask<BaphomorphEntity>().stopIf(Mob::isAggressive),
             // Do first
             new FirstApplicableBehaviour<BaphomorphEntity>(
                 // Targeting
@@ -188,20 +175,20 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                     .setRadius(20)
                     .speedModifier(1.2f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
                     ),
-                new Idle<>().startCondition(entity -> !this.isAggressive())
-            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0)
+                new Idle<>().startCondition(entity -> !this.isAggressive() || !this.isVehicle())
+            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0 || this.isVehicle())
         );
     }
 
     @Override
     public BrainActivityGroup<BaphomorphEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
             new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );
@@ -214,43 +201,18 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
             if (isDead)
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (
-                event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut()
-                    && !(this.level()
-                        .getFluidState(
-                            this.blockPosition()
-                        )
-                        .is(Fluids.WATER) && this.level()
-                            .getFluidState(
-                                this.blockPosition()
-                            )
-                            .getAmount() >= 8)
+                event.isMoving() && !this.isExecuting() && !this.isPassedOut()
             )
-                if (walkAnimation.speedOld >= 0.45F && this.getFirstPassenger() == null)
+                if (walkAnimation.speedOld >= 0.6F && this.getFirstPassenger() == null && !this.isInWater())
                     return event.setAndContinue(GigAnimationsDefault.RUN);
-                else if (!this.isExecuting() && walkAnimation.speedOld < 0.45F)
+                else if (!this.isExecuting() && walkAnimation.speedOld < 0.6F && !this.isInWater())
                     return event.setAndContinue(GigAnimationsDefault.WALK);
                 else if (
-                    (this.level()
-                        .getFluidState(this.blockPosition())
-                        .is(
-                            Fluids.WATER
-                        ) && this.level()
-                            .getFluidState(
-                                this.blockPosition()
-                            )
-                            .getAmount() >= 8) && !this.isExecuting() && !this.isVehicle()
+                    this.isInWater() && !this.isExecuting() && !this.isVehicle()
                 )
                     return event.setAndContinue(GigAnimationsDefault.SWIM);
             return event.setAndContinue(
-                (this.level()
-                    .getFluidState(
-                        this.blockPosition()
-                    )
-                    .is(Fluids.WATER) && this.level()
-                        .getFluidState(
-                            this.blockPosition()
-                        )
-                        .getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE
+                this.isInWater() && !event.isMoving() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE
             );
         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
             .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND) // idle
