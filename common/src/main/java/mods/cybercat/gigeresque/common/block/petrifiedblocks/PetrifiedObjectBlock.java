@@ -72,7 +72,7 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
     @Override
     public void stepOn(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Entity entity) {
         if (level.isClientSide())
-            level.playSound(null, pos, SoundEvents.STONE_HIT, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+            level.playSound(null, pos, SoundEvents.STONE_STEP, SoundSource.BLOCKS, 0.3f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         super.stepOn(level, pos, state, entity);
     }
 
