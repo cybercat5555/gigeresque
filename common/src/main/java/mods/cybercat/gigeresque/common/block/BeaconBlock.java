@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -48,8 +50,9 @@ public class BeaconBlock extends Block {
                     player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(MobEffects.DARKNESS)
                         && Constants.isNotCreativeSpecPlayer.test(player)
                 ) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10)); // Apply blindness for 200
-                                                                                           // ticks (10 seconds)
+                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
+                    if (level.isClientSide())
+                        level.playLocalSound(pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1.0F, 1.0F, true);
                 }
             }
             lastEffectTime = currentTime;
