@@ -215,7 +215,7 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (
                 event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut()
-                    && !this.swinging && !(this.level()
+                    && !(this.level()
                         .getFluidState(
                             this.blockPosition()
                         )
