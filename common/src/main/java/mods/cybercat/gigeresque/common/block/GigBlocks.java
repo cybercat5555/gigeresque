@@ -71,7 +71,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object",
         () -> new PetrifiedObjectBlock(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
@@ -85,7 +85,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object_1",
         () -> new PetrifiedObjectBlock1(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
@@ -99,7 +99,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object_2",
         () -> new PetrifiedObjectBlock2(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
@@ -113,7 +113,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object_3",
         () -> new PetrifiedObjectBlock3(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
@@ -127,7 +127,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object_4",
         () -> new PetrifiedObjectBlock4(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
@@ -141,7 +141,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_object_5",
         () -> new PetrifiedObjectBlock5(
-            Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable().noOcclusion()
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
         )
     );
 
