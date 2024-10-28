@@ -16,14 +16,16 @@
       {
         "name": "gigeresque:dungeon_idle4"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.dungeon_idle"
   },
   "tracker_summon": {
     "sounds": [
       {
         "name": "gigeresque:tracker_summon"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.tracker_summon"
   },
   "alien_hiss": {
     "sounds": [
@@ -36,21 +38,24 @@
       {
         "name": "gigeresque:alien/alien_hiss_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_hiss"
   },
   "alien_claw": {
     "sounds": [
       {
         "name": "gigeresque:alien/alien_claw_woosh"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_claw"
   },
   "alien_tail": {
     "sounds": [
       {
         "name": "gigeresque:alien/alien_tail_woosh"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_tail"
   },
   "alien_death": {
     "sounds": [
@@ -63,7 +68,8 @@
       {
         "name": "gigeresque:alien/alien_death_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_death"
   },
   "alien_hurt": {
     "sounds": [
@@ -76,28 +82,32 @@
       {
         "name": "gigeresque:alien/alien_hurt_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_hurt"
   },
   "alien_ambient": {
     "sounds": [
       {
         "name": "gigeresque:alien/alien_ambient"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_ambient"
   },
   "alien_headbite": {
     "sounds": [
       {
         "name": "gigeresque:alien/alien_headbite"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_headbite"
   },
   "alien_death_thud": {
     "sounds": [
       {
         "name": "gigeresque:alien/alien_death_thud"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_death_thud"
   },
   "alien_crunch": {
     "sounds": [
@@ -107,7 +117,8 @@
       {
         "name": "gigeresque:alien/alien_crunch_2"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_crunch"
   },
   "egg_notice": {
     "sounds": [
@@ -117,14 +128,16 @@
       {
         "name": "gigeresque:egg/notice_2"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.egg_notice"
   },
   "egg_open": {
     "sounds": [
       {
         "name": "gigeresque:egg/open"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.egg_open"
   },
   "hugger_ambient": {
     "sounds": [
@@ -137,7 +150,8 @@
       {
         "name": "gigeresque:facehugger/ambient_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.hugger_ambient"
   },
   "hugger_death": {
     "sounds": [
@@ -150,14 +164,16 @@
       {
         "name": "gigeresque:facehugger/death_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.hugger_death"
   },
   "hugger_hurt": {
     "sounds": [
       {
         "name": "gigeresque:facehugger/hurt"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.hugger_hurt"
   },
   "hugger_implant": {
     "sounds": [
@@ -170,14 +186,16 @@
       {
         "name": "gigeresque:facehugger/implant_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.hugger_implant"
   },
   "chestbursting": {
     "sounds": [
       {
         "name": "gigeresque:burster/chestbursting"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.chestbursting"
   },
   "alien_footstep": {
     "sounds": [
@@ -187,7 +205,8 @@
       {
         "name": "gigeresque:alien/alien_footstep_2"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_footstep"
   },
   "alien_handstep": {
     "sounds": [
@@ -197,7 +216,8 @@
       {
         "name": "gigeresque:alien/alien_handstep_2"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.alien_handstep"
   },
   "aqua_landmove": {
     "sounds": [
@@ -213,7 +233,8 @@
       {
         "name": "gigeresque:aqua/aqua_landmove_4"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.aqua_landmove"
   },
   "burster_crawl": {
     "sounds": [
@@ -226,7 +247,8 @@
       {
         "name": "gigeresque:burster/burster_crawl_3"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.burster_crawl"
   },
   "aqua_landclaw": {
     "sounds": [
@@ -236,6 +258,7 @@
       {
         "name": "gigeresque:aqua/aqua_landclaw_2"
       }
-    ]
+    ],
+    "subtitle": "subtitles.gigeresque.aqua_landclaw"
   }
 }
