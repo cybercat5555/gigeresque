@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,24 +42,42 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                 GigStatusEffects.IMPREGNATION
             )
         ) {
-            livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.05F, 0.25));
-            if (!livingEntity.hasEffect(GigStatusEffects.EGGMORPHING))
-                livingEntity.addEffect(
-                    new MobEffectInstance(GigStatusEffects.EGGMORPHING, (int) CommonMod.config.getEggmorphTickTimer(), 0),
-                    entity
-                );
-            if (!world.isClientSide())
-                standingTick++;
-            if (standingTick >= 100) {
-                if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()))
-                    livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
-                if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()))
-                    livingEntity.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
+            if (livingEntity instanceof Player player) {
+                player.makeStuckInBlock(state, new Vec3(0.25, 0.05F, 0.25));
+                if (!player.hasEffect(GigStatusEffects.EGGMORPHING))
+                    player.addEffect(
+                        new MobEffectInstance(
+                            GigStatusEffects.EGGMORPHING,
+                            (int) CommonMod.config.getEggmorphTickTimer(),
+                            0
+                        ),
+                        entity
+                    );
+                if (!world.isClientSide())
+                    standingTick++;
+                if (standingTick >= 100) {
+                    if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()))
+                        player.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
+                    if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()))
+                        player.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
+                    player.makeStuckInBlock(state, new Vec3(0.25, 0.0F, 0.25));
+                    standingTick = 0;
+                }
+            } else if (livingEntity instanceof Mob) {
+                standingTick = 0;
+                if (!livingEntity.hasEffect(GigStatusEffects.EGGMORPHING))
+                    livingEntity.addEffect(
+                        new MobEffectInstance(
+                            GigStatusEffects.EGGMORPHING,
+                            (int) CommonMod.config.getEggmorphTickTimer(),
+                            0
+                        ),
+                        entity
+                    );
                 livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0F, 0.25));
+            } else {
                 standingTick = 0;
             }
-        } else {
-            standingTick = 0;
         }
     }
 

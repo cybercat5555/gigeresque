@@ -162,6 +162,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     private Data vibrationData;
 
+    public BlockPos savedNestWebCross;
+
     protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;

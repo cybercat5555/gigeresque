@@ -38,7 +38,7 @@ public class FleeFireTask<E extends PathfinderMob & AbstractAlien & GeoEntity> e
 
     @Override
     protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob) {
-        return !pathfinderMob.isAggressive() || !pathfinderMob.level().dimensionType().respawnAnchorWorks();
+        return !pathfinderMob.isAggressive() && !pathfinderMob.level().dimensionType().respawnAnchorWorks() && !pathfinderMob.isVehicle();
     }
 
     @Override

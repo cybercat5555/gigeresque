@@ -113,7 +113,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 GigEntities.CHESTBURSTER.get(),
                 GigEntities.FACEHUGGER.get()
             );
-            EntityType<?> selectedEntity = null;
+            EntityType<? extends AlienEntity> selectedEntity = null;
             for (var i = 0; i < entities.size(); i++) {
                 if (player.getRandom().nextInt(100) < (i + 1) * 100 / entities.size()) {
                     selectedEntity = entities.get(i);
@@ -182,7 +182,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                                             .level()
                                             .isLoaded(resinPos)
                                     )
-                                        NestBuildingHelper.tryBuildNestAround(player.level(), resinPos);
+                                        NestBuildingHelper.tryBuildNestAround(player.level(), resinPos, faceHugger);
                                 }
                         }
                     }
@@ -228,7 +228,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                                 !player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level()
                                     .isLoaded(resinPos)
                             )
-                                NestBuildingHelper.tryBuildNestAround(player.level(), resinPos);
+                                NestBuildingHelper.tryBuildNestAround(player.level(), resinPos, aquaticAlien);
                         }
                     }
                 }

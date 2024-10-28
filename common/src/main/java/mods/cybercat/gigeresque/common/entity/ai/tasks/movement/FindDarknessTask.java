@@ -33,7 +33,7 @@ public class FindDarknessTask<E extends PathfinderMob & AbstractAlien & GeoEntit
 
     @Override
     protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
-        return level.isDay() && !entity.isAggressive() && !isInDarkness(level, entity);
+        return level.isDay() && !entity.isAggressive() && !isInDarkness(level, entity) || !entity.isVehicle();
     }
 
     @Override

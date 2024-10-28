@@ -287,7 +287,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             // Build Nest
             new BuildNestTask<>(90).startCondition(
                 entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
-                    || !this.isTunnelCrawling()
+                    || !this.isTunnelCrawling() || !this.isVehicle()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
@@ -323,13 +323,13 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     .setRadius(20)
                     .speedModifier(1.2f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
                     ),
-                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive())
-            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0)
+                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive() || !this.isVehicle())
+            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0 || this.isVehicle())
         );
     }
 
@@ -338,7 +338,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting())
+            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isVehicle())
         );
     }
 

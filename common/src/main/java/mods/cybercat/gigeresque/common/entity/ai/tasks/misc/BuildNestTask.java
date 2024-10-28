@@ -2,10 +2,8 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.LightLayer;
@@ -14,12 +12,11 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity & Growable> extends DelayedBehaviour<E> {
+public class BuildNestTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
@@ -69,6 +66,6 @@ public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity &
                         alien.blockPosition()
                     ) <= 5
         )
-            NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition());
+            NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition(), alien);
     }
 }
