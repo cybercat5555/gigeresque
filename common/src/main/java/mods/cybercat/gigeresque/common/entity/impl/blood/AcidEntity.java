@@ -46,37 +46,20 @@ public class AcidEntity extends Entity {
         // Ensures it's always at the center of the block
         if (tickCount == 1)
             this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
-        this.applyGravity();
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
+        this.applyCustomGravity();
         var canGrief = this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-        if (this.level().isClientSide()) {
-            for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                this.level()
-                    .addAlwaysVisibleParticle(
-                        GigParticles.ACID.get(),
-                        this.blockPosition().getX() + this.random.nextDouble(),
-                        this.blockPosition().getY() + 0.01,
-                        this.blockPosition().getZ() + this.random.nextDouble(),
-                        0.0,
-                        0.0,
-                        0.0
-                    );
-            }
-        }
+        if (this.level().isClientSide())
+            this.applyParticle();
         if (!this.level().isClientSide()) {
             // Kill this after it's tickCount is higher
-            if (this.tickCount >= this.random.nextIntBetweenInclusive(400, 800)) {
+            if (this.tickCount >= this.random.nextIntBetweenInclusive(400, 800))
                 this.kill();
-            }
             // Ensures it always plays a sound when first placed
-            if (this.tickCount == 1) {
+            if (this.tickCount == 1)
                 doParticleSounds(this.random);
-            }
             // Plays a sound every 2 seconds or so
-            if (this.tickCount % 40 == 0) {
+            if (this.tickCount % 40 == 0)
                 doParticleSounds(this.random);
-            }
             // Do things
             var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
             if (this.tickCount % 20 == 0 && canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT))
@@ -101,6 +84,27 @@ public class AcidEntity extends Entity {
                     e.remove(RemovalReason.KILLED);
             });
         }
+    }
+
+    private void applyParticle() {
+        for (var i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
+            this.level()
+                .addAlwaysVisibleParticle(
+                    GigParticles.ACID.get(),
+                    this.blockPosition().getX() + this.random.nextDouble(),
+                    this.blockPosition().getY() + 0.01,
+                    this.blockPosition().getZ() + this.random.nextDouble(),
+                    0.0,
+                    0.0,
+                    0.0
+                );
+        }
+    }
+
+    private void applyCustomGravity() {
+        this.applyGravity();
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
     }
 
     private void doBlockBreaking(RandomSource randomSource) {
