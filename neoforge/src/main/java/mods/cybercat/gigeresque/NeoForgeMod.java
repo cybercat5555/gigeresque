@@ -18,8 +18,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameRules;
@@ -93,19 +91,12 @@ public final class NeoForgeMod {
         CommonMod.MOD_ID
     );
 
-    public static DeferredRegister<ArmorMaterial> armorMaterialDeferredRegister = DeferredRegister.create(
-        Registries.ARMOR_MATERIAL,
-        CommonMod.MOD_ID
-    );
-
     public static DeferredRegister<Item> itemDeferredRegister = DeferredRegister.create(Registries.ITEM, CommonMod.MOD_ID);
 
     public static DeferredRegister<SoundEvent> soundEventDeferredRegister = DeferredRegister.create(
         Registries.SOUND_EVENT,
         CommonMod.MOD_ID
     );
-
-    public static DeferredRegister<MenuType<?>> menuTypeDeferredRegister = DeferredRegister.create(Registries.MENU, CommonMod.MOD_ID);
 
     public static DeferredRegister<StructureType<?>> structureTypeDeferredRegister = DeferredRegister.create(
         Registries.STRUCTURE_TYPE,
@@ -182,12 +173,8 @@ public final class NeoForgeMod {
         NeoForgeMod.blockEntityTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.blockDeferredRegister.register(modEventBus);
         NeoForgeMod.entityTypeDeferredRegister.register(modEventBus);
-        if (NeoForgeMod.armorMaterialDeferredRegister != null)
-            NeoForgeMod.armorMaterialDeferredRegister.register(modEventBus);
         NeoForgeMod.itemDeferredRegister.register(modEventBus);
         NeoForgeMod.soundEventDeferredRegister.register(modEventBus);
-        if (NeoForgeMod.menuTypeDeferredRegister != null)
-            NeoForgeMod.menuTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.structureTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.particleTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.creativeModeTabDeferredRegister.register(modEventBus);
