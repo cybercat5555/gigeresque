@@ -30,7 +30,6 @@ public class BlockBreakProgressManager {
         if (!level.isClientSide())
             BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, entry) -> {
                 var blockState = level.getBlockState(blockPos.below());
-                var block = blockState.getBlock();
                 var cachedValue = entry == null ? 0 : entry.getValue();
                 var hardness = blockState.getDestroySpeed(level, blockPos);
                 if (blockState.is(GigTags.WEAK_BLOCKS))
