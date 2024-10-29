@@ -31,6 +31,7 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.projectile.AcidSpitProjectile;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
@@ -241,6 +242,15 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         MobCategory.MISC,
         0.8f,
         0.05f
+    );
+
+    public static final Supplier<EntityType<AcidSpitProjectile>> ACID_PROJECTILE = CommonEntityRegistryInterface.registerEntity(
+        CommonMod.MOD_ID,
+        EntityIdentifiers.ACID_PROJECTILE.getPath(),
+        AcidSpitProjectile::new,
+        MobCategory.MISC,
+        0.5f,
+        0.5f
     );
 
     public static final Supplier<EntityType<Entity>> GOO = CommonEntityRegistryInterface.registerEntity(

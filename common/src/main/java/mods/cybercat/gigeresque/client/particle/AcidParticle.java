@@ -30,6 +30,7 @@ public class AcidParticle extends TextureSheetParticle {
         this.lifetime = (int) (10.0 / ((random.nextFloat()) * 0.8 + 0.2));
         this.reachedGround = false;
         this.hasPhysics = true;
+        this.gravity = 0.1F;
         this.spriteProvider = spriteProvider;
         this.setSpriteFromAge(spriteProvider);
     }
@@ -46,6 +47,7 @@ public class AcidParticle extends TextureSheetParticle {
             this.move(this.xd, this.yd, this.zd);
             if (this.age >= this.lifetime && this.alpha > 0.01F)
                 this.alpha -= 0.015F;
+            this.y -= 0.02;
         } else
             this.remove();
     }

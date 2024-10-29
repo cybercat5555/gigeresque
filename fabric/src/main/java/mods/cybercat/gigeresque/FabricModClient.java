@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,6 +35,7 @@ public class FabricModClient implements ClientModInitializer {
         registerParticle("mist", GigParticles.MIST.get(), MistParticleFactory::new);
         EntityRenderers.register(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
+        EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
         // EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);

@@ -15,6 +15,7 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
+import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.StrafeTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -26,17 +27,13 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -45,6 +42,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,9 +50,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -64,9 +60,8 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.entity.impl.projectile.AcidSpitProjectile;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -300,6 +295,9 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             new LookAtTarget<>(),
             // Flee Fire
             new FleeFireTask<>(1.3F),
+            new StrafeTarget<SpitterEntity>().stopStrafingWhen(
+                spitterEntity -> spitterEntity.getTarget() != null && spitterEntity.isWithinMeleeAttackRange(spitterEntity.getTarget())
+            ),
             new MoveToWalkTarget<>()
         );
     }
@@ -424,35 +422,21 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
 
     public void shootAcid(LivingEntity target, LivingEntity attacker) {
         if (attacker.hasLineOfSight(target)) {
-            BehaviorUtils.lookAtEntity(this, target);
-            // Calculate the line of sight between the entities
-            var attackerPos = attacker.position();
-            var targetPos = target.position();
-            var direction = targetPos.subtract(attackerPos).normalize();
-
-            // Spawn acid particles along the line of sight and play the sound
-            for (var i = 1; i < Mth.floor(direction.length()) + 7; ++i) {
-                var vec34 = this.position().add(0.0, 1.3f, 0.0).add(direction.scale(i));
-                if (this.level() instanceof ServerLevel serverLevel)
-                    serverLevel.sendParticles(GigParticles.ACID.get(), vec34.x, vec34.y, vec34.z, 1, 0, 0, 0, 0);
-            }
-            this.playSound(SoundEvents.LAVA_EXTINGUISH, 3.0f, 1.0f);
-
-            var acidEntity = GigEntities.ACID.get().create(this.level());
-            if (acidEntity != null) {
-                acidEntity.setPos(target.blockPosition().getX(), target.blockPosition().getY(), target.blockPosition().getZ());
-                this.level().addFreshEntity(acidEntity);
-            }
-
-            // Give the entity the acid effect so they are damaged.
-            if (target instanceof LivingEntity livingEntity)
-                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 30));
-
-            // Damage the target entity/shield if used
-            if (!target.getUseItem().is(Items.SHIELD))
-                target.hurt(GigDamageSources.of(this.level(), GigDamageSources.ACID), 2.0f);
-            if (target.getUseItem().is(Items.SHIELD) && target instanceof Player player)
-                target.getUseItem().hurtAndBreak(10, player, player.getEquipmentSlotForItem(target.getUseItem()));
+            var acidProjectile = new AcidSpitProjectile(
+                level(),
+                this,
+                new Vec3(
+                    this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2),
+                    this.getTarget().getY(0.5) - (this.getY(0.5)),
+                    this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2)
+                )
+            );
+            acidProjectile.setPos(
+                (attacker.getX() + attacker.getViewVector(1.0F).x),
+                attacker.getY(0.5),
+                attacker.getZ() + attacker.getViewVector(1.0F).z
+            );
+            attacker.level().addFreshEntity(acidProjectile);
         }
     }
 

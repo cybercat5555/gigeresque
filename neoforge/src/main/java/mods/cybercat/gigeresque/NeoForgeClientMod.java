@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -39,6 +40,7 @@ public class NeoForgeClientMod {
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
+        event.registerEntityRenderer(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ALIEN.get(), AlienEntityRenderer::new);
         // event.registerEntityRenderer(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
