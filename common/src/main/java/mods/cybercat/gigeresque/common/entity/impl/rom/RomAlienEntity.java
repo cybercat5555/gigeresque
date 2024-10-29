@@ -232,7 +232,8 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
             // Player Sensor
             new NearbyPlayersSensor<>(),
             // Living Sensor
-            new NearbyLivingEntitySensor<RomAlienEntity>().setRadius(32),
+            new NearbyLivingEntitySensor<RomAlienEntity>().setRadius(32)
+                .setPredicate(GigEntityUtils::entityTest),
             // Block Sensor
             new NearbyBlocksSensor<RomAlienEntity>().setRadius(7),
             // Fire Sensor
@@ -261,9 +262,13 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
             // Flee Fire
             new FleeFireTask<RomAlienEntity>(3.5F).whenStarting(
                 entity -> entity.setFleeingStatus(true)
-            ).whenStopping(entity -> entity.setFleeingStatus(false)),
+            )
+                .whenStopping(entity -> entity.setFleeingStatus(false))
+                .startCondition(romAlienEntity -> !romAlienEntity.isPassedOut())
+                .stopIf(AlienEntity::isPassedOut),
             // Take target to nest
-            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle()).stopIf(entity -> !this.isVehicle()),
+            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() || !this.isPassedOut())
+                .stopIf(entity -> !this.isVehicle() || this.isPassedOut()),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive())
                 .startCondition(
@@ -290,7 +295,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
             // Build Nest
             new BuildNestTask<>(90).startCondition(
                 entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
-                    || !this.isTunnelCrawling()
+                    || !this.isTunnelCrawling() || !this.isVehicle()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
@@ -303,7 +308,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
                 ),
             // Find Darkness
-            new FindDarknessTask<>(),
+            new FindDarknessTask<RomAlienEntity>().stopIf(Mob::isAggressive),
             // Do first
             new FirstApplicableBehaviour<RomAlienEntity>(
                 // Targeting
@@ -326,13 +331,13 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                     .setRadius(20)
                     .speedModifier(1.2f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
                     ),
-                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive())
-            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0)
+                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive() || !this.isVehicle())
+            ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0 || this.isVehicle())
         );
     }
 
@@ -341,7 +346,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting())
+            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isVehicle())
         );
     }
 

@@ -147,7 +147,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
     public List<ExtendedSensor<NeomorphAdolescentEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setRadius(20).setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<NeomorphAdolescentEntity>().setRadius(7),
             new NearbyRepellentsSensor<NeomorphAdolescentEntity>().setRadius(15)
                 .setPredicate(

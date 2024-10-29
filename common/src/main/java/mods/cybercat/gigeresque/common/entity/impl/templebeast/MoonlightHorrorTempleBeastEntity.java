@@ -116,9 +116,10 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity implements Sma
     public List<ExtendedSensor<MoonlightHorrorTempleBeastEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<MoonlightHorrorTempleBeastEntity>().setPredicate(
-                GigEntityUtils::entityTest
-            ),
+            new NearbyLivingEntitySensor<MoonlightHorrorTempleBeastEntity>().setRadius(30)
+                .setPredicate(
+                    GigEntityUtils::entityTest
+                ),
             new NearbyBlocksSensor<MoonlightHorrorTempleBeastEntity>().setRadius(7),
             new NearbyRepellentsSensor<MoonlightHorrorTempleBeastEntity>().setRadius(15)
                 .setPredicate(

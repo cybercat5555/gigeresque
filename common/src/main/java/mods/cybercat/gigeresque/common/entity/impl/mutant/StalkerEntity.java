@@ -146,7 +146,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     public List<ExtendedSensor<StalkerEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<StalkerEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<StalkerEntity>().setRadius(30).setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
             new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
                 .setPredicate(

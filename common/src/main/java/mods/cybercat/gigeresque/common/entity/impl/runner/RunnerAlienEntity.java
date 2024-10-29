@@ -206,9 +206,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public List<ExtendedSensor<RunnerAlienEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate(
-                GigEntityUtils::entityTest
-            ),
+            new NearbyLivingEntitySensor<RunnerAlienEntity>().setRadius(30)
+                .setPredicate(
+                    GigEntityUtils::entityTest
+                ),
             new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7),
             new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15)
                 .setPredicate(

@@ -270,7 +270,8 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             // Player Sensor
             new NearbyPlayersSensor<>(),
             // Living Sensor
-            new NearbyLivingEntitySensor<SpitterEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<SpitterEntity>().setRadius(32)
+                .setPredicate(GigEntityUtils::entityTest),
             // Block Sensor
             new NearbyBlocksSensor<SpitterEntity>().setRadius(7),
             // Fire Sensor

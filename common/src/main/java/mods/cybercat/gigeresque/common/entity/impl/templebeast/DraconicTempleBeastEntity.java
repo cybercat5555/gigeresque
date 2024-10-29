@@ -252,9 +252,10 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     public List<ExtendedSensor<DraconicTempleBeastEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<DraconicTempleBeastEntity>().setPredicate(
-                GigEntityUtils::entityTest
-            ),
+            new NearbyLivingEntitySensor<DraconicTempleBeastEntity>().setRadius(30)
+                .setPredicate(
+                    GigEntityUtils::entityTest
+                ),
             new NearbyBlocksSensor<DraconicTempleBeastEntity>().setRadius(7),
             new NearbyRepellentsSensor<DraconicTempleBeastEntity>().setRadius(15)
                 .setPredicate(

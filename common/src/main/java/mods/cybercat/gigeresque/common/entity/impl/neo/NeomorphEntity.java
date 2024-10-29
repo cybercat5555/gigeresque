@@ -312,7 +312,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     public List<ExtendedSensor<NeomorphEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<NeomorphEntity>().setRadius(30).setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<NeomorphEntity>().setRadius(7),
             new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15)
                 .setPredicate(

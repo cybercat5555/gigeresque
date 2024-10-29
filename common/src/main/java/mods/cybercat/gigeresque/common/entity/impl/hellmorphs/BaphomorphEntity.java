@@ -110,7 +110,8 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     public List<ExtendedSensor<BaphomorphEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<BaphomorphEntity>().setRadius(32),
+            new NearbyLivingEntitySensor<BaphomorphEntity>().setRadius(32)
+                .setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<BaphomorphEntity>().setRadius(7),
             new NearbyRepellentsSensor<BaphomorphEntity>().setRadius(15)
                 .setPredicate(

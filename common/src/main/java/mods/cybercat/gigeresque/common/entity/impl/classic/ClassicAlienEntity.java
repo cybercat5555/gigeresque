@@ -229,7 +229,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             // Player Sensor
             new NearbyPlayersSensor<>(),
             // Living Sensor
-            new NearbyLivingEntitySensor<ClassicAlienEntity>().setRadius(32),
+            new NearbyLivingEntitySensor<ClassicAlienEntity>().setRadius(32)
+                .setPredicate(GigEntityUtils::entityTest),
             // Block Sensor
             new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
             // Fire Sensor

@@ -136,7 +136,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     public List<ExtendedSensor<PopperEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<PopperEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<PopperEntity>().setRadius(15).setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<PopperEntity>().setRadius(7),
             new NearbyRepellentsSensor<PopperEntity>().setRadius(15)
                 .setPredicate(

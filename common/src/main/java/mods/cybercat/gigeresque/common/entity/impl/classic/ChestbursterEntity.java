@@ -243,9 +243,10 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate(
-                GigEntityUtils::entityTest
-            ),
+            new NearbyLivingEntitySensor<ChestbursterEntity>().setRadius(15)
+                .setPredicate(
+                    GigEntityUtils::entityTest
+                ),
             new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
                 .setPredicate(
                     (block, entity) -> block.is(BlockTags.CROPS)

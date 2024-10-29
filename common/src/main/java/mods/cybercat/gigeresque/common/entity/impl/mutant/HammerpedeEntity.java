@@ -149,7 +149,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
     public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
         return ObjectArrayList.of(
             new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate(GigEntityUtils::entityTest),
+            new NearbyLivingEntitySensor<HammerpedeEntity>().setRadius(15).setPredicate(GigEntityUtils::entityTest),
             new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7),
             new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15)
                 .setPredicate(
