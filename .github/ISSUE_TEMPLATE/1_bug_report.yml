@@ -13,6 +13,7 @@ body:
       label: Mod Version
       description: What version of the mod are you running?
       options:
+        - 0.7.5
         - 0.8.0
       default: 0
     validations:
@@ -23,8 +24,8 @@ body:
       label: Mod Loader
       description: What mod loader version of the mod are you using?
       options:
-        - NeoForge
         - Fabric
+        - NeoForge
       default: 0
     validations:
       required: true
